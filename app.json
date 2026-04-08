@@ -1,0 +1,47 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/order/index",
+    "pages/message/index",
+    "pages/profile/index",
+    "pages/publish/index"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarTitleText": "校园服务",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "color": "#9a9da0",
+    "selectedColor": "#1E88E5",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "static/tab_home.png",
+        "selectedIconPath": "static/tab_home_active.png"
+      },
+      {
+        "pagePath": "pages/order/index",
+        "text": "订单",
+        "iconPath": "static/tab_order.png",
+        "selectedIconPath": "static/tab_order_active.png"
+      },
+      {
+        "pagePath": "pages/message/index",
+        "text": "消息",
+        "iconPath": "static/tab_message.png",
+        "selectedIconPath": "static/tab_message_active.png"
+      },
+      {
+        "pagePath": "pages/profile/index",
+        "text": "我的",
+        "iconPath": "static/tab_profile.png",
+        "selectedIconPath": "static/tab_profile_active.png"
+      }
+    ]
+  }
+}

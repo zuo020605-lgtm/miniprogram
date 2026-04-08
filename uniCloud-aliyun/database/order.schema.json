@@ -1,0 +1,111 @@
+// 文档教程: https://uniapp.dcloud.net.cn/uniCloud/schema
+{
+	"bsonType": "object",
+	"required": ["uid", "title", "price", "contact", "serviceType"],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"uid": {
+			"bsonType": "string",
+			"description": "用户ID"
+		},
+		"orderNo": {
+			"bsonType": "string",
+			"description": "订单号"
+		},
+		"userNickname": {
+			"bsonType": "string",
+			"description": "用户昵称"
+		},
+		"courierNickname": {
+			"bsonType": "string",
+			"description": "接单员昵称"
+		},
+		"title": {
+			"bsonType": "string",
+			"description": "订单标题"
+		},
+		"price": {
+			"bsonType": "number",
+			"description": "订单金额"
+		},
+		"contact": {
+			"bsonType": "string",
+			"description": "联系方式"
+		},
+		"serviceType": {
+			"bsonType": "string",
+			"description": "服务类型",
+			"enum": ["campusErrand", "packageDelivery", "examTaking"]
+		},
+		"description": {
+			"bsonType": "string",
+			"description": "任务描述"
+		},
+		"status": {
+			"bsonType": "string",
+			"description": "订单状态",
+			"enum": ["unaccepted", "pending", "processing", "completed", "cancelled", "paused"]
+		},
+		"orderStatus": {
+			"bsonType": "string",
+			"description": "订单状态",
+			"enum": ["payed", "waitingAccept", "picking", "delivering", "delivered", "canceled"]
+		},
+		"createdAt": {
+			"bsonType": "date",
+			"description": "创建时间"
+		},
+		"assignee": {
+			"bsonType": ["object", "null"],
+			"description": "接取人信息"
+		},
+		"startTime": {
+			"bsonType": "string",
+			"description": "开始时间"
+		},
+		"endTime": {
+			"bsonType": "string",
+			"description": "结束时间"
+		},
+		"pickupLocation": {
+			"bsonType": "string",
+			"description": "取货地点"
+		},
+		"deliveryLocation": {
+			"bsonType": "string",
+			"description": "送达地点"
+		},
+		"itemWeight": {
+			"bsonType": "string",
+			"description": "物品重量"
+		},
+		"teachingBuilding": {
+			"bsonType": "string",
+			"description": "教学楼"
+		},
+		"examClassroom": {
+			"bsonType": "string",
+			"description": "考试教室"
+		},
+		"examStartTime": {
+			"bsonType": "string",
+			"description": "考试开始时间"
+		},
+		"examEndTime": {
+			"bsonType": "string",
+			"description": "考试结束时间"
+		},
+		"examSubject": {
+			"bsonType": "string",
+			"description": "考试科目"
+		}
+	}
+}
