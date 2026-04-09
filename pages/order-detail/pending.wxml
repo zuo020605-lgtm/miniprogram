@@ -1,0 +1,40 @@
+<view class="order-detail-page">
+    <view class="order-header">
+      <view class="back-btn" bindtap="navigateBack">
+        <text class="back-icon">←</text>
+      </view>
+      <text class="page-title">订单详情</text>
+      <view class="placeholder"></view>
+    </view>
+    
+    <view class="order-content">
+      <view class="order-status-section">
+        <text class="status-badge pending">待处理</text>
+        <text class="status-description">请尽快确认并开始任务</text>
+      </view>
+      
+      <view class="order-info-section">
+        <view class="info-item">
+          <text class="info-label">订单标题</text>
+          <text class="info-value">{{order.title}}</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">订单金额</text>
+          <text class="info-value price">{{order.price}}</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">下单时间</text>
+          <text class="info-value">{{order.time}}</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">订单编号</text>
+          <text class="info-value">{{order.id}}</text>
+        </view>
+      </view>
+      
+      <view class="order-actions">
+        <button class="action-btn cancel-btn" bindtap="cancelOrder">取消订单</button>
+        <button class="action-btn start-btn" bindtap="startOrder">开始任务</button>
+      </view>
+    </view>
+  </view>

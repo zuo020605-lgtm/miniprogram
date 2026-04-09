@@ -1,0 +1,296 @@
+<view class="publish-page">
+  <scroll-view scroll-y class="publish-content">
+    <!-- 任务类型选择 -->
+    <view class="section-card">
+      <view class="section-title">选择任务类型</view>
+      <view class="task-type-grid">
+        <view 
+          class="type-item {{selectedType === 'campus-class' ? 'active' : ''}}"
+          bindtap="selectType"
+          data-type="campus-class"
+        >
+          <view class="type-icon-wrapper">
+            <image class="type-icon-img" src="/static/class-icon.png" mode="aspectFit" />
+          </view>
+          <text class="type-name">校园代课</text>
+          <text class="type-desc">查看课表代课</text>
+        </view>
+        <view 
+          class="type-item {{selectedType === 'campus-errand' ? 'active' : ''}}"
+          bindtap="selectType"
+          data-type="campus-errand"
+        >
+          <view class="type-icon-wrapper">
+            <image class="type-icon-img" src="/static/run-icon.png" mode="aspectFit" />
+          </view>
+          <text class="type-name">校园跑腿</text>
+          <text class="type-desc">帮忙跑腿办事</text>
+        </view>
+        <view 
+          class="type-item {{selectedType === 'express' ? 'active' : ''}}"
+          bindtap="selectType"
+          data-type="express"
+        >
+          <view class="type-icon-wrapper">
+            <image class="type-icon-img" src="/static/package-icon.png" mode="aspectFit" />
+          </view>
+          <text class="type-name">快递代取</text>
+          <text class="type-desc">代取快递包裹</text>
+        </view>
+        <view 
+          class="type-item {{selectedType === 'exam' ? 'active' : ''}}"
+          bindtap="selectType"
+          data-type="exam"
+        >
+          <view class="type-icon-wrapper">
+            <image class="type-icon-img" src="/static/exam-icon.png" mode="aspectFit" />
+          </view>
+          <text class="type-name">考试代替</text>
+          <text class="type-desc">替考服务</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 表单区域 -->
+    <view wx:if="{{selectedType}}" class="form-section">
+      <!-- 校园跑腿/快递代取表单 -->
+      <view wx:if="{{selectedType === 'campus-errand' || selectedType === 'express'}}">
+        <view class="section-card">
+          <view class="section-title">时间安排</view>
+          
+          <!-- 日期选择 -->
+          <view class="form-row">
+            <text class="row-label">日期</text>
+            <picker 
+              mode="date" 
+              value="{{selectedDate}}" 
+              bindchange="onDateChange"
+              start="{{minDate}}"
+            >
+              <view class="picker-value">
+                <text>{{selectedDate || '选择日期'}}</text>
+                <text class="picker-arrow">▼</text>
+              </view>
+            </picker>
+          </view>
+          
+          <!-- 时间选择 -->
+          <view class="time-range-row">
+            <view class="time-item">
+              <text class="time-label">开始时间</text>
+              <picker mode="time" value="{{startTime}}" bindchange="onStartTimeChange">
+                <view class="picker-value">
+                  <text>{{ startTime || '选择时间' }}</text>
+                  <text class="picker-arrow">▼</text>
+                </view>
+              </picker>
+            </view>
+            <text class="time-separator">至</text>
+            <view class="time-item">
+              <text class="time-label">结束时间</text>
+              <picker mode="time" value="{{endTime}}" bindchange="onEndTimeChange">
+                <view class="picker-value">
+                  <text>{{ endTime || '选择时间' }}</text>
+                  <text class="picker-arrow">▼</text>
+                </view>
+              </picker>
+            </view>
+          </view>
+        </view>
+
+        <view class="section-card">
+          <view class="section-title">地点信息</view>
+          
+          <view class="form-row">
+            <text class="row-label">取货地点</text>
+            <input 
+              type="text" 
+              value="{{pickupLocation}}" bindinput="onPickupLocationChange" 
+              placeholder="请输入取货地点"
+              class="form-input"
+            />
+          </view>
+          
+          <view class="form-row">
+            <text class="row-label">送达地点</text>
+            <input 
+              type="text" 
+              value="{{deliveryLocation}}" bindinput="onDeliveryLocationChange" 
+              placeholder="请输入送达地点"
+              class="form-input"
+            />
+          </view>
+          
+          <!-- 快递重量（仅快递代取）- 可拖动重量选择器 -->
+          <view wx:if="{{selectedType === 'express'}}" class="form-row weight-row">
+            <text class="row-label">物品重量</text>
+            <view class="weight-slider-container">
+              <view class="weight-slider-track">
+                <view class="weight-slider-progress" style="width: {{sliderProgress}}%"></view>
+                <view 
+                  class="weight-slider-thumb" 
+                  style="left: {{sliderProgress}}%"
+                  catchtouchstart="onSliderTouchStart"
+                  catchtouchmove="onSliderTouchMove"
+                  catchtouchend="onSliderTouchEnd"
+                ></view>
+                <!-- 节点标记 -->
+                <view class="weight-nodes">
+                  <view 
+                    class="weight-node {{selectedWeightIndex >= 0 ? 'active' : ''}}" 
+                    style="left: 0%"
+                    bindtap="selectWeightByIndex"
+                    data-index="0"
+                  >
+                    <view class="node-dot"></view>
+                    <text class="node-label">1kg内</text>
+                  </view>
+                  <view 
+                    class="weight-node {{selectedWeightIndex >= 1 ? 'active' : ''}}" 
+                    style="left: 33.33%"
+                    bindtap="selectWeightByIndex"
+                    data-index="1"
+                  >
+                    <view class="node-dot"></view>
+                    <text class="node-label">5kg内</text>
+                  </view>
+                  <view 
+                    class="weight-node {{selectedWeightIndex >= 2 ? 'active' : ''}}" 
+                    style="left: 66.66%"
+                    bindtap="selectWeightByIndex"
+                    data-index="2"
+                  >
+                    <view class="node-dot"></view>
+                    <text class="node-label">10kg内</text>
+                  </view>
+                  <view 
+                    class="weight-node {{selectedWeightIndex >= 3 ? 'active' : ''}}" 
+                    style="left: 100%"
+                    bindtap="selectWeightByIndex"
+                    data-index="3"
+                  >
+                    <view class="node-dot"></view>
+                    <text class="node-label">10kg+</text>
+                  </view>
+                </view>
+              </view>
+            </view>
+          </view>
+          <view wx:if="{{selectedType === 'express' && selectedWeightLabel}}" class="weight-display">
+            <text class="weight-value">已选择: {{selectedWeightLabel}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 考试代替表单 -->
+      <view wx:if="{{selectedType === 'exam' || selectedType === 'campus-class'}}">
+        <view class="section-card">
+          <view class="section-title">考试信息</view>
+          
+          <!-- 日期选择 -->
+          <view class="form-row">
+            <text class="row-label">考试日期</text>
+            <picker 
+              mode="date" 
+              value="{{selectedDate}}" 
+              bindchange="onDateChange"
+              start="{{minDate}}"
+            >
+              <view class="picker-value">
+                <text>{{selectedDate || '选择日期'}}</text>
+                <text class="picker-arrow">▼</text>
+              </view>
+            </picker>
+          </view>
+          
+          <!-- 考试时间 -->
+          <view class="form-row">
+            <text class="row-label">考试时间</text>
+            <picker mode="time" value="{{startTime}}" bindchange="onStartTimeChange">
+              <view class="picker-value">
+                <text>{{ startTime || '选择时间' }}</text>
+                <text class="picker-arrow">▼</text>
+              </view>
+            </picker>
+          </view>
+          
+          <!-- 考试地点 -->
+          <view class="form-row">
+            <text class="row-label">考试地点</text>
+            <input 
+              type="text" 
+              value="{{examLocation}}" bindinput="onExamLocationChange" 
+              placeholder="请输入考试地点"
+              class="form-input"
+            />
+          </view>
+          
+          <!-- 考试科目 -->
+          <view class="form-row">
+            <text class="row-label">考试科目</text>
+            <input 
+              type="text" 
+              value="{{examSubject}}" bindinput="onExamSubjectChange" 
+              placeholder="请输入考试科目"
+              class="form-input"
+            />
+          </view>
+        </view>
+      </view>
+
+      <!-- 通用信息 -->
+      <view class="section-card">
+        <view class="section-title">任务信息</view>
+        
+        <!-- 任务金额 -->
+        <view class="form-row">
+          <text class="row-label">任务金额</text>
+          <view class="price-input-wrapper">
+            <text class="price-symbol">¥</text>
+            <input 
+              type="digit" 
+              value="{{price}}" bindinput="onPriceChange" 
+              placeholder="0.00"
+              class="price-input"
+            />
+          </view>
+        </view>
+        
+        <!-- 任务详情 -->
+        <view class="form-row textarea-row">
+          <text class="row-label">任务详情</text>
+          <textarea 
+            value="{{taskDetail}}" bindinput="onTaskDetailChange" 
+            placeholder="请详细描述任务要求..."
+            class="form-textarea"
+            maxlength="500"
+          />
+        </view>
+        
+        <!-- 联系方式 -->
+        <view class="form-row">
+          <text class="row-label">联系方式</text>
+          <input 
+            type="text" 
+            value="{{contactInfo}}" bindinput="onContactInfoChange" 
+            placeholder="请输入手机号或微信号"
+            class="form-input"
+          />
+        </view>
+      </view>
+
+      <!-- 发布按钮 -->
+      <button class="publish-btn {{canPublish ? '' : 'disabled'}}" bindtap="publishTask" disabled="{{!canPublish}}">
+        立即发布
+      </button>
+
+      <!-- 提示卡片 -->
+      <view class="tips-card">
+        <text class="tips-title">发布须知</text>
+        <text class="tips-item">1. 请确保填写的信息真实有效</text>
+        <text class="tips-item">2. 任务金额由您自行设定</text>
+        <text class="tips-item">3. 发布后可在订单列表查看进度</text>
+      </view>
+    </view>
+  </scroll-view>
+</view>

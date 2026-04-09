@@ -1,0 +1,146 @@
+<view class="page-container order-page">
+  <!-- 订单状态选项卡 -->
+  <view class="order-tabs glass-header">
+    <scroll-view scroll-x class="tabs-scroll" enable-flex="false">
+      <view 
+        class="tab-item {{activeTab === tab.key ? 'active' : ''}}"
+        wx:for="{{tabs}}" 
+        wx:key="key"
+        bindtap="switchTab"
+        data-key="{{tab.key}}"
+      >
+        <text class="tab-text">{{ tab.label }}</text>
+        <view class="tab-badge" wx:if="{{tab.count > 0}}">{{ tab.count }}</view>
+      </view>
+    </scroll-view>
+  </view>
+  
+  <!-- 订单列表 -->
+  <scroll-view 
+    scroll-y 
+    class="order-list-scroll"
+    bindscrolltolower="loadMore"
+    refresher-enabled
+    refresher-triggered="{{isRefreshing}}"
+    bindrefresherrefresh="onRefresh"
+  >
+    <!-- 骨架屏 -->
+    <view wx:if="{{loading && orders.length === 0}}" class="order-list">
+      <view class="skeleton-order-item" wx:for="{{5}}" wx:key="index">
+        <view class="skeleton skeleton-order-header">
+          <view class="skeleton skeleton-status"></view>
+          <view class="skeleton skeleton-time"></view>
+        </view>
+        <view class="skeleton-order-body">
+          <view class="skeleton skeleton-type"></view>
+          <view class="skeleton skeleton-amount"></view>
+        </view>
+        <view class="skeleton-order-footer">
+          <view class="skeleton skeleton-id"></view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 订单列表内容 -->
+    <view wx:else class="order-list">
+      <view 
+        class="order-item card" 
+        wx:for="{{filteredOrders}}" 
+        wx:key="_id"
+        bindtap="navigateToOrderDetail"
+        data-id="{{item._id}}"
+        data-status="{{item.status}}"
+        data-service-type="{{item.serviceType}}"
+      >
+        <!-- 订单头部 -->
+        <view class="order-header">
+          <view class="order-status-wrapper">
+            <view class="order-status-dot status-{{item.status}}"></view>
+            <text class="order-status text-{{item.statusColor}}">{{ item.statusText }}</text>
+          </view>
+          <text class="order-time">{{ item.createdAtText }}</text>
+        </view>
+        
+        <!-- 订单主体 -->
+        <view class="order-body">
+          <view class="order-info">
+            <view class="order-type-wrapper">
+              <image class="icon-service" src="{{item.serviceIcon}}" mode="aspectFit" />
+              <text class="order-type">{{ item.serviceTypeText }}</text>
+            </view>
+            <text class="order-price text-primary">¥{{ item.price }}</text>
+          </view>
+          
+          <view class="order-details">
+            <view class="detail-row" wx:if="{{item.pickupLocation}}">
+              <image class="detail-icon" src="/static/arrow-icon.png" mode="aspectFit" />
+              <text class="detail-label">取货：</text>
+              <text class="detail-value">{{ item.pickupLocation }}</text>
+            </view>
+            <view class="detail-row" wx:if="{{item.deliveryLocation}}">
+              <image class="detail-icon" src="/static/arrow-icon.png" mode="aspectFit" />
+              <text class="detail-label">送达：</text>
+              <text class="detail-value">{{ item.deliveryLocation }}</text>
+            </view>
+            <view class="detail-row" wx:if="{{item.teachingBuilding}}">
+              <image class="detail-icon" src="/static/school-icon.png" mode="aspectFit" />
+              <text class="detail-label">地点：</text>
+              <text class="detail-value">{{ item.teachingBuilding }} {{ item.examClassroom || '' }}</text>
+            </view>
+          </view>
+          
+          <!-- 接单人信息 -->
+          <view class="order-courier" wx:if="{{item.courierNickname}}">
+            <view class="courier-avatar">
+              <text class="avatar-text">{{ item.courierNickname.charAt(0) }}</text>
+            </view>
+            <text class="courier-name">{{ item.courierNickname }}</text>
+            <text class="courier-badge">接单员</text>
+          </view>
+        </view>
+        
+        <!-- 订单底部 -->
+        <view class="order-footer">
+          <text class="order-id">订单编号：{{ item.orderNo || item._id }}</text>
+          <view class="order-actions" catchtap="">
+            <button 
+              class="action-btn btn-outline" 
+              wx:if="{{item.status === 'unaccepted'}}" 
+              bindtap="cancelOrder"
+              data-id="{{item._id}}"
+            >取消</button>
+            <button 
+              class="action-btn btn-primary" 
+              wx:if="{{item.status === 'unaccepted'}}" 
+              bindtap="editOrder"
+              data-id="{{item._id}}"
+            >修改</button>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 加载更多 -->
+      <view class="load-more" wx:if="{{orders.length > 0 && hasMore && !loading}}">
+        <view class="loading-spinner"></view>
+        <text class="load-more-text">加载中...</text>
+      </view>
+      
+      <!-- 没有更多 -->
+      <view class="no-more" wx:if="{{orders.length > 0 && !hasMore && !loading}}">
+        <text class="no-more-text">没有更多订单了</text>
+      </view>
+      
+      <!-- 空状态 -->
+      <view class="empty-state" wx:if="{{!loading && filteredOrders.length === 0}}">
+        <image class="empty-icon" src="/static/empty-task-icon.png" mode="aspectFit" />
+        <text class="empty-title">{{ emptyTitle }}</text>
+        <text class="empty-desc" wx:if="{{activeTab === 'all'}}">快去发布第一个任务吧</text>
+        <button 
+          class="empty-action btn-primary" 
+          wx:if="{{activeTab === 'all'}}" 
+          bindtap="navigateToPublish"
+        >去发布</button>
+      </view>
+    </view>
+  </scroll-view>
+</view>

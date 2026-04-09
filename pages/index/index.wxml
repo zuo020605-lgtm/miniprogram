@@ -1,0 +1,193 @@
+<scroll-view class="home-page" scroll-y enable-flex type="list">
+  <!-- 顶部导航 - Glass Header -->
+  <view class="header glass-header">
+    <view class="campus-selector" bindtap="showCampusPicker">
+      <image class="icon-school" src="/static/school-icon.png" mode="aspectFit" />
+      <view class="campus-info">
+        <text class="campus-label">Current Campus</text>
+        <view class="campus-name-wrapper">
+          <text class="campus-name">{{ currentCampus }}</text>
+          <image class="icon-chevron" src="/static/chevron-icon.png" mode="aspectFit" />
+        </view>
+      </view>
+    </view>
+    <view class="header-actions">
+      <view class="notification-btn" bindtap="navigateToMessage">
+        <image class="icon-bell" src="/static/bell-icon.png" mode="aspectFit" />
+        <view class="notification-badge" wx:if="{{unreadCount > 0}}">{{ unreadCount }}</view>
+      </view>
+      <view class="user-avatar" bindtap="navigateToProfile">
+        <text class="avatar-text">AP</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- Hero Search Section -->
+  <view class="hero-section">
+    <view class="hero-title">
+      <text>Hi, Scholar.</text>
+      <text class="text-primary">What's the mission today?</text>
+    </view>
+    <view class="search-wrapper">
+      <view class="search-icon-wrapper">
+        <image class="search-icon" src="/static/search-icon.png" mode="aspectFit" />
+      </view>
+      <input 
+        type="text" 
+        placeholder="搜索校园任务..." 
+        value="{{searchKeyword}}" 
+        bindinput="onSearchKeywordChange"
+        bindconfirm="handleSearch"
+        bindfocus="onSearchFocus"
+        bindblur="onSearchBlur"
+        class="search-input"
+        confirm-type="search"
+      />
+    </view>
+  </view>
+
+  <!-- Function Grid: Bento Style -->
+  <view class="function-section">
+    <view class="bento-grid">
+      <!-- 校园代课 - 大卡片 -->
+      <view class="bento-item bento-item-large gradient-primary" bindtap="navigateToCampusClass">
+        <image class="bento-icon-large" src="/static/class-icon.png" mode="aspectFit" />
+        <view class="bento-info">
+          <text class="bento-title">校园代课</text>
+          <text class="bento-subtitle">Knowledge exchange</text>
+        </view>
+      </view>
+      
+      <!-- 右侧小卡片组 -->
+      <view class="bento-item-group">
+        <!-- 校园跑腿 -->
+        <view class="bento-item bento-item-small bg-secondary-container" bindtap="navigateToPublish" data-type="campus-errand">
+          <view class="icon-wrapper-white">
+            <image class="bento-icon" src="/static/run-icon.png" mode="aspectFit" />
+          </view>
+          <view class="bento-info-small">
+            <text class="bento-title-small text-on-secondary-container">校园跑腿</text>
+            <text class="bento-subtitle-small text-on-secondary-container-70">Quick errands</text>
+          </view>
+        </view>
+        
+        <!-- 快递代取 -->
+        <view class="bento-item bento-item-small bg-surface-container-highest" bindtap="navigateToPublish" data-type="express">
+          <view class="icon-wrapper-white">
+            <image class="bento-icon" src="/static/package-icon.png" mode="aspectFit" />
+          </view>
+          <view class="bento-info-small">
+            <text class="bento-title-small text-on-surface">快递代取</text>
+            <text class="bento-subtitle-small text-on-surface-variant">Parcel pickup</text>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 考试代替 - 全宽卡片 -->
+      <view class="bento-item bento-item-full bg-tertiary-container" bindtap="navigateToPublish" data-type="exam">
+        <view class="bento-full-left">
+          <view class="icon-wrapper-tertiary">
+            <image class="bento-icon" src="/static/exam-icon.png" mode="aspectFit" />
+          </view>
+          <view class="bento-info">
+            <text class="bento-title text-on-tertiary-container">考试代替</text>
+            <text class="bento-subtitle text-on-tertiary-container-80">Support during finals week</text>
+          </view>
+        </view>
+        <image class="chevron-right" src="/static/chevron-icon.png" mode="aspectFit" />
+      </view>
+    </view>
+  </view>
+
+  <!-- Popular Tasks: Horizontal Scroller -->
+  <view class="popular-tasks-section">
+    <view class="section-header">
+      <text class="section-title">热门任务</text>
+      <text class="section-more" bindtap="navigateToPopularTasks">View All</text>
+    </view>
+    
+    <!-- 骨架屏 -->
+    <view wx:if="{{loading}}" class="tasks-scroll no-scrollbar">
+      <block wx:for="{{2}}" wx:key="index">
+        <view class="task-card skeleton-card">
+          <view class="skeleton skeleton-header">
+            <view class="skeleton skeleton-tag"></view>
+            <view class="skeleton skeleton-price"></view>
+          </view>
+          <view class="skeleton skeleton-title"></view>
+          <view class="skeleton skeleton-info"></view>
+        </view>
+      </block>
+    </view>
+    
+    <!-- 任务列表 -->
+    <scroll-view wx:else class="tasks-scroll no-scrollbar" scroll-x>
+      <view wx:for="{{popularOrders}}" wx:key="_id" class="task-card" bindtap="navigateToOrderDetail" data-id="{{item._id}}" data-status="{{item.status}}" data-service-type="{{item.serviceType}}">
+        <view class="task-card-header">
+          <text class="task-tag tag-{{item.tagClass}}">{{item.tagText}}</text>
+          <text class="task-price text-primary">¥{{item.price}}</text>
+        </view>
+        <text class="task-title">{{item.title}}</text>
+        <view class="task-meta">
+          <view class="task-meta-item">
+            <image class="meta-icon" src="/static/arrow-icon.png" mode="aspectFit"/>
+            <text class="meta-text">{{item.locationText}}</text>
+          </view>
+          <view class="task-meta-item">
+            <image class="meta-icon" src="/static/bell-icon.png" mode="aspectFit"/>
+            <text class="meta-text">{{item.timeText}}</text>
+          </view>
+        </view>
+      </view>
+      <view wx:if="{{popularOrders.length === 0}}" class="empty-card">
+        <text class="material-symbols-outlined empty-icon">inbox</text>
+        <text class="empty-text">暂无热门任务</text>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- Latest Posts: Vertical List -->
+  <view class="latest-posts-section">
+    <view class="section-header">
+      <text class="section-title">最新发布</text>
+    </view>
+    
+    <view class="posts-list">
+      <view 
+        wx:for="{{latestOrders}}" 
+        wx:key="_id"
+        class="post-item"
+        bindtap="navigateToOrderDetail"
+        data-id="{{item._id}}"
+      >
+        <view class="post-icon-wrapper bg-{{item.iconBg}}-container-30">
+          <image class="post-icon" src="{{item.iconPath}}" mode="aspectFit" />
+        </view>
+        <view class="post-content">
+          <view class="post-header">
+            <text class="post-title">{{item.title}}</text>
+            <text class="post-price text-primary">¥{{item.price}}</text>
+          </view>
+          <view class="post-meta">
+            <text class="meta-item">
+              <image class="meta-icon-small" src="/static/arrow-icon.png" mode="aspectFit" />
+              {{item.location}}
+            </text>
+            <text class="meta-item">
+              <image class="meta-icon-small" src="/static/bell-icon.png" mode="aspectFit" />
+              {{item.timeAgo}}
+            </text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 底部安全区域 -->
+  <view class="safe-area-bottom" style="height: 120rpx;"></view>
+</scroll-view>
+
+<!-- Floating Action Button -->
+<view class="fab-button" bindtap="navigateToPublish">
+  <image class="fab-icon" src="/static/chevron-icon.png" mode="aspectFit" />
+</view>

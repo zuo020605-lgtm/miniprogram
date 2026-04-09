@@ -1,0 +1,47 @@
+.page {
+  background-color: #f5f7fa;
+  min-height: 100vh;
+  padding: 20rpx;
+}
+
+.section {
+  background-color: #ffffff;
+  border-radius: 16rpx;
+  margin-bottom: 20rpx;
+  overflow: hidden;
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #9a9da0;
+  padding: 16rpx 20rpx;
+  border-bottom: 1px solid #e5e8ec;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx;
+  border-bottom: 1px solid #e5e8ec;
+}
+
+.item:last-child {
+  border-bottom: none;
+}
+
+.label {
+  font-size: 14px;
+  color: #2c2f32;
+}
+
+.arrow {
+  font-size: 16px;
+  color: #9a9da0;
+}
+
+.value {
+  font-size: 14px;
+  color: #9a9da0;
+}

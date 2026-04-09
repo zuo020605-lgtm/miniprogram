@@ -1,0 +1,15 @@
+.icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.icon-text {
+  display: inline-block;
+  line-height: 1;
+  font-size: inherit;
+  color: inherit;
+  text-align: center;
+}

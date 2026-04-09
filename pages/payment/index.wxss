@@ -1,0 +1,160 @@
+.payment-page {
+  min-height: 100vh;
+  background-color: #f5f7fa;
+  padding: 24px;
+}
+
+.payment-content {
+  background-color: #ffffff;
+  border-radius: 24px;
+  padding: 32px 24px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+.payment-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #2c2f32;
+  margin-bottom: 32px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.payment-methods {
+  margin-bottom: 32px;
+}
+
+.payment-item {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  border: 2px solid #f0f0f0;
+  transition: all 0.3s ease;
+}
+
+.payment-item.active {
+  border-color: #1E88E5;
+  background-color: rgba(30, 136, 229, 0.05);
+}
+
+.payment-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 16px;
+}
+
+.payment-icon-wechat {
+  background-color: #e8f5e8;
+}
+
+.payment-icon-alipay {
+  background-color: #e3f2fd;
+}
+
+.payment-icon-balance {
+  background-color: #fff3e0;
+}
+
+.icon {
+  font-size: 24px;
+}
+
+.payment-info {
+  flex: 1;
+}
+
+.payment-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c2f32;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.payment-desc {
+  font-size: 12px;
+  color: #9a9da0;
+  display: block;
+}
+
+.payment-radio {
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  border: 2px solid #e5e8ec;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.payment-radio.active {
+  border-color: #1E88E5;
+  background-color: #1E88E5;
+}
+
+.radio-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  background-color: #ffffff;
+}
+
+.order-info {
+  border-top: 1px solid #e5e8ec;
+  padding-top: 24px;
+  margin-bottom: 32px;
+}
+
+.order-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.order-label {
+  font-size: 14px;
+  color: #9a9da0;
+}
+
+.order-value {
+  font-size: 14px;
+  color: #2c2f32;
+  font-weight: 600;
+}
+
+.order-item.total {
+  margin-top: 8px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e8ec;
+}
+
+.order-value.total {
+  font-size: 18px;
+  color: #1E88E5;
+  font-weight: 800;
+}
+
+.pay-btn {
+  width: 100%;
+  padding: 16px;
+  background-color: #1E88E5;
+  color: #ffffff;
+  border: none;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(30, 136, 229, 0.3);
+  transition: all 0.3s ease;
+}
+
+.pay-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 8px rgba(30, 136, 229, 0.3);
+}

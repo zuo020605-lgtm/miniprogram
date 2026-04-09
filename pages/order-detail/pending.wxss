@@ -1,0 +1,134 @@
+.order-detail-page {
+  min-height: 100vh;
+  background-color: #f5f7fa;
+}
+
+.order-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e5e8ec;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.back-btn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.back-icon {
+  font-size: 20px;
+  color: #2c2f32;
+}
+
+.page-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c2f32;
+}
+
+.placeholder {
+  width: 40px;
+}
+
+.order-content {
+  padding: 16px;
+}
+
+.order-status-section {
+  background-color: #ffffff;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  text-align: center;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 12rpx 32rpx;
+  border-radius: 32rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  margin-bottom: 16rpx;
+}
+
+.status-badge.pending {
+  background-color: rgba(255, 193, 7, 0.1);
+  color: #ff9800;
+}
+
+.status-description {
+  font-size: 26rpx;
+  color: #9a9da0;
+}
+
+.order-info-section {
+  background-color: #ffffff;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #f0f2f5;
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  font-size: 28rpx;
+  color: #9a9da0;
+}
+
+.info-value {
+  font-size: 28rpx;
+  color: #2c2f32;
+  font-weight: 500;
+}
+
+.info-value.price {
+  color: #1E88E5;
+  font-weight: 700;
+  font-size: 32rpx;
+}
+
+.order-actions {
+  display: flex;
+  gap: 24rpx;
+  margin-top: 32rpx;
+}
+
+.action-btn {
+  flex: 1;
+  padding: 28rpx;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  border: none;
+}
+
+.cancel-btn {
+  background-color: #ffffff;
+  color: #9a9da0;
+  border: 1px solid #e5e8ec;
+}
+
+.start-btn {
+  background-color: #1E88E5;
+  color: #ffffff;
+}

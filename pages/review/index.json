@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "评价",
+  "navigationBarBackgroundColor": "#ffffff",
+  "navigationBarTextStyle": "black",
+  "enablePullDownRefresh": false,
+  "pageOrientation": "portrait",
+  "backgroundColor": "#F5F7FA",
+  "usingComponents": {}
+}

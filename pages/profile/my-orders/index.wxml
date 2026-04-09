@@ -1,0 +1,44 @@
+<view class="my-orders-page">
+    <view class="my-orders-content">
+      <view class="tabs">
+        <view class="tab" class="{{activeTab === 'pending' ? 'active' : ''}}" bindtap="switchTab" data-tab="pending">
+          <text class="tab-text">待处理</text>
+        </view>
+        <view class="tab" class="{{activeTab === 'processing' ? 'active' : ''}}" bindtap="switchTab" data-tab="processing">
+          <text class="tab-text">进行中</text>
+        </view>
+        <view class="tab" class="{{activeTab === 'completed' ? 'active' : ''}}" bindtap="switchTab" data-tab="completed">
+          <text class="tab-text">已完成</text>
+        </view>
+      </view>
+      
+      <view class="orders-list">
+        <view class="order-item" wx:for="{{filteredOrders}}" wx:key="index" bindtap="viewDetail" data-id="{{item._id}}">
+          <view class="order-header">
+            <text class="order-title">{{item.title}}</text>
+            <text class="order-status">{{item.statusText}}</text>
+          </view>
+          <view class="order-info">
+            <text class="order-price">¥{{item.price}}</text>
+            <text class="order-time">{{item.createdAtText}}</text>
+          </view>
+          <view class="order-actions">
+            <button class="action-btn" bindtap="viewDetail" data-id="{{item._id}}">查看详情</button>
+            <button class="action-btn" bindtap="startOrder" wx:if="{{item.status === 'pending'}}" data-id="{{item._id}}">开始任务</button>
+            <button class="action-btn" bindtap="completeOrder" wx:if="{{item.status === 'processing'}}" data-id="{{item._id}}">完成任务</button>
+          </view>
+        </view>
+        
+        <!-- 加载状态 -->
+        <view class="loading" wx:if="{{loading}}">
+          <text class="loading-text">加载中...</text>
+        </view>
+        
+        <view class="empty-state" wx:if="{{!loading && filteredOrders.length === 0}}">
+          <text class="empty-icon">🎯</text>
+          <text class="empty-text">暂无接取的任务</text>
+          <button class="empty-btn" bindtap="navigateToHome">去接单</button>
+        </view>
+      </view>
+    </view>
+  </view>

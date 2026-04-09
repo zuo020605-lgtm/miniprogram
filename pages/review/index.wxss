@@ -1,0 +1,52 @@
+.review-page { min-height: 100vh; background-color: #f5f7fa; }
+
+.review-navbar { 
+  display: flex; align-items: center; justify-content: space-between; 
+  padding: 24rpx 32rpx; padding-top: calc(24rpx + var(--status-bar-height, 0));
+  background-color: #ffffff; box-shadow: 0 2rpx 16rpx rgba(0,0,0,0.05);
+}
+.navbar-left, .navbar-right { width: 80rpx; }
+.navbar-title { font-size: 32rpx; font-weight: 600; color: #2c2f32; }
+
+.order-info-card { margin: 24rpx; background-color: #ffffff; border-radius: 24rpx; padding: 32rpx; }
+.order-header { display: flex; align-items: center; gap: 20rpx; }
+.order-icon { width: 72rpx; height: 72rpx; border-radius: 18rpx; background: linear-gradient(135deg, #1E88E5 0%, #1565C0 100%); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.order-text { flex: 1; }
+.order-title { font-size: 28rpx; font-weight: 600; color: #2c2f32; display: block; margin-bottom: 8rpx; }
+.order-price { font-size: 32rpx; font-weight: 700; color: #ff4757; }
+
+.rating-card, .tags-card, .content-card { 
+  margin: 0 24rpx 24rpx; background-color: #ffffff; border-radius: 24rpx; padding: 32rpx; 
+}
+.card-title { font-size: 28rpx; font-weight: 600; color: #2c2f32; display: block; margin-bottom: 24rpx; }
+
+.rating-stars { display: flex; justify-content: center; gap: 16rpx; margin-bottom: 16rpx; }
+.star-item { padding: 8rpx; }
+.rating-text { text-align: center; font-size: 24rpx; color: #FFC107; font-weight: 600; }
+
+.tags-list { display: flex; flex-wrap: wrap; gap: 16rpx; }
+.tag-item { 
+  padding: 16rpx 32rpx; border-radius: 32rpx; 
+  background-color: #f5f7fa; font-size: 26rpx; color: #6c757d; 
+  border: 2rpx solid transparent; transition: all 0.3s ease;
+}
+.tag-item.active { 
+  background-color: #e3f2fd; color: #1E88E5; 
+  border-color: #1E88E5; 
+}
+
+.review-textarea { 
+  width: 100%; height: 200rpx; font-size: 28rpx; color: #2c2f32; 
+  background-color: #f5f7fa; border-radius: 16rpx; padding: 24rpx; 
+  box-sizing: border-box;
+}
+.char-count { text-align: right; font-size: 22rpx; color: #9a9da0; margin-top: 12rpx; }
+
+.submit-bar { padding: 24rpx; padding-bottom: calc(24rpx + env(safe-area-inset-bottom)); background-color: #ffffff; }
+.submit-btn { 
+  width: 100%; height: 88rpx; border-radius: 44rpx; 
+  background: linear-gradient(135deg, #1E88E5 0%, #1565C0 100%); 
+  font-size: 32rpx; font-weight: 600; color: #ffffff; 
+  border: none; box-shadow: 0 8rpx 24rpx rgba(30,136,229,0.3);
+}
+.submit-btn[disabled] { opacity: 0.5; }

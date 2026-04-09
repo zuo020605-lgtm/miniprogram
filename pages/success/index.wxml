@@ -1,0 +1,25 @@
+<view class="success-page">
+    <view class="success-content">
+      <view class="success-icon">
+        <text class="icon">✅</text>
+      </view>
+      <text class="success-title">发布成功</text>
+      <text class="success-subtitle">您的任务已成功发布，正在等待接单</text>
+      
+      <view class="countdown-section">
+        <text class="countdown-label">等待时间</text>
+        <text class="countdown-time">{{ countdown }}</text>
+      </view>
+      
+      <view class="tips-section">
+        <text class="tips-text">⏰ 倒计时结束前有人接单，将跳转到支付页面</text>
+        <text class="tips-text">💡 任务发布后可在"我的发布"中查看</text>
+      </view>
+      
+      <!-- 模拟有人接单，显示支付按钮 -->
+      <view wx:if="{{showPayButton}}" class="pay-button-section">
+        <text class="pay-button-label">有人接单了！</text>
+        <button class="pay-button" bindtap="navigateToPayment">去支付</button>
+      </view>
+    </view>
+  </view>

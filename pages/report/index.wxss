@@ -1,0 +1,67 @@
+.report-page { min-height: 100vh; background-color: #f5f7fa; }
+
+.report-navbar { 
+  display: flex; align-items: center; justify-content: space-between; 
+  padding: 24rpx 32rpx; padding-top: calc(24rpx + var(--status-bar-height, 0));
+  background-color: #ffffff; box-shadow: 0 2rpx 16rpx rgba(0,0,0,0.05);
+}
+.navbar-left, .navbar-right { width: 80rpx; }
+.navbar-title { font-size: 32rpx; font-weight: 600; color: #2c2f32; }
+
+.type-card, .desc-card, .image-card, .contact-card, .tip-card { 
+  margin: 24rpx; background-color: #ffffff; border-radius: 24rpx; padding: 32rpx; 
+}
+.card-title { font-size: 28rpx; font-weight: 600; color: #2c2f32; display: block; margin-bottom: 24rpx; }
+
+.type-list { display: flex; flex-wrap: wrap; gap: 16rpx; }
+.type-item { 
+  display: flex; align-items: center; gap: 12rpx; 
+  padding: 20rpx 32rpx; border-radius: 32rpx; 
+  background-color: #f5f7fa; font-size: 26rpx; color: #6c757d; 
+  border: 2rpx solid transparent; transition: all 0.3s ease;
+}
+.type-item.active { 
+  background-color: #ffebee; color: #F44336; 
+  border-color: #F44336; 
+}
+
+.desc-textarea { 
+  width: 100%; height: 240rpx; font-size: 28rpx; color: #2c2f32; 
+  background-color: #f5f7fa; border-radius: 16rpx; padding: 24rpx; 
+  box-sizing: border-box;
+}
+.char-count { text-align: right; font-size: 22rpx; color: #9a9da0; margin-top: 12rpx; }
+
+.image-list { display: flex; flex-wrap: wrap; gap: 16rpx; }
+.image-item { position: relative; width: 160rpx; height: 160rpx; border-radius: 16rpx; overflow: hidden; }
+.preview-image { width: 100%; height: 100%; }
+.remove-btn { 
+  position: absolute; top: 8rpx; right: 8rpx; 
+  width: 36rpx; height: 36rpx; border-radius: 18rpx; 
+  background-color: rgba(0,0,0,0.5); 
+  display: flex; align-items: center; justify-content: center; 
+}
+.add-image { 
+  width: 160rpx; height: 160rpx; border-radius: 16rpx; 
+  background-color: #f5f7fa; border: 2rpx dashed #e5e8ec; 
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8rpx;
+}
+.add-text { font-size: 22rpx; color: #9a9da0; }
+
+.contact-input { 
+  width: 100%; height: 80rpx; font-size: 28rpx; color: #2c2f32; 
+  background-color: #f5f7fa; border-radius: 16rpx; padding: 0 24rpx; 
+  box-sizing: border-box;
+}
+
+.tip-card { display: flex; align-items: flex-start; gap: 12rpx; }
+.tip-text { font-size: 24rpx; color: #9a9da0; line-height: 1.5; flex: 1; }
+
+.submit-bar { padding: 24rpx; padding-bottom: calc(24rpx + env(safe-area-inset-bottom)); background-color: #ffffff; }
+.submit-btn { 
+  width: 100%; height: 88rpx; border-radius: 44rpx; 
+  background: linear-gradient(135deg, #F44336 0%, #D32F2F 100%); 
+  font-size: 32rpx; font-weight: 600; color: #ffffff; 
+  border: none; box-shadow: 0 8rpx 24rpx rgba(244,67,54,0.3);
+}
+.submit-btn[disabled] { opacity: 0.5; }

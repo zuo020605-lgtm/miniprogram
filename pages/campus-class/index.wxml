@@ -1,0 +1,143 @@
+<view class="page-container">
+    <!-- 自定义导航 -->
+    <view class="navbar">
+      <view class="navbar-left" bindtap="showtip">
+        <text class="navbar-icon">⋮</text>
+      </view>
+      <view class="navbar-center" bindtap="showpoint">
+        <text class="navbar-week">第 {{ week }} 周</text>
+        <text class="navbar-arrow">▼</text>
+      </view>
+      <view class="navbar-right" bindtap="importCourse">
+        <text class="navbar-action">📅 导入</text>
+      </view>
+    </view>
+
+    <!-- 弹出菜单 -->
+    <view wx:if="{{loading}}" class="loading-overlay">
+      <view class="loading-box">
+        <text class="loading-text">导入课表中...</text>
+      </view>
+    </view>
+    
+    <view wx:if="{{showtip}}" class="modal-overlay" bindtap="showtip">
+      <view class="modal-menu" catchtap="">
+        <view class="modal-title">课表操作</view>
+        <view class="modal-operations">
+          <view class="modal-item" bindtap="handleImportCourse">
+            <text class="modal-icon">📅</text>
+            <text class="modal-text">导入课表</text>
+          </view>
+          <view class="modal-item" bindtap="handleRefreshCourse">
+            <text class="modal-icon">🔄</text>
+            <text class="modal-text">刷新课表</text>
+          </view>
+          <view class="modal-item" bindtap="handleClearCourse">
+            <text class="modal-icon">🗑️</text>
+            <text class="modal-text">清空课表</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 主页面 -->
+    <scroll-view scroll-y class="main-content" enable-flex>
+      <!-- 周次选择 -->
+      <view class="week-selector-wrapper" hidden="{{!showpoint}}">
+        <scroll-view 
+          scroll-x
+          scroll-with-animation
+          class="week-selector"
+        >
+          <view 
+            id="week{{index + 1}}"
+            class="week-item"
+            wx:for="{{20}}" wx:key="index"
+            bindtap="onPoint"
+            data-week="{{index + 1}}"
+          >
+            <text>第{{ index + 1 }}周</text>
+          </view>
+        </scroll-view>
+      </view>
+
+      <!-- 课表头部（日期） -->
+      <view class="schedule-header">
+        <view class="schedule-header-slot">
+          <text class="slot-label">节次</text>
+        </view>
+        <view class="schedule-header-day" wx:for="{{weeks}}" wx:for-item="weekDay" wx:for-index="idx" wx:key="idx">
+          <text class="day-name">{{ weekDay }}</text>
+          <text class="day-date">{{ dates[idx] }}</text>
+        </view>
+      </view>
+
+      <!-- 课表主体 -->
+      <view class="schedule-container">
+        <view class="schedule-slots">
+          <view class="slot-item" wx:for="{{courseTime}}" wx:for-item="time" wx:for-index="idx" wx:key="idx">
+            <text class="slot-number">{{ idx + 1 }}</text>
+            <text class="slot-time">{{ time }}</text>
+          </view>
+        </view>
+        
+        <view class="schedule-grid">
+          <!-- 网格背景 -->
+          <view class="grid-background">
+            <view class="grid-cell" wx:for="{{77}}" wx:key="index"></view>
+          </view>
+          
+          <!-- 课程块 -->
+          <view 
+            class="course-block"
+            wx:for="{{courses}}" wx:for-item="course" wx:for-index="idx" wx:key="idx"
+            bindtap="showCourseInfo"
+            data-course="{{course}}"
+          >
+            <view class="course-content">
+              <text class="course-name">{{ course.name }}</text>
+              <text class="course-location">{{ course.location }}</text>
+            </view>
+          </view>
+          
+          <!-- 空状态 -->
+          <view wx:if="{{courses.length === 0}}" class="empty-state">
+            <text class="empty-icon">📚</text>
+            <text class="empty-text">请先导入课表</text>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+
+    <!-- 课程详情弹窗 -->
+    <view wx:if="{{showCourseDialog}}" class="dialog-overlay" bindtap="showCourseDialog">
+      <view class="dialog-box" catchtap="">
+        <view class="dialog-header">
+          <text class="dialog-title">{{ selectedCourse.name }}</text>
+          <view class="dialog-close" bindtap="showCourseDialog">
+            <text>✕</text>
+          </view>
+        </view>
+        
+        <view class="dialog-content">
+          <view class="info-item">
+            <text class="info-label">教师</text>
+            <text class="info-value">{{ selectedCourse.teacher }}</text>
+          </view>
+          <view class="info-item">
+            <text class="info-label">地点</text>
+            <text class="info-value">{{ selectedCourse.location }}</text>
+          </view>
+          <view class="info-item">
+            <text class="info-label">时间</text>
+            <text class="info-value">第{{ week }}周 {{ weeks[selectedCourse.day - 1] }} {{ courseTime[selectedCourse.startTime - 1] }}-{{ courseTime[selectedCourse.endTime - 1] }}</text>
+          </view>
+        </view>
+        
+        <view class="dialog-actions">
+          <button class="btn-cancel" bindtap="showCourseDialog">取消</button>
+          <button class="btn-confirm" bindtap="confirmSubstitute">呼叫代课</button>
+        </view>
+      </view>
+    </view>
+  </view>

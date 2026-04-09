@@ -1,0 +1,454 @@
+/* ============================================
+   订单页面样式 - Material Design 3
+   ============================================ */
+
+.order-page {
+  min-height: 100vh;
+  background-color: var(--md-surface);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ========== 选项卡样式 ========== */
+.order-tabs {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1rpx solid rgba(0, 0, 0, 0.05);
+  padding-top: calc(var(--status-bar-height, 44rpx));
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.tabs-scroll {
+  white-space: nowrap;
+  padding: 16rpx 24rpx;
+  display: flex;
+  flex-direction: row;
+}
+
+.tab-item {
+  display: inline-flex;
+  align-items: center;
+  padding: 20rpx 28rpx;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.tab-text {
+  font-size: 28rpx;
+  color: var(--md-on-surface-variant);
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.tab-item.active .tab-text {
+  color: var(--md-primary);
+  font-weight: 600;
+}
+
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 8rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32rpx;
+  height: 6rpx;
+  background-color: var(--md-primary);
+  border-radius: 3rpx;
+}
+
+.tab-badge {
+  margin-left: 8rpx;
+  min-width: 32rpx;
+  height: 32rpx;
+  border-radius: 16rpx;
+  background-color: var(--md-error);
+  color: var(--md-on-error);
+  font-size: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8rpx;
+  font-weight: 600;
+}
+
+/* ========== 订单列表 ========== */
+.order-list-scroll {
+  flex: 1;
+  width: 100%;
+}
+
+.order-list {
+  padding: 24rpx;
+}
+
+.order-item {
+  margin-bottom: 24rpx;
+  padding: 32rpx;
+  border-radius: 32rpx;
+  background-color: #ffffff;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s ease;
+}
+
+.order-item:active {
+  transform: scale(0.98);
+}
+
+/* 订单头部 */
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 1rpx solid var(--md-surface-container);
+}
+
+.order-status-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.order-status-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 8rpx;
+}
+
+.order-status-dot.status-unaccepted { background-color: var(--md-outline); }
+.order-status-dot.status-pending { background-color: var(--md-warning); }
+.order-status-dot.status-processing { background-color: var(--md-primary); }
+.order-status-dot.status-completed { background-color: var(--md-success); }
+.order-status-dot.status-cancelled { background-color: var(--md-error); }
+
+.order-status {
+  font-size: 26rpx;
+  font-weight: 600;
+}
+
+.text-unaccepted { color: var(--md-on-surface-variant); }
+.text-pending { color: var(--md-warning); }
+.text-processing { color: var(--md-primary); }
+.text-completed { color: var(--md-success); }
+.text-cancelled { color: var(--md-error); }
+
+.order-time {
+  font-size: 24rpx;
+  color: var(--md-on-surface-variant);
+}
+
+/* 订单主体 */
+.order-body {
+  margin-bottom: 24rpx;
+}
+
+.order-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.order-type-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.icon-service {
+  width: 40rpx;
+  height: 40rpx;
+  margin-right: 12rpx;
+}
+
+.order-type {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--md-on-surface);
+}
+
+.order-price {
+  font-size: 36rpx;
+  font-weight: 800;
+}
+
+.order-details {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.detail-row {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.detail-icon {
+  width: 28rpx;
+  height: 28rpx;
+  margin-right: 8rpx;
+}
+
+.detail-label {
+  font-size: 24rpx;
+  color: var(--md-on-surface-variant);
+  flex-shrink: 0;
+}
+
+.detail-value {
+  font-size: 24rpx;
+  color: var(--md-on-surface);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 接单人信息 */
+.order-courier {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-top: 20rpx;
+  padding: 20rpx;
+  background-color: var(--md-surface-container-low);
+  border-radius: 20rpx;
+}
+
+.courier-avatar {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 28rpx;
+  background: linear-gradient(135deg, var(--md-primary) 0%, var(--md-primary-dim) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-text {
+  font-size: 24rpx;
+  color: var(--md-on-primary);
+  font-weight: 600;
+}
+
+.courier-name {
+  font-size: 26rpx;
+  color: var(--md-on-surface);
+  font-weight: 500;
+}
+
+.courier-badge {
+  font-size: 20rpx;
+  color: var(--md-primary);
+  background-color: rgba(0, 93, 164, 0.1);
+  padding: 4rpx 16rpx;
+  border-radius: 12rpx;
+  margin-left: auto;
+}
+
+/* 订单底部 */
+.order-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 20rpx;
+  border-top: 1rpx solid var(--md-surface-container);
+}
+
+.order-id {
+  font-size: 22rpx;
+  color: var(--md-on-surface-variant);
+}
+
+.order-actions {
+  display: flex;
+  gap: 16rpx;
+}
+
+.action-btn {
+  padding: 12rpx 32rpx;
+  border-radius: 32rpx;
+  font-size: 24rpx;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.action-btn:active {
+  transform: scale(0.95);
+}
+
+.btn-outline {
+  background-color: transparent;
+  border: 2rpx solid var(--md-outline);
+  color: var(--md-on-surface);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--md-primary) 0%, var(--md-primary-dim) 100%);
+  color: var(--md-on-primary);
+  box-shadow: 0 4rpx 16rpx rgba(0, 93, 164, 0.25);
+}
+
+/* 加载更多 */
+.load-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32rpx;
+  gap: 16rpx;
+}
+
+.loading-spinner {
+  width: 32rpx;
+  height: 32rpx;
+  border: 3rpx solid var(--md-surface-container);
+  border-top-color: var(--md-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.load-more-text {
+  font-size: 24rpx;
+  color: var(--md-on-surface-variant);
+}
+
+/* 没有更多 */
+.no-more {
+  text-align: center;
+  padding: 32rpx;
+}
+
+.no-more-text {
+  font-size: 24rpx;
+  color: var(--md-outline);
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 48rpx;
+  text-align: center;
+}
+
+.empty-icon {
+  width: 96rpx;
+  height: 96rpx;
+  margin-bottom: 24rpx;
+}
+
+.empty-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: var(--md-on-surface);
+  margin-bottom: 16rpx;
+}
+
+.empty-desc {
+  font-size: 26rpx;
+  color: var(--md-on-surface-variant);
+  margin-bottom: 48rpx;
+}
+
+.empty-action {
+  padding: 24rpx 64rpx;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+/* ========== 骨架屏 ========== */
+.skeleton-order-item {
+  background-color: #ffffff;
+  border-radius: 32rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--md-surface-container) 25%, var(--md-surface-container-high) 50%, var(--md-surface-container) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 8rpx;
+}
+
+@keyframes skeleton-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.skeleton-order-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 24rpx;
+  background: none;
+  animation: none;
+}
+
+.skeleton-status {
+  width: 120rpx;
+  height: 36rpx;
+  border-radius: 18rpx;
+}
+
+.skeleton-time {
+  width: 160rpx;
+  height: 32rpx;
+}
+
+.skeleton-order-body {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 24rpx;
+}
+
+.skeleton-type {
+  width: 200rpx;
+  height: 40rpx;
+}
+
+.skeleton-amount {
+  width: 100rpx;
+  height: 44rpx;
+}
+
+.skeleton-order-footer {
+  padding-top: 20rpx;
+}
+
+.skeleton-id {
+  width: 60%;
+  height: 28rpx;
+}
+
+/* ========== Material Symbols 字体 ========== */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24rpx;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}

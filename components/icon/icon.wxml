@@ -1,0 +1,3 @@
+<view class="icon-wrap" :style="{ width: sizeValue + 'rpx', height: sizeValue + 'rpx' }">
+    <text class="icon-text" :style="{ color: color, fontSize: sizeValue + 'rpx' }">{{ iconChar }}</text>
+  </view>

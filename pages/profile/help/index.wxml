@@ -1,0 +1,63 @@
+<view class="help-page">
+    <view class="help-content">
+      <view class="help-header">
+        <text class="help-title">帮助中心</text>
+        <text class="help-subtitle">常见问题解答</text>
+      </view>
+      
+      <view class="help-section">
+        <view class="section-title">使用指南</view>
+        <view class="help-item" bindtap="showHelpDetail">
+          <text class="help-question">如何发布任务？</text>
+          <text class="help-arrow">＞</text>
+        </view>
+        <view class="help-item" bindtap="showHelpDetail">
+          <text class="help-question">如何接单？</text>
+          <text class="help-arrow">＞</text>
+        </view>
+        <view class="help-item" bindtap="showHelpDetail">
+          <text class="help-question">如何进行支付？</text>
+          <text class="help-arrow">＞</text>
+        </view>
+      </view>
+      
+      <view class="help-section">
+        <view class="section-title">账户问题</view>
+        <view class="help-item" bindtap="showHelpDetail">
+          <text class="help-question">如何修改密码？</text>
+          <text class="help-arrow">＞</text>
+        </view>
+        <view class="help-item" bindtap="showHelpDetail">
+          <text class="help-question">如何绑定手机号？</text>
+          <text class="help-arrow">＞</text>
+        </view>
+        <view class="help-item" bindtap="showHelpDetail">
+          <text class="help-question">如何进行实名认证？</text>
+          <text class="help-arrow">＞</text>
+        </view>
+      </view>
+      
+      <view class="help-section">
+        <view class="section-title">其他问题</view>
+        <view class="help-item" bindtap="showHelpDetail">
+          <text class="help-question">如何联系客服？</text>
+          <text class="help-arrow">＞</text>
+        </view>
+        <view class="help-item" bindtap="showHelpDetail">
+          <text class="help-question">平台规则是什么？</text>
+          <text class="help-arrow">＞</text>
+        </view>
+        <view class="help-item" bindtap="showHelpDetail">
+          <text class="help-question">如何投诉举报？</text>
+          <text class="help-arrow">＞</text>
+        </view>
+      </view>
+      
+      <view class="contact-section">
+        <text class="contact-title">联系客服</text>
+        <text class="contact-info">客服电话：400-123-4567</text>
+        <text class="contact-info">工作时间：9:00-18:00</text>
+        <button class="contact-btn" bindtap="contactService">立即联系</button>
+      </view>
+    </view>
+  </view>

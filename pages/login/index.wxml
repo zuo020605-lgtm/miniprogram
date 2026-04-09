@@ -1,0 +1,34 @@
+<view class="login-page">
+    <view class="login-content">
+      <view class="login-header">
+        <text class="login-title">登录</text>
+        <text class="login-subtitle">欢迎使用校园跑腿服务</text>
+      </view>
+      
+      <view class="login-form">
+        <view class="form-item">
+          <text class="form-label">手机号</text>
+          <input type="number" placeholder="请输入手机号" value="{{phone}}" bindinput="onphoneChange" class="form-input" />
+        </view>
+        <view class="form-item">
+          <text class="form-label">验证码</text>
+          <view class="verification-code">
+            <input type="number" placeholder="请输入验证码" value="{{verificationCode}}" bindinput="onverificationCodeChange" class="form-input code-input" />
+            <button class="get-code-btn" bindtap="getVerificationCode">获取验证码</button>
+          </view>
+        </view>
+        <button class="login-btn" bindtap="loginByPhone">手机号登录</button>
+      </view>
+      
+      <view class="divider">
+        <text class="divider-text">其他登录方式</text>
+      </view>
+      
+      <view class="other-login">
+        <button class="wechat-login-btn" bindtap="loginByWechat">
+          <text class="wechat-icon">💬</text>
+          <text class="wechat-text">微信登录</text>
+        </button>
+      </view>
+    </view>
+  </view>

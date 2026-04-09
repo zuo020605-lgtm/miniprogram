@@ -1,0 +1,48 @@
+<view class="wallet-page">
+    <view class="wallet-content">
+      <!-- 余额信息 -->
+      <view class="balance-section">
+        <view class="balance-header">
+          <text class="balance-label">账户余额</text>
+          <text class="balance-value">{{balance}}</text>
+        </view>
+        <view class="balance-actions">
+          <button class="action-btn withdraw-btn" bindtap="withdraw">提现</button>
+          <button class="action-btn recharge-btn" bindtap="recharge">充值</button>
+        </view>
+      </view>
+      
+      <!-- 周收入统计 -->
+      <view class="income-section">
+        <view class="section-header">
+          <text class="section-title">周收入统计</text>
+        </view>
+        <view class="income-chart">
+          <!-- 模拟图表 -->
+          <view class="chart-container">
+            <view class="chart-bar" wx:for="{{weeklyIncome}}" wx:for-item="item" wx:for-index="index" wx:key="index">
+              <view class="bar" style="height: {{item.value}}%"></view>
+              <text class="bar-label">{{item.day}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 收支明细 -->
+      <view class="transactions-section">
+        <view class="section-header">
+          <text class="section-title">收支明细</text>
+          <text class="section-more" bindtap="viewAllTransactions">查看全部</text>
+        </view>
+        <view class="transaction-list">
+          <view class="transaction-item" wx:for="{{transactions}}" wx:for-item="item" wx:for-index="index" wx:key="index">
+            <view class="transaction-info">
+              <text class="transaction-title">{{item.title}}</text>
+              <text class="transaction-time">{{item.time}}</text>
+            </view>
+            <text class="transaction-amount">{{item.amount}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>

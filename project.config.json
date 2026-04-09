@@ -1,11 +1,20 @@
 {
+  "miniprogramRoot": "./",
+  "cloudfunctionRoot": "uniCloud-aliyun/cloudfunctions/",
+  "projectname": "校园跑腿",
   "setting": {
     "es6": true,
     "postcss": true,
     "minified": true,
     "uglifyFileName": false,
     "enhance": true,
-    "packNpmRelationList": [],
+    "packNpmManually": true,
+    "packNpmRelationList": [
+      {
+        "packageJsonPath": "./package.json",
+        "miniprogramNpmDistDir": "./"
+      }
+    ],
     "babelSetting": {
       "ignore": [],
       "disablePlugins": [],
@@ -14,14 +23,92 @@
     "useCompilerPlugins": false,
     "minifyWXML": true,
     "ignoreDevUnusedFiles": false,
-    "ignoreUploadUnusedFiles": false
+    "ignoreUploadUnusedFiles": false,
+    "urlCheck": false
   },
   "compileType": "miniprogram",
   "simulatorPluginLibVersion": {},
+  "simulatorType": "wechat",
   "packOptions": {
-    "ignore": [],
+    "ignore": [
+      {
+        "type": "folder",
+        "value": "uni_modules"
+      },
+      {
+        "type": "folder",
+        "value": "uniCloud-aliyun"
+      },
+      {
+        "type": "folder",
+        "value": ".trae"
+      },
+      {
+        "type": "folder",
+        "value": "styles"
+      },
+      {
+        "type": "file",
+        "value": "*.md"
+      },
+      {
+        "type": "file",
+        "value": "*.scss"
+      },
+      {
+        "type": "file",
+        "value": "code.html"
+      },
+      {
+        "type": "file",
+        "value": "convert-vue-to-wx.js"
+      },
+      {
+        "type": "file",
+        "value": "convert-vue-to-wx-fixed.js"
+      },
+      {
+        "type": "file",
+        "value": "fix-wxml.js"
+      },
+      {
+        "type": "file",
+        "value": "_check_rem.js"
+      },
+      {
+        "type": "file",
+        "value": "package-lock.json"
+      },
+      {
+        "type": "file",
+        "value": ".env.local"
+      }
+    ],
     "include": []
   },
   "appid": "wxa0e3927b4ee34ed0",
-  "editorSetting": {}
+  "editorSetting": {},
+  "condition": {
+    "search": {
+      "list": []
+    },
+    "conversation": {
+      "list": []
+    },
+    "game": {
+      "list": []
+    },
+    "miniprogram": {
+      "list": [
+        {
+          "name": "首页",
+          "id": -1,
+          "path": "pages/index/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        }
+      ]
+    }
+  }
 }

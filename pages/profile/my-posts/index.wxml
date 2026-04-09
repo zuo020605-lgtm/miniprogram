@@ -1,0 +1,127 @@
+<view class="page-container">
+    <!-- 标签切换 -->
+    <view class="tab-nav">
+      <view 
+        class="tab-item" 
+        class="{{currentTab === 'unaccepted' ? 'active' : ''}}"
+        bindtap="switchTab"
+        data-tab="unaccepted"
+      >
+        <text class="tab-label">待接取</text>
+        <view class="tab-count" wx:if="{{tabCounts.unaccepted > 0}}">{{ tabCounts.unaccepted }}</view>
+      </view>
+      <view 
+        class="tab-item" 
+        class="{{currentTab === 'processing' ? 'active' : ''}}"
+        bindtap="switchTab"
+        data-tab="processing"
+      >
+        <text class="tab-label">进行中</text>
+        <view class="tab-count processing" wx:if="{{tabCounts.processing > 0}}">{{ tabCounts.processing }}</view>
+      </view>
+      <view 
+        class="tab-item" 
+        class="{{currentTab === 'completed' ? 'active' : ''}}"
+        bindtap="switchTab"
+        data-tab="completed"
+      >
+        <text class="tab-label">已完成</text>
+        <view class="tab-count done" wx:if="{{tabCounts.completed > 0}}">{{ tabCounts.completed }}</view>
+      </view>
+    </view>
+
+    <!-- 加载骨架屏 -->
+    <view wx:if="{{isLoading}}" class="skeleton-container">
+      <view class="skeleton skeleton-card" wx:for="{{3}}" wx:key="index"></view>
+    </view>
+
+    <!-- 空状态 -->
+    <view wx:elif="{{displayOrders.length === 0}}" class="empty-container">
+      <view class="empty-visual">
+        <image class="icon-order" src="/static/school-icon.png" style="width: 56rpx; height: 56rpx;" />
+      </view>
+      <text class="empty-title">{{ emptyTitle }}</text>
+      <text class="empty-desc">{{ emptyDesc }}</text>
+      <button class="empty-action" wx:if="{{currentTab === 'unaccepted'}}" bindtap="goPublish">
+        <image class="icon-add" src="/static/school-icon.png" style="width: 16rpx; height: 16rpx;" />
+        <text>发布任务</text>
+      </button>
+    </view>
+
+    <!-- 订单列表 -->
+    <scroll-view 
+      wx:else 
+      scroll-y 
+      class="order-scroll"
+      bindscrolltolower="loadMore"
+    >
+      <view class="order-list">
+        <view 
+          class="order-card"
+          wx:for="{{displayOrders}}" wx:key="index"
+          bindtap="openDetail"
+          data-id="{{item._id}}"
+        >
+          <!-- 卡片头部 -->
+          <view class="card-header">
+            <view class="service-badge" >
+              <image src="/static/school-icon.png" style="width: 24rpx; height: 24rpx;" />
+            </view>
+            <view class="card-title-wrap">
+              <text class="card-title">{{ item.title || '未命名任务' }}</text>
+              <view class="card-meta">
+                <image class="icon-time" src="/static/school-icon.png" style="width: 11rpx; height: 11rpx;" />
+                <text class="meta-text">{{ item.createdAtText }}</text>
+              </view>
+            </view>
+            <view class="card-price">
+              <text class="price-symbol">¥</text>
+              <text class="price-value">{{ item.price }}</text>
+            </view>
+          </view>
+
+          <!-- 卡片内容 -->
+          <view class="card-body">
+            <view class="location-row">
+              <image class="icon-location" src="/static/school-icon.png" style="width: 12rpx; height: 12rpx;" />
+              <text class="location-text">{{ item.locationInfo || '暂无位置信息' }}</text>
+            </view>
+          </view>
+
+          <!-- 卡片操作 -->
+          <view class="card-footer">
+            <button class="card-btn secondary" catchtap="openDetail" data-id="{{item._id}}">
+              <image class="icon-order" src="/static/school-icon.png" style="width: 14rpx; height: 14rpx;" />
+              <text>查看详情</text>
+            </button>
+            <button 
+              class="card-btn danger" 
+              wx:if="{{currentTab === 'unaccepted'}}"
+              catchtap="handleCancel" 
+              data-id="{{item._id}}"
+            >
+              <image class="icon-close" src="/static/close-icon.png" style="width: 14rpx; height: 14rpx;" />
+              <text>取消</text>
+            </button>
+            <button 
+              class="card-btn primary" 
+              wx:if="{{currentTab === 'completed'}}"
+              catchtap="handleRepost" 
+              data-id="{{item._id}}"
+            >
+              <image class="icon-refresh" src="/static/school-icon.png" style="width: 14rpx; height: 14rpx;" />
+              <text>再来一单</text>
+            </button>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 加载更多 -->
+      <view class="load-more" wx:if="{{hasMore}}">
+        <text class="load-text">{{ loadingMore ? '加载中...' : '上拉加载更多' }}</text>
+      </view>
+      
+      <!-- 底部安全区 -->
+      <view class="safe-area"></view>
+    </scroll-view>
+  </view>

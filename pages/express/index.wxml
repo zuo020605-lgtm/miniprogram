@@ -1,0 +1,43 @@
+<view class="express-page">
+    <view class="header">
+      <text class="header-title">快递代取</text>
+    </view>
+    <view class="search-section">
+      <view class="search-input">
+        <image class="icon-search" src="/static/search-icon.png" style="width: 16rpx; height: 16rpx;" />
+        <input type="text" placeholder="搜索快递任务..." class="search-text" />
+      </view>
+    </view>
+    <view class="filter-section">
+      <view class="filter-item active"><text>全部</text></view>
+      <view class="filter-item"><text>顺丰</text></view>
+      <view class="filter-item"><text>京东</text></view>
+      <view class="filter-item"><text>其他</text></view>
+    </view>
+    <view class="task-list">
+      <view class="task-item" wx:for="{{tasks}}" wx:for-item="task" wx:for-index="index" wx >
+        <view class="task-header">
+          <text class="task-title">{{ task.title }}</text>
+          <text class="task-price">¥{{ task.price }}</text>
+        </view>
+        <view class="task-info">
+          <view class="task-info-item">
+            <image class="icon-location" src="/static/location-icon.png" style="width: 14rpx; height: 14rpx;" />
+            <text class="task-info-text">{{ task.location }}</text>
+          </view>
+          <view class="task-info-item">
+            <image class="icon-time" src="/static/time-icon.png" style="width: 14rpx; height: 14rpx;" />
+            <text class="task-info-text">{{ task.time }}</text>
+          </view>
+          <view class="task-info-item">
+            <image class="icon-package" src="/static/package-icon.png" style="width: 14rpx; height: 14rpx;" />
+            <text class="task-info-text">{{ task.tracking }}</text>
+          </view>
+        </view>
+        <view class="task-footer">
+          <text class="task-publisher">发布者: {{ task.publisher }}</text>
+          <button class="task-btn" bindtap="acceptTask">接取任务</button>
+        </view>
+      </view>
+    </view>
+  </view>

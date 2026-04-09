@@ -1,0 +1,439 @@
+/* ============================================
+   校园跑腿小程序 - 设计系统 v2.0
+   基于 Material Design 3 设计规范
+   ============================================ */
+
+/* ========== CSS 变量定义 ========== */
+:root {
+  /* 主色调 - Primary */
+  --md-primary: #005da4;
+  --md-primary-dim: #00518f;
+  --md-primary-container: #4fa4ff;
+  --md-on-primary: #edf3ff;
+  --md-on-primary-container: #002444;
+  
+  /* 次要色 - Secondary */
+  --md-secondary: #1658b6;
+  --md-secondary-dim: #004ca6;
+  --md-secondary-container: #bfd1ff;
+  --md-on-secondary: #f0f2ff;
+  --md-on-secondary-container: #004496;
+  
+  /* 第三色 - Tertiary */
+  --md-tertiary: #7e3f9f;
+  --md-tertiary-dim: #713292;
+  --md-tertiary-container: #de98ff;
+  --md-on-tertiary: #feeeff;
+  --md-on-tertiary-container: #510d72;
+  
+  /* 表面色 - Surface */
+  --md-surface: #f5f7fa;
+  --md-surface-dim: #d0d5d9;
+  --md-surface-bright: #f5f7fa;
+  --md-surface-container: #e5e8ec;
+  --md-surface-container-low: #eef1f4;
+  --md-surface-container-high: #dfe3e7;
+  --md-surface-container-highest: #d9dde1;
+  --md-surface-variant: #d9dde1;
+  
+  /* 背景与文本 */
+  --md-background: #f5f7fa;
+  --md-on-background: #2c2f32;
+  --md-on-surface: #2c2f32;
+  --md-on-surface-variant: #595c5e;
+  
+  /* 轮廓与边框 */
+  --md-outline: #74777a;
+  --md-outline-variant: #abadb0;
+  
+  /* 错误色 */
+  --md-error: #b31b25;
+  --md-error-dim: #9f0519;
+  --md-error-container: #fb5151;
+  --md-on-error: #ffefee;
+  --md-on-error-container: #570008;
+  
+  /* 功能色 */
+  --md-success: #4CAF50;
+  --md-warning: #FF9800;
+  
+  /* 圆角系统 */
+  --radius-none: 0;
+  --radius-xs: 8rpx;
+  --radius-sm: 12rpx;
+  --radius-md: 16rpx;
+  --radius-lg: 24rpx;
+  --radius-xl: 32rpx;
+  --radius-2xl: 48rpx;
+  --radius-full: 9999px;
+  
+  /* 阴影系统 */
+  --shadow-none: none;
+  --shadow-xs: 0 1rpx 2rpx rgba(0,0,0,0.05);
+  --shadow-sm: 0 2rpx 8rpx rgba(0,0,0,0.04);
+  --shadow-md: 0 4rpx 16rpx rgba(0,0,0,0.06);
+  --shadow-lg: 0 8rpx 24rpx rgba(0,0,0,0.08);
+  --shadow-xl: 0 12rpx 32rpx rgba(0,0,0,0.12);
+  --shadow-primary: 0 4rpx 16rpx rgba(0,93,164,0.25);
+  
+  /* 字体大小 */
+  --text-xs: 20rpx;
+  --text-sm: 22rpx;
+  --text-base: 24rpx;
+  --text-lg: 28rpx;
+  --text-xl: 32rpx;
+  --text-2xl: 36rpx;
+  --text-3xl: 48rpx;
+  
+  /* 行高 */
+  --leading-none: 1;
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  
+  /* 间距系统 */
+  --space-0: 0;
+  --space-1: 8rpx;
+  --space-2: 16rpx;
+  --space-3: 24rpx;
+  --space-4: 32rpx;
+  --space-5: 40rpx;
+  --space-6: 48rpx;
+  --space-8: 64rpx;
+  --space-10: 80rpx;
+  
+  /* 动画 */
+  --duration-fast: 150ms;
+  --duration-normal: 200ms;
+  --duration-slow: 300ms;
+  --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* ========== 基础样式重置 ========== */
+page {
+  font-family: -apple-system, BlinkMacSystemFont, 'San Francisco', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background-color: var(--md-surface);
+  color: var(--md-on-surface);
+  line-height: var(--leading-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ========== 页面容器 ========== */
+.page-container {
+  min-height: 100vh;
+  background-color: var(--md-surface);
+  box-sizing: border-box;
+}
+
+/* ========== 玻璃态效果 ========== */
+.glass-header {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* ========== 文本样式 ========== */
+.text-headline {
+  font-family: -apple-system, BlinkMacSystemFont, 'San Francisco', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.text-body {
+  font-family: -apple-system, BlinkMacSystemFont, 'San Francisco', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 400;
+}
+
+.text-label {
+  font-family: -apple-system, BlinkMacSystemFont, 'San Francisco', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+/* ========== 颜色工具类 ========== */
+/* 主色调 */
+.bg-primary { background-color: var(--md-primary); }
+.bg-primary-dim { background-color: var(--md-primary-dim); }
+.bg-primary-container { background-color: var(--md-primary-container); }
+.text-primary { color: var(--md-primary); }
+.text-on-primary { color: var(--md-on-primary); }
+.text-on-primary-container { color: var(--md-on-primary-container); }
+
+/* 次要色 */
+.bg-secondary { background-color: var(--md-secondary); }
+.bg-secondary-container { background-color: var(--md-secondary-container); }
+.text-secondary { color: var(--md-secondary); }
+.text-on-secondary { color: var(--md-on-secondary); }
+.text-on-secondary-container { color: var(--md-on-secondary-container); }
+
+/* 第三色 */
+.bg-tertiary { background-color: var(--md-tertiary); }
+.bg-tertiary-container { background-color: var(--md-tertiary-container); }
+.text-tertiary { color: var(--md-tertiary); }
+.text-on-tertiary { color: var(--md-on-tertiary); }
+.text-on-tertiary-container { color: var(--md-on-tertiary-container); }
+
+/* 表面色 */
+.bg-surface { background-color: var(--md-surface); }
+.bg-surface-container { background-color: var(--md-surface-container); }
+.bg-surface-container-low { background-color: var(--md-surface-container-low); }
+.bg-surface-container-high { background-color: var(--md-surface-container-high); }
+.bg-surface-container-highest { background-color: var(--md-surface-container-highest); }
+
+/* 错误色 */
+.bg-error { background-color: var(--md-error); }
+.bg-error-container { background-color: var(--md-error-container); }
+.text-error { color: var(--md-error); }
+.text-on-error { color: var(--md-on-error); }
+
+/* 功能色 */
+.bg-success { background-color: var(--md-success); }
+.text-success { color: var(--md-success); }
+.bg-warning { background-color: var(--md-warning); }
+.text-warning { color: var(--md-warning); }
+
+/* 文本色 */
+.text-on-surface { color: var(--md-on-surface); }
+.text-on-surface-variant { color: var(--md-on-surface-variant); }
+.text-outline { color: var(--md-outline); }
+
+/* ========== 渐变背景 ========== */
+.gradient-primary {
+  background: linear-gradient(135deg, var(--md-primary) 0%, var(--md-primary-dim) 100%);
+}
+
+.gradient-secondary {
+  background: linear-gradient(135deg, var(--md-secondary) 0%, var(--md-secondary-dim) 100%);
+}
+
+.gradient-tertiary {
+  background: linear-gradient(135deg, var(--md-tertiary) 0%, var(--md-tertiary-dim) 100%);
+}
+
+/* ========== 阴影工具类 ========== */
+.shadow-none { box-shadow: var(--shadow-none); }
+.shadow-xs { box-shadow: var(--shadow-xs); }
+.shadow-sm { box-shadow: var(--shadow-sm); }
+.shadow-md { box-shadow: var(--shadow-md); }
+.shadow-lg { box-shadow: var(--shadow-lg); }
+.shadow-xl { box-shadow: var(--shadow-xl); }
+.shadow-primary { box-shadow: var(--shadow-primary); }
+
+/* ========== 圆角工具类 ========== */
+.rounded-none { border-radius: var(--radius-none); }
+.rounded-xs { border-radius: var(--radius-xs); }
+.rounded-sm { border-radius: var(--radius-sm); }
+.rounded-md { border-radius: var(--radius-md); }
+.rounded-lg { border-radius: var(--radius-lg); }
+.rounded-xl { border-radius: var(--radius-xl); }
+.rounded-2xl { border-radius: var(--radius-2xl); }
+.rounded-full { border-radius: var(--radius-full); }
+
+/* ========== 间距工具类 ========== */
+.p-0 { padding: var(--space-0); }
+.p-1 { padding: var(--space-1); }
+.p-2 { padding: var(--space-2); }
+.p-3 { padding: var(--space-3); }
+.p-4 { padding: var(--space-4); }
+
+.m-0 { margin: var(--space-0); }
+.m-1 { margin: var(--space-1); }
+.m-2 { margin: var(--space-2); }
+.m-3 { margin: var(--space-3); }
+.m-4 { margin: var(--space-4); }
+
+/* ========== 通用组件样式 ========== */
+
+/* 按钮 */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24rpx 48rpx;
+  border-radius: var(--radius-xl);
+  font-size: var(--text-base);
+  font-weight: 600;
+  transition: all var(--duration-normal) var(--ease-default);
+}
+
+.btn:active {
+  transform: scale(0.96);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--md-primary) 0%, var(--md-primary-dim) 100%);
+  color: var(--md-on-primary);
+  box-shadow: var(--shadow-primary);
+}
+
+.btn-secondary {
+  background-color: var(--md-secondary-container);
+  color: var(--md-on-secondary-container);
+}
+
+.btn-tertiary {
+  background-color: var(--md-tertiary-container);
+  color: var(--md-on-tertiary-container);
+}
+
+.btn-outline {
+  background-color: transparent;
+  border: 2rpx solid var(--md-outline);
+  color: var(--md-on-surface);
+}
+
+/* 卡片 */
+.card {
+  background-color: #ffffff;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.card-elevated {
+  box-shadow: var(--shadow-md);
+}
+
+.card-filled {
+  background-color: var(--md-surface-container-low);
+}
+
+.card-outlined {
+  border: 1rpx solid var(--md-outline-variant);
+  box-shadow: none;
+}
+
+/* 输入框 */
+.input {
+  width: 100%;
+  padding: 24rpx 32rpx;
+  background-color: var(--md-surface-container-lowest);
+  border: 2rpx solid transparent;
+  border-radius: var(--radius-xl);
+  font-size: var(--text-base);
+  color: var(--md-on-surface);
+  transition: all var(--duration-normal) var(--ease-default);
+}
+
+.input:focus {
+  border-color: var(--md-primary);
+  box-shadow: 0 0 0 4rpx rgba(0, 93, 164, 0.1);
+}
+
+.input::placeholder {
+  color: var(--md-outline);
+}
+
+/* 标签 */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 8rpx 20rpx;
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tag-urgent {
+  background-color: rgba(179, 27, 37, 0.1);
+  color: var(--md-error);
+}
+
+.tag-new {
+  background-color: rgba(79, 164, 255, 0.15);
+  color: var(--md-primary);
+}
+
+.tag-success {
+  background-color: rgba(76, 175, 80, 0.1);
+  color: var(--md-success);
+}
+
+.tag-warning {
+  background-color: rgba(255, 152, 0, 0.1);
+  color: var(--md-warning);
+}
+
+/* 列表项 */
+.list-item {
+  display: flex;
+  align-items: center;
+  padding: 24rpx;
+  background-color: #ffffff;
+  border-radius: var(--radius-lg);
+  transition: background-color var(--duration-fast) var(--ease-default);
+}
+
+.list-item:active {
+  background-color: var(--md-surface-container);
+}
+
+/* 图标容器 */
+.icon-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: var(--radius-lg);
+  background-color: var(--md-surface-container);
+}
+
+.icon-box-sm {
+  width: 64rpx;
+  height: 64rpx;
+}
+
+.icon-box-lg {
+  width: 128rpx;
+  height: 128rpx;
+}
+
+/* 头像 */
+.avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, var(--md-primary) 0%, var(--md-primary-dim) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--md-on-primary);
+  font-weight: 600;
+  font-size: var(--text-lg);
+}
+
+/* 分割线 */
+.divider {
+  height: 1rpx;
+  background-color: var(--md-outline-variant);
+  margin: var(--space-2) 0;
+}
+
+/* 滚动条隐藏 */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* 安全区域适配 */
+.safe-area-bottom {
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.safe-area-top {
+  padding-top: constant(safe-area-inset-top);
+  padding-top: env(safe-area-inset-top);
+}

@@ -1,0 +1,57 @@
+<view class="order-detail-page">
+    <view class="order-header">
+      <view class="back-btn" bindtap="navigateBack">
+        <text class="back-icon">←</text>
+      </view>
+      <text class="page-title">订单详情</text>
+      <view class="placeholder"></view>
+    </view>
+    
+    <view class="order-content">
+      <view class="order-status-section">
+        <text class="status-badge processing">进行中</text>
+        <text class="status-description">任务正在进行中，请及时完成</text>
+      </view>
+      
+      <view class="order-info-section">
+        <view class="info-item">
+          <text class="info-label">订单标题</text>
+          <text class="info-value">{{order.title}}</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">订单金额</text>
+          <text class="info-value price">{{order.price}}</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">下单时间</text>
+          <text class="info-value">{{order.time}}</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">开始时间</text>
+          <text class="info-value">{{order.startTime}}</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">订单编号</text>
+          <text class="info-value">{{order.id}}</text>
+        </view>
+      </view>
+      
+      <view class="order-details-section">
+        <text class="section-title">任务详情</text>
+        <text class="detail-text">{{order.description}}</text>
+        <view class="location-info">
+          <text class="location-label">地点：</text>
+          <text class="location-value">{{order.location}}</text>
+        </view>
+        <view class="contact-info">
+          <text class="contact-label">联系人：</text>
+          <text class="contact-value">{{order.contact}}</text>
+        </view>
+      </view>
+      
+      <view class="order-actions">
+        <button class="action-btn cancel-btn" bindtap="pauseOrder">暂停任务</button>
+        <button class="action-btn complete-btn" bindtap="completeOrder">完成任务</button>
+      </view>
+    </view>
+  </view>

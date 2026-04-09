@@ -1,0 +1,39 @@
+<view class="auth-page">
+    <view class="auth-content">
+      <view class="auth-header">
+        <text class="auth-title">实名认证</text>
+        <text class="auth-subtitle">完成实名认证后可享受更多服务</text>
+      </view>
+      
+      <view class="auth-form">
+        <view class="form-item">
+          <text class="form-label">真实姓名</text>
+          <input type="text" placeholder="请输入真实姓名" value="{{realName}}" bindinput="onRealNameChange" class="form-input" />
+        </view>
+        <view class="form-item">
+          <text class="form-label">身份证号</text>
+          <input type="text" placeholder="请输入身份证号" value="{{idCard}}" bindinput="onIdCardChange" class="form-input" />
+        </view>
+        <view class="form-item">
+          <text class="form-label">手机号</text>
+          <input type="number" placeholder="请输入手机号" value="{{phone}}" bindinput="onPhoneChange" class="form-input" />
+        </view>
+        <view class="form-item">
+          <text class="form-label">验证码</text>
+          <view class="verification-code">
+            <input type="number" placeholder="请输入验证码" value="{{verificationCode}}" bindinput="onVerificationCodeChange" class="form-input code-input" />
+            <button class="get-code-btn" bindtap="getVerificationCode" disabled="{{countdown > 0}}">
+              <text wx:if="{{countdown > 0}}">{{countdownText}}</text>
+              <text wx:else>获取验证码</text>
+            </button>
+          </view>
+        </view>
+        <button class="auth-btn" bindtap="submitAuth">提交认证</button>
+      </view>
+      
+      <view class="auth-tips">
+        <text class="tips-text">* 我们会严格保护您的个人信息安全</text>
+        <text class="tips-text">* 实名认证后不可修改，请确保信息准确</text>
+      </view>
+    </view>
+  </view>

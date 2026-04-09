@@ -1,0 +1,4 @@
+<view class="custom-switch" :class="{ 'custom-switch--checked': checked }" bindtap="toggle">
+    <view class="custom-switch__track"></view>
+    <view class="custom-switch__thumb"></view>
+  </view>

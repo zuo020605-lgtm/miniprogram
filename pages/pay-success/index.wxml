@@ -1,0 +1,33 @@
+<view class="pay-success-page">
+    <view class="success-content">
+      <view class="success-icon">
+        <text class="icon">✅</text>
+      </view>
+      <text class="success-title">支付成功</text>
+      <text class="success-subtitle">您的任务已支付成功，等待服务完成</text>
+      
+      <view class="order-info">
+        <view class="order-item">
+          <text class="order-label">订单编号</text>
+          <text class="order-value">2026032012345678</text>
+        </view>
+        <view class="order-item">
+          <text class="order-label">支付金额</text>
+          <text class="order-value">¥27.00</text>
+        </view>
+        <view class="order-item">
+          <text class="order-label">支付方式</text>
+          <text class="order-value">微信支付</text>
+        </view>
+        <view class="order-item">
+          <text class="order-label">支付时间</text>
+          <text class="order-value">2026-03-20 12:30:45</text>
+        </view>
+      </view>
+      
+      <view class="btn-group">
+        <button class="order-detail-btn" bindtap="navigateToOrderDetail">查看订单详情</button>
+        <button class="home-btn" bindtap="navigateToHome">返回首页</button>
+      </view>
+    </view>
+  </view>

@@ -1,0 +1,63 @@
+<view class="chat-page">
+    <!-- 顶部导航 -->
+    <view class="chat-navbar">
+      <view class="navbar-left" bindtap="navigateBack">
+        <image class="icon-arrow-left" src="/static/arrow-icon.png" style="width: 24rpx; height: 24rpx; transform: rotate(180deg);" />
+      </view>
+      <view class="navbar-center">
+        <text class="navbar-title">{{ chatUserName }}</text>
+        <text class="navbar-status">在线</text>
+      </view>
+      <view class="navbar-right">
+        <image class="icon-more" src="/static/close-icon.png" style="width: 24rpx; height: 24rpx;" />
+      </view>
+    </view>
+
+    <!-- 消息列表 -->
+    <scroll-view 
+      scroll-y 
+      class="message-list" 
+      scroll-top="{{scrollTop}}"
+      bindscrolltoupper="loadMoreMessages"
+    >
+      <view 
+        class="message-item" 
+        wx:for="{{messages}}" wx:for-item="msg" wx:for-index="index" wx:key="index"
+        class="{{msg.isSelf ? 'message-self' : ''}}"
+      >
+        <!-- 对方的消息 -->
+        <view class="message-avatar" wx:if="{{!msg.isSelf}}">
+          <text class="avatar-text">{{ chatUserName ? chatUserName.charAt(0) : 'U' }}</text>
+        </view>
+        <view class="message-content {{msg.isSelf ? 'message-self' : ''}}">
+          <view class="message-bubble">
+            <text class="message-text">{{ msg.content }}</text>
+          </view>
+          <text class="message-time">{{ formatTime(msg.time) }}</text>
+        </view>
+        <!-- 自己的消息 -->
+        <view class="message-avatar" wx:if="{{msg.isSelf}}">
+          <text class="avatar-text">我</text>
+        </view>
+      </view>
+    </scroll-view>
+
+    <!-- 输入框-->
+    <view class="input-bar">
+      <view class="input-wrapper">
+        <input 
+          type="text" 
+          value="{{inputText}}" bindinput="onInputTextChange" 
+          placeholder="输入消息..." 
+          class="message-input"
+          bindconfirm="sendMessage"
+        />
+        <view class="input-actions">
+          <image class="icon-image" src="/static/close-icon.png" style="width: 24rpx; height: 24rpx;" />
+        </view>
+      </view>
+      <button class="send-btn" bindtap="sendMessage" disabled="{{!inputText.trim()}}">
+        <image class="icon-arrow-right" src="/static/arrow-icon.png" style="width: 20rpx; height: 20rpx;" />
+      </button>
+    </view>
+  </view>

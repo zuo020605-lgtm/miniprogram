@@ -1,0 +1,75 @@
+<view class="review-page">
+    <!-- 导航栏-->
+    <view class="review-navbar">
+      <view class="navbar-left" bindtap="navigateBack">
+        <image class="icon-arrow-left" src="/static/arrow-left-icon.png" style="width: 24rpx; height: 24rpx;" />
+      </view>
+      <text class="navbar-title">评价订单</text>
+      <view class="navbar-right"></view>
+    </view>
+
+    <!-- 订单信息 -->
+    <view class="order-info-card">
+      <view class="order-header">
+        <view class="order-icon">
+          <image src="/static/school-icon.png" style="width: 24rpx; height: 24rpx;" />
+        </view>
+        <view class="order-text">
+          <text class="order-title">{{ order.title || '校园跑腿任务' }}</text>
+          <text class="order-price">¥{{ formatPrice(order.price) }}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 评分 -->
+    <view class="rating-card">
+      <text class="card-title">服务评分</text>
+      <view class="rating-stars">
+        <view 
+          class="star-item" 
+          wx:for="{{5}}" wx 
+           
+          bindtap="setRating"
+        >
+          <image src="/static/school-icon.png" style="width: 24rpx; height: 24rpx;" />
+        </view>
+      </view>
+      <text class="rating-text">{{ staticText }}</text>
+    </view>
+
+    <!-- 评价标签 -->
+    <view class="tags-card">
+      <text class="card-title">选择标签</text>
+      <view class="tags-list">
+        <view 
+          class="tag-item" 
+          wx:for="{{tags}}" wx:for-item="tag" wx:for-index="index" wx 
+          
+          :class="{ active: selectedTags.includes(index) }"
+          bindtap="toggleTag"
+        >
+          <text>{{ tag }}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 评价内容 -->
+    <view class="content-card">
+      <text class="card-title">评价内容</text>
+      <textarea 
+        value="{{reviewContent}}" bindinput="onreviewContentChange" 
+        placeholder="分享您的服务体验，帮助其他用户.."
+        class="review-textarea"
+        maxlength="500"
+      />
+      <view class="char-count">{{ reviewContent.length }}/500</view>
+    </view>
+
+    <!-- 提交按钮 -->
+    <view class="submit-bar">
+      <button class="submit-btn" bindtap="submitReview" :disabled="!canSubmit">
+        <text wx:if="{{!submitting}}">提交评价</text>
+        <text wx:else>提交中..</text>
+      </button>
+    </view>
+  </view>

@@ -4,17 +4,38 @@
     "pages/order/index",
     "pages/message/index",
     "pages/profile/index",
-    "pages/publish/index"
+    "pages/login/index",
+    "pages/publish/index",
+    "pages/order-detail/index",
+    "pages/payment/index",
+    "pages/pay-success/index",
+    "pages/profile/auth/index",
+    "pages/profile/wallet/index",
+    "pages/profile/settings/index",
+    "pages/profile/help/index",
+    "pages/profile/my-posts/index",
+    "pages/profile/my-orders/index",
+    "pages/profile/security/index",
+    "pages/popular-tasks/index",
+    "pages/campus-errand/index",
+    "pages/express/index",
+    "pages/exam/index",
+    "pages/campus-class/index",
+    "pages/chat/index",
+    "pages/review/index",
+    "pages/report/index"
   ],
   "window": {
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarBackgroundColor": "#f5f7fa",
     "navigationBarTitleText": "校园服务",
-    "navigationBarTextStyle": "black"
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f5f7fa",
+    "enablePullDownRefresh": false
   },
   "tabBar": {
-    "color": "#9a9da0",
-    "selectedColor": "#1E88E5",
+    "color": "#74777a",
+    "selectedColor": "#005da4",
     "backgroundColor": "#ffffff",
     "borderStyle": "black",
     "list": [
@@ -43,5 +64,13 @@
         "selectedIconPath": "static/tab_profile_active.png"
       }
     ]
-  }
+  },
+  "cloud": true,
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置信息将用于小程序中为你提供服务"
+    }
+  },
+  "requiredBackgroundModes": [],
+  "lazyCodeLoading": "requiredComponents"
 }

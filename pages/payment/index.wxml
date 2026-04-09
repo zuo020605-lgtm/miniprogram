@@ -1,0 +1,63 @@
+<view class="payment-page">
+    <view class="payment-content">
+      <text class="payment-title">选择支付方式</text>
+      
+      <view class="payment-methods">
+        <view class="payment-item" class="{{selectedPayment === 'wechat' ? 'active' : ''}}" bindtap="selectPayment" data-method="wechat">
+          <view class="payment-icon payment-icon-wechat">
+            <text class="icon">💳</text>
+          </view>
+          <view class="payment-info">
+            <text class="payment-name">微信支付</text>
+            <text class="payment-desc">推荐使用微信支付</text>
+          </view>
+          <view class="payment-radio" class="{{selectedPayment === 'wechat' ? 'active' : ''}}">
+            <text wx:if="{{selectedPayment === 'wechat'}}" class="radio-dot"></text>
+          </view>
+        </view>
+        
+        <view class="payment-item" class="{{selectedPayment === 'alipay' ? 'active' : ''}}" bindtap="selectPayment" data-method="alipay">
+          <view class="payment-icon payment-icon-alipay">
+            <text class="icon">💳</text>
+          </view>
+          <view class="payment-info">
+            <text class="payment-name">支付宝支付</text>
+            <text class="payment-desc">使用支付宝进行支付</text>
+          </view>
+          <view class="payment-radio" class="{{selectedPayment === 'alipay' ? 'active' : ''}}">
+            <text wx:if="{{selectedPayment === 'alipay'}}" class="radio-dot"></text>
+          </view>
+        </view>
+        
+        <view class="payment-item" class="{{selectedPayment === 'balance' ? 'active' : ''}}" bindtap="selectPayment" data-method="balance">
+          <view class="payment-icon payment-icon-balance">
+            <text class="icon">💰</text>
+          </view>
+          <view class="payment-info">
+            <text class="payment-name">余额支付</text>
+            <text class="payment-desc">可用余额：¥128.50</text>
+          </view>
+          <view class="payment-radio" class="{{selectedPayment === 'balance' ? 'active' : ''}}">
+            <text wx:if="{{selectedPayment === 'balance'}}" class="radio-dot"></text>
+          </view>
+        </view>
+      </view>
+      
+      <view class="order-info">
+        <view class="order-item">
+          <text class="order-label">任务金额</text>
+          <text class="order-value">¥25.00</text>
+        </view>
+        <view class="order-item">
+          <text class="order-label">服务费用</text>
+          <text class="order-value">¥2.00</text>
+        </view>
+        <view class="order-item total">
+          <text class="order-label">总计</text>
+          <text class="order-value total">¥27.00</text>
+        </view>
+      </view>
+      
+      <button class="pay-btn" bindtap="pay">立即支付</button>
+    </view>
+  </view>
