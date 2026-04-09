@@ -1,0 +1,282 @@
+.skeleton-wrapper {
+  width: 100%;
+}
+
+/* 任务卡片骨架屏 */
+.skeleton-task-card {
+  padding: 20rpx;
+  background: #f5f5f5;
+  border-radius: 12rpx;
+  margin-bottom: 20rpx;
+}
+
+.skeleton-task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.skeleton-tag {
+  width: 80rpx;
+  height: 32rpx;
+  background: #e0e0e0;
+  border-radius: 16rpx;
+}
+
+.skeleton-price {
+  width: 100rpx;
+  height: 32rpx;
+  background: #e0e0e0;
+  border-radius: 4rpx;
+}
+
+.skeleton-title {
+  width: 100%;
+  height: 36rpx;
+  background: #e0e0e0;
+  border-radius: 4rpx;
+  margin-bottom: 12rpx;
+}
+
+.skeleton-text {
+  width: 100%;
+  height: 28rpx;
+  background: #e0e0e0;
+  border-radius: 4rpx;
+  margin-bottom: 8rpx;
+}
+
+/* 订单列表骨架屏 */
+.skeleton-order-item {
+  padding: 20rpx;
+  background: #f5f5f5;
+  border-radius: 12rpx;
+  margin-bottom: 20rpx;
+}
+
+.skeleton-order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.skeleton-status {
+  width: 100rpx;
+  height: 32rpx;
+  background: #e0e0e0;
+  border-radius: 16rpx;
+}
+
+.skeleton-time {
+  width: 120rpx;
+  height: 28rpx;
+  background: #e0e0e0;
+  border-radius: 4rpx;
+}
+
+.skeleton-order-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.skeleton-type {
+  width: 150rpx;
+  height: 36rpx;
+  background: #e0e0e0;
+  border-radius: 4rpx;
+}
+
+.skeleton-amount {
+  width: 100rpx;
+  height: 36rpx;
+  background: #e0e0e0;
+  border-radius: 4rpx;
+}
+
+.skeleton-order-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.skeleton-id {
+  width: 200rpx;
+  height: 28rpx;
+  background: #e0e0e0;
+  border-radius: 4rpx;
+}
+
+/* 消息列表骨架屏 */
+.skeleton-message-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx;
+  background: #f5f5f5;
+  border-radius: 12rpx;
+  margin-bottom: 20rpx;
+}
+
+.skeleton-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  background: #e0e0e0;
+  border-radius: 50%;
+  margin-right: 20rpx;
+}
+
+.skeleton-message-content {
+  flex: 1;
+}
+
+.skeleton-name {
+  width: 150rpx;
+  height: 32rpx;
+  background: #e0e0e0;
+  border-radius: 4rpx;
+  margin-bottom: 12rpx;
+}
+
+.skeleton-preview {
+  width: 80%;
+  height: 28rpx;
+  background: #e0e0e0;
+  border-radius: 4rpx;
+}
+
+/* 用户信息骨架屏 */
+.skeleton-user-profile {
+  display: flex;
+  align-items: center;
+  padding: 20rpx;
+  background: #f5f5f5;
+  border-radius: 12rpx;
+  margin-bottom: 20rpx;
+}
+
+.skeleton-avatar-large {
+  width: 120rpx;
+  height: 120rpx;
+  background: #e0e0e0;
+  border-radius: 50%;
+  margin-right: 20rpx;
+}
+
+.skeleton-user-info {
+  flex: 1;
+}
+
+.skeleton-username {
+  width: 200rpx;
+  height: 40rpx;
+  background: #e0e0e0;
+  border-radius: 4rpx;
+  margin-bottom: 12rpx;
+}
+
+.skeleton-userid {
+  width: 300rpx;
+  height: 32rpx;
+  background: #e0e0e0;
+  border-radius: 4rpx;
+}
+
+/* 统计数据骨架屏 */
+.skeleton-stats {
+  display: flex;
+  justify-content: space-around;
+  padding: 20rpx;
+  background: #f5f5f5;
+  border-radius: 12rpx;
+  margin-bottom: 20rpx;
+}
+
+.skeleton-stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.skeleton-stat-value {
+  width: 100rpx;
+  height: 48rpx;
+  background: #e0e0e0;
+  border-radius: 4rpx;
+  margin-bottom: 8rpx;
+}
+
+.skeleton-stat-label {
+  width: 80rpx;
+  height: 28rpx;
+  background: #e0e0e0;
+  border-radius: 4rpx;
+}
+
+/* 功能网格骨架屏 */
+.skeleton-function-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20rpx;
+  padding: 20rpx;
+  background: #f5f5f5;
+  border-radius: 12rpx;
+  margin-bottom: 20rpx;
+}
+
+.skeleton-function-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.skeleton-function-icon {
+  width: 60rpx;
+  height: 60rpx;
+  background: #e0e0e0;
+  border-radius: 12rpx;
+  margin-bottom: 12rpx;
+}
+
+.skeleton-function-text {
+  width: 80rpx;
+  height: 28rpx;
+  background: #e0e0e0;
+  border-radius: 4rpx;
+}
+
+/* 通用列表骨架屏 */
+.skeleton-list {
+  padding: 20rpx;
+  background: #f5f5f5;
+  border-radius: 12rpx;
+  margin-bottom: 20rpx;
+}
+
+.skeleton-list-item {
+  margin-bottom: 16rpx;
+}
+
+.skeleton-line {
+  width: 100%;
+  height: 28rpx;
+  background: #e0e0e0;
+  border-radius: 4rpx;
+  margin-bottom: 8rpx;
+}
+
+/* 卡片骨架屏 */
+.skeleton-card-wrapper {
+  padding: 20rpx;
+  background: #f5f5f5;
+  border-radius: 12rpx;
+  margin-bottom: 20rpx;
+}
+
+.skeleton-card {
+  width: 100%;
+  height: 200rpx;
+  background: #e0e0e0;
+  border-radius: 8rpx;
+}

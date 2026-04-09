@@ -75,6 +75,6 @@
   "requiredBackgroundModes": [],
   "lazyCodeLoading": "requiredComponents",
   "usingComponents": {
-    "skeleton": "./components/skeleton/skeleton"
+    "skeleton": "./components/skeleton/index"
   }
 }
