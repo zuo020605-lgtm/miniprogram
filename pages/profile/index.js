@@ -1,14 +1,14 @@
 // 我的
 Page({
   data: {
-    isLoggedIn: true, // 默认已登录状态
-    userName: '张三',
-    userId: '100001',
-    regTime: '2026-01-01',
-    isAuth: true,
+    isLoggedIn: false, // 默认未登录状态
+    userName: '未登录',
+    userId: '',
+    regTime: '',
+    isAuth: false,
     todayIncome: '¥0.00',
-    completedOrders: 12,
-    rating: 100
+    completedOrders: 0,
+    rating: 0
   },
 
   onLoad(options) {
@@ -31,18 +31,50 @@ Page({
 
   // 加载用户信息
   loadUserInfo() {
-    // 这里可以从本地存储或API获取用户信息
     try {
       const userInfo = wx.getStorageSync('userInfo')
-      if (userInfo) {
-        this.setData({
-          userName: userInfo.nickName || '用户',
-          userId: userInfo.userId || '100000',
-          isAuth: userInfo.isAuth || false
+      const token = wx.getStorageSync('token')
+      
+      if (userInfo && token) {
+        // 验证登录态
+        wx.cloud.callFunction({
+          name: 'verifyLogin',
+          data: {
+            token: token
+          },
+          success: (res) => {
+            if (res.result && res.result.valid) {
+              this.setData({
+                isLoggedIn: true,
+                userName: userInfo.nickName || '用户',
+                userId: userInfo.userId || '100000',
+                isAuth: userInfo.isAuth || false
+              })
+            } else {
+              // 登录态失效
+              this.setData({ isLoggedIn: false })
+              wx.removeStorageSync('userInfo')
+              wx.removeStorageSync('token')
+              wx.navigateTo({ url: '/pages/login/index' })
+            }
+          },
+          fail: (err) => {
+            console.error('验证登录态失败:', err)
+            this.setData({ isLoggedIn: false })
+            wx.removeStorageSync('userInfo')
+            wx.removeStorageSync('token')
+            wx.navigateTo({ url: '/pages/login/index' })
+          }
         })
+      } else {
+        // 未登录
+        this.setData({ isLoggedIn: false })
+        wx.navigateTo({ url: '/pages/login/index' })
       }
     } catch (e) {
       console.error('获取用户信息失败:', e)
+      this.setData({ isLoggedIn: false })
+      wx.navigateTo({ url: '/pages/login/index' })
     }
   },
 

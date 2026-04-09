@@ -20,5 +20,17 @@ Page({
 
   onUnload() {
     console.log('页面卸载')
+  },
+
+  navigateToOrderDetail() {
+    wx.navigateTo({
+      url: '/pages/order-detail/index'
+    })
+  },
+
+  navigateToHome() {
+    wx.switchTab({
+      url: '/pages/index/index'
+    })
   }
 })

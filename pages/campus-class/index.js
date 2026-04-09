@@ -30,6 +30,18 @@ Page({
     console.log('页面卸载')
   },
 
+  // 计算课程 grid 位置
+  calculateCourseGrid(courses) {
+    return courses.map(course => {
+      return {
+        ...course,
+        gridColumn: course.day,
+        gridRow: course.startTime,
+        gridRowEnd: course.endTime + 1
+      }
+    })
+  },
+
   // 加载课程
   loadCourses() {
     // 模拟课程数据
@@ -60,7 +72,8 @@ Page({
       }
     ]
 
-    this.setData({ courses: mockCourses })
+    const coursesWithGrid = this.calculateCourseGrid(mockCourses)
+    this.setData({ courses: coursesWithGrid })
   },
 
   // 显示/隐藏菜单

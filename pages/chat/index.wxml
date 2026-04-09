@@ -33,7 +33,7 @@
           <view class="message-bubble">
             <text class="message-text">{{ msg.content }}</text>
           </view>
-          <text class="message-time">{{ formatTime(msg.time) }}</text>
+          <text class="message-time">{{ msg.formattedTime }}</text>
         </view>
         <!-- 自己的消息 -->
         <view class="message-avatar" wx:if="{{msg.isSelf}}">

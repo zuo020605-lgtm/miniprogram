@@ -47,10 +47,35 @@ Page({
   loadOrderDetail(orderId) {
     this.setData({ loading: true })
     
-    // 模拟数据加载
-    setTimeout(() => {
-      this.setData({ loading: false })
-    }, 1000)
+    wx.cloud.callFunction({
+      name: 'getOrderDetail',
+      data: {
+        orderId: orderId
+      },
+      success: (res) => {
+        console.log('获取订单详情成功:', res)
+        if (res.result) {
+          this.setData({
+            order: res.result,
+            loading: false
+          })
+        } else {
+          this.setData({ loading: false })
+          wx.showToast({
+            title: '获取订单详情失败',
+            icon: 'none'
+          })
+        }
+      },
+      fail: (err) => {
+        console.error('获取订单详情失败:', err)
+        this.setData({ loading: false })
+        wx.showToast({
+          title: '获取订单详情失败',
+          icon: 'none'
+        })
+      }
+    })
   },
 
   // 返回上一页

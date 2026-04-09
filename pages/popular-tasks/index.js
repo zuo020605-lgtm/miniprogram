@@ -71,6 +71,6 @@ Page({
   // 导航到订单详情
   navigateToOrderDetail(e) {
     const { id } = e.currentTarget.dataset
-    wx.navigateTo({ url: `/pages/order-detail/index?id=${id}` })
+    wx.navigateTo({ url: `/pages/order-detail/index?id=${id}&status=pending` })
   }
 })

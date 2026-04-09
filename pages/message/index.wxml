@@ -1,43 +1,22 @@
 <view class="message-page">
     <view class="message-list">
-      <view class="message-item" bindtap="navigateToChat">
+      <view 
+        class="message-item" 
+        wx:for="{{conversations}}" wx:for-item="conversation" wx:for-index="index" wx:key="index"
+        bindtap="navigateToChat"
+        data-conversation="{{conversation}}"
+      >
         <view class="message-avatar">
-          <text class="avatar-text">张</text>
+          <text class="avatar-text">{{conversation.name.charAt(0)}}</text>
         </view>
         <view class="message-info">
           <view class="message-header">
-            <text class="message-name">张三</text>
-            <text class="message-time">10:04</text>
+            <text class="message-name">{{conversation.name}}</text>
+            <text class="message-time">{{conversation.lastMessageTime}}</text>
           </view>
-          <text class="message-preview">15元，可以吗？</text>
+          <text class="message-preview">{{conversation.lastMessage}}</text>
         </view>
-        <view class="message-badge">1</view>
-      </view>
-      
-      <view class="message-item">
-        <view class="message-avatar">
-          <text class="avatar-text">李</text>
-        </view>
-        <view class="message-info">
-          <view class="message-header">
-            <text class="message-name">李四</text>
-            <text class="message-time">昨天</text>
-          </view>
-          <text class="message-preview">好的，我明天帮你取快递</text>
-        </view>
-      </view>
-      
-      <view class="message-item">
-        <view class="message-avatar">
-          <text class="avatar-text">王</text>
-        </view>
-        <view class="message-info">
-          <view class="message-header">
-            <text class="message-name">王五</text>
-            <text class="message-time">3天前</text>
-          </view>
-          <text class="message-preview">考试已经帮你完成了</text>
-        </view>
+        <view class="message-badge" wx:if="{{conversation.unreadCount > 0}}">{{conversation.unreadCount}}</view>
       </view>
     </view>
   </view>

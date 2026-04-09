@@ -43,7 +43,7 @@
     <!-- 主页面 -->
     <scroll-view scroll-y class="main-content" enable-flex>
       <!-- 周次选择 -->
-      <view class="week-selector-wrapper" hidden="{{!showpoint}}">
+      <view class="week-selector-wrapper" wx:if="{{showpoint}}">
         <scroll-view 
           scroll-x
           scroll-with-animation

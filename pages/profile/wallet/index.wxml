@@ -40,7 +40,7 @@
               <text class="transaction-title">{{item.title}}</text>
               <text class="transaction-time">{{item.time}}</text>
             </view>
-            <text class="transaction-amount">{{item.amount}}</text>
+            <text class="transaction-amount {{item.amount.charAt(0) === '+' ? 'income' : 'expense'}}">{{item.amount}}</text>
           </view>
         </view>
       </view>

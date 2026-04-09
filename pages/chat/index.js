@@ -9,6 +9,14 @@ Page({
 
   onLoad(options) {
     console.log('页面加载:', options)
+    const conversationId = options.id || 'default'
+    const chatUserName = options.name || '张三'
+    
+    this.setData({
+      conversationId: conversationId,
+      chatUserName: chatUserName
+    })
+    
     this.initializeChat()
   },
 
@@ -26,43 +34,66 @@ Page({
 
   // 初始化聊天
   initializeChat() {
-    // 模拟历史消息数据
-    const mockMessages = [
-      {
-        isSelf: false,
-        content: '你好，我来取快递',
-        time: new Date(Date.now() - 3600000).toISOString()
-      },
-      {
-        isSelf: true,
-        content: '好的，请问您是哪位？',
-        time: new Date(Date.now() - 3540000).toISOString()
-      },
-      {
-        isSelf: false,
-        content: '我是订单号ORD20260408001的用户',
-        time: new Date(Date.now() - 3480000).toISOString()
-      },
-      {
-        isSelf: true,
-        content: '好的，我现在在菜鸟驿站，您的快递已经取到了',
-        time: new Date(Date.now() - 3420000).toISOString()
-      },
-      {
-        isSelf: false,
-        content: '谢谢，麻烦您送到南区宿舍楼下，我在那里等您',
-        time: new Date(Date.now() - 3360000).toISOString()
-      }
-    ]
+    const conversationId = this.data.conversationId || 'default'
     
-    this.setData({
-      messages: mockMessages
+    // 接入云函数获取历史消息
+    wx.cloud.callFunction({
+      name: 'getMessages',
+      data: {
+        conversationId: conversationId
+      },
+      success: (res) => {
+        console.log('获取历史消息成功:', res)
+        if (res.result) {
+          // 预处理时间字段
+          const processedMessages = res.result.map(msg => ({
+            ...msg,
+            formattedTime: this.formatTime(msg.time)
+          }))
+          
+          this.setData({
+            messages: processedMessages
+          })
+          
+          // 滚动到最新消息
+          setTimeout(() => {
+            this.scrollToBottom()
+          }, 100)
+        }
+      },
+      fail: (err) => {
+        console.error('获取历史消息失败:', err)
+        wx.showToast({
+          title: '获取消息失败',
+          icon: 'none'
+        })
+      }
     })
     
-    // 滚动到最新消息
-    setTimeout(() => {
-      this.scrollToBottom()
-    }, 100)
+    // 监听新消息
+    this.listenForNewMessages()
+  },
+
+  // 监听新消息
+  listenForNewMessages() {
+    const conversationId = this.data.conversationId || 'default'
+    
+    // 这里可以使用微信小程序云开发的实时数据库监听
+    // 或者使用 WebSocket 连接
+    // 示例代码（实际实现需要根据具体的实时通信方案调整）
+    wx.cloud.callFunction({
+      name: 'listenMessages',
+      data: {
+        conversationId: conversationId
+      },
+      success: (res) => {
+        console.log('开始监听新消息:', res)
+        // 监听逻辑
+      },
+      fail: (err) => {
+        console.error('监听新消息失败:', err)
+      }
+    })
   },
 
   // 输入框内容变化
@@ -80,7 +111,8 @@ Page({
     const newMessage = {
       isSelf: true,
       content: content,
-      time: new Date().toISOString()
+      time: new Date().toISOString(),
+      formattedTime: this.formatTime(new Date().toISOString())
     }
     
     const updatedMessages = [...this.data.messages, newMessage]
@@ -93,21 +125,24 @@ Page({
     // 滚动到最新消息
     this.scrollToBottom()
     
-    // 模拟对方回复
-    setTimeout(() => {
-      const replyMessage = {
-        isSelf: false,
-        content: '好的，我知道了',
-        time: new Date().toISOString()
+    // 接入云函数发送消息
+    wx.cloud.callFunction({
+      name: 'sendMessage',
+      data: {
+        content: content,
+        conversationId: this.data.conversationId
+      },
+      success: (res) => {
+        console.log('发送消息成功:', res)
+      },
+      fail: (err) => {
+        console.error('发送消息失败:', err)
+        wx.showToast({
+          title: '发送消息失败',
+          icon: 'none'
+        })
       }
-      
-      this.setData({
-        messages: [...updatedMessages, replyMessage]
-      })
-      
-      // 滚动到最新消息
-      this.scrollToBottom()
-    }, 1000)
+    })
   },
 
   // 滚动到最新消息

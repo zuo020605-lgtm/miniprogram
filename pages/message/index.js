@@ -1,17 +1,18 @@
 // 消息
 Page({
   data: {
-    // 页面数据
+    conversations: [],
+    loading: false
   },
 
   onLoad(options) {
     console.log('页面加载:', options)
-    // 初始化页面
+    this.loadConversations()
   },
 
   onShow() {
     console.log('页面显示')
-    // 每次显示时执行
+    this.loadConversations()
   },
 
   onHide() {
@@ -22,10 +23,42 @@ Page({
     console.log('页面卸载')
   },
 
+  // 加载会话列表
+  loadConversations() {
+    this.setData({ loading: true })
+    wx.cloud.callFunction({
+      name: 'getConversations',
+      success: (res) => {
+        console.log('获取会话列表成功:', res)
+        if (res.result) {
+          this.setData({
+            conversations: res.result,
+            loading: false
+          })
+        } else {
+          this.setData({ loading: false })
+          wx.showToast({
+            title: '获取会话列表失败',
+            icon: 'none'
+          })
+        }
+      },
+      fail: (err) => {
+        console.error('获取会话列表失败:', err)
+        this.setData({ loading: false })
+        wx.showToast({
+          title: '获取会话列表失败',
+          icon: 'none'
+        })
+      }
+    })
+  },
+
   // 导航到聊天页面
-  navigateToChat() {
+  navigateToChat(e) {
+    const conversation = e.currentTarget.dataset.conversation
     wx.navigateTo({
-      url: '/pages/chat/index'
+      url: `/pages/chat/index?id=${conversation.id}&name=${conversation.name}`
     })
   }
 })

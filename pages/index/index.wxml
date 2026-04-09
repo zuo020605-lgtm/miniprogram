@@ -2,18 +2,18 @@
   <!-- 顶部导航 - Glass Header -->
   <view class="header glass-header">
     <view class="campus-selector" bindtap="showCampusPicker">
-      <image class="icon-school" src="/static/school-icon.png" mode="aspectFit" />
+      <text class="material-icons icon-school">school</text>
       <view class="campus-info">
-        <text class="campus-label">Current Campus</text>
+        <text class="campus-label">当前校区</text>
         <view class="campus-name-wrapper">
           <text class="campus-name">{{ currentCampus }}</text>
-          <image class="icon-chevron" src="/static/chevron-icon.png" mode="aspectFit" />
+          <text class="material-icons icon-chevron">chevron_right</text>
         </view>
       </view>
     </view>
     <view class="header-actions">
       <view class="notification-btn" bindtap="navigateToMessage">
-        <image class="icon-bell" src="/static/bell-icon.png" mode="aspectFit" />
+        <text class="material-icons icon-bell">notifications</text>
         <view class="notification-badge" wx:if="{{unreadCount > 0}}">{{ unreadCount }}</view>
       </view>
       <view class="user-avatar" bindtap="navigateToProfile">
@@ -25,12 +25,12 @@
   <!-- Hero Search Section -->
   <view class="hero-section">
     <view class="hero-title">
-      <text>Hi, Scholar.</text>
-      <text class="text-primary">What's the mission today?</text>
+      <text>你好，同学。</text>
+      <text class="text-primary">今天需要什么帮助？</text>
     </view>
     <view class="search-wrapper">
       <view class="search-icon-wrapper">
-        <image class="search-icon" src="/static/search-icon.png" mode="aspectFit" />
+        <text class="material-icons search-icon">search</text>
       </view>
       <input 
         type="text" 
@@ -51,10 +51,10 @@
     <view class="bento-grid">
       <!-- 校园代课 - 大卡片 -->
       <view class="bento-item bento-item-large gradient-primary" bindtap="navigateToCampusClass">
-        <image class="bento-icon-large" src="/static/class-icon.png" mode="aspectFit" />
+        <text class="material-icons bento-icon-large">class</text>
         <view class="bento-info">
           <text class="bento-title">校园代课</text>
-          <text class="bento-subtitle">Knowledge exchange</text>
+          <text class="bento-subtitle">知识共享</text>
         </view>
       </view>
       
@@ -63,22 +63,22 @@
         <!-- 校园跑腿 -->
         <view class="bento-item bento-item-small bg-secondary-container" bindtap="navigateToPublish" data-type="campus-errand">
           <view class="icon-wrapper-white">
-            <image class="bento-icon" src="/static/run-icon.png" mode="aspectFit" />
+            <text class="material-icons bento-icon">directions_run</text>
           </view>
           <view class="bento-info-small">
             <text class="bento-title-small text-on-secondary-container">校园跑腿</text>
-            <text class="bento-subtitle-small text-on-secondary-container-70">Quick errands</text>
+            <text class="bento-subtitle-small text-on-secondary-container-70">快速跑腿</text>
           </view>
         </view>
         
         <!-- 快递代取 -->
         <view class="bento-item bento-item-small bg-surface-container-highest" bindtap="navigateToPublish" data-type="express">
           <view class="icon-wrapper-white">
-            <image class="bento-icon" src="/static/package-icon.png" mode="aspectFit" />
+            <text class="material-icons bento-icon">package</text>
           </view>
           <view class="bento-info-small">
             <text class="bento-title-small text-on-surface">快递代取</text>
-            <text class="bento-subtitle-small text-on-surface-variant">Parcel pickup</text>
+            <text class="bento-subtitle-small text-on-surface-variant">包裹代取</text>
           </view>
         </view>
       </view>
@@ -87,14 +87,14 @@
       <view class="bento-item bento-item-full bg-tertiary-container" bindtap="navigateToPublish" data-type="exam">
         <view class="bento-full-left">
           <view class="icon-wrapper-tertiary">
-            <image class="bento-icon" src="/static/exam-icon.png" mode="aspectFit" />
+            <text class="material-icons bento-icon">quiz</text>
           </view>
           <view class="bento-info">
             <text class="bento-title text-on-tertiary-container">考试代替</text>
-            <text class="bento-subtitle text-on-tertiary-container-80">Support during finals week</text>
+            <text class="bento-subtitle text-on-tertiary-container-80">考试周支持</text>
           </view>
         </view>
-        <image class="chevron-right" src="/static/chevron-icon.png" mode="aspectFit" />
+        <text class="material-icons chevron-right">chevron_right</text>
       </view>
     </view>
   </view>
@@ -103,7 +103,7 @@
   <view class="popular-tasks-section">
     <view class="section-header">
       <text class="section-title">热门任务</text>
-      <text class="section-more" bindtap="navigateToPopularTasks">View All</text>
+      <text class="section-more" bindtap="navigateToPopularTasks">查看全部</text>
     </view>
     
     <!-- 骨架屏 -->
@@ -130,11 +130,11 @@
         <text class="task-title">{{item.title}}</text>
         <view class="task-meta">
           <view class="task-meta-item">
-            <image class="meta-icon" src="/static/arrow-icon.png" mode="aspectFit"/>
+            <text class="material-icons meta-icon">location_on</text>
             <text class="meta-text">{{item.locationText}}</text>
           </view>
           <view class="task-meta-item">
-            <image class="meta-icon" src="/static/bell-icon.png" mode="aspectFit"/>
+            <text class="material-icons meta-icon">access_time</text>
             <text class="meta-text">{{item.timeText}}</text>
           </view>
         </view>
@@ -160,8 +160,8 @@
         bindtap="navigateToOrderDetail"
         data-id="{{item._id}}"
       >
-        <view class="post-icon-wrapper bg-{{item.iconBg}}-container-30">
-          <image class="post-icon" src="{{item.iconPath}}" mode="aspectFit" />
+        <view class="post-icon-wrapper bg-{{item.bg}}-container-30">
+          <text class="material-icons post-icon">{{item.iconName}}</text>
         </view>
         <view class="post-content">
           <view class="post-header">
@@ -189,5 +189,5 @@
 
 <!-- Floating Action Button -->
 <view class="fab-button" bindtap="navigateToPublish">
-  <image class="fab-icon" src="/static/chevron-icon.png" mode="aspectFit" />
+  <text class="material-icons fab-icon">add</text>
 </view>

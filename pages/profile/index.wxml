@@ -6,7 +6,7 @@
         <view class="account-section">
           <view class="account-header">
             <view class="avatar-placeholder">
-              <image class="avatar" src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=professional%20avatar%20portrait%20of%20a%20college%20student&image_size=square" mode="aspectFill"></image>
+              <image class="avatar" src="/static/default-avatar.png" mode="aspectFill"></image>
             </view>
             <view class="account-info">
               <text class="user-name">{{userName}}</text>
@@ -48,27 +48,27 @@
           </view>
           <view class="menu-grid">
             <view class="menu-item" bindtap="navigateToWallet">
-              <image class="menu-icon" src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=wallet%20icon%20material%20design%203%20blue&image_size=square" style="width: 40rpx; height: 40rpx;" />
+              <text class="material-icons menu-icon">account_balance_wallet</text>
               <text class="menu-text">我的钱包</text>
             </view>
             <view class="menu-item" bindtap="navigateToSettings">
-              <image class="menu-icon" src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=settings%20icon%20material%20design%203%20blue&image_size=square" style="width: 40rpx; height: 40rpx;" />
+              <text class="material-icons menu-icon">settings</text>
               <text class="menu-text">系统设置</text>
             </view>
             <view class="menu-item" bindtap="navigateToHelp">
-              <image class="menu-icon" src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=help%20icon%20material%20design%203%20blue&image_size=square" style="width: 40rpx; height: 40rpx;" />
+              <text class="material-icons menu-icon">help_outline</text>
               <text class="menu-text">帮助中心</text>
             </view>
             <view class="menu-item" bindtap="navigateToMyPosts">
-              <image class="menu-icon" src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=post%20icon%20material%20design%203%20blue&image_size=square" style="width: 40rpx; height: 40rpx;" />
+              <text class="material-icons menu-icon">edit</text>
               <text class="menu-text">我的发布</text>
             </view>
             <view class="menu-item" bindtap="navigateToMyOrders">
-              <image class="menu-icon" src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=orders%20icon%20material%20design%203%20blue&image_size=square" style="width: 40rpx; height: 40rpx;" />
+              <text class="material-icons menu-icon">shopping_bag</text>
               <text class="menu-text">我的接单</text>
             </view>
             <view class="menu-item" bindtap="navigateToAccountSecurity">
-              <image class="menu-icon" src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=security%20shield%20icon%20material%20design%203%20blue&image_size=square" style="width: 40rpx; height: 40rpx;" />
+              <text class="material-icons menu-icon">security</text>
               <text class="menu-text">账号安全</text>
             </view>
           </view>

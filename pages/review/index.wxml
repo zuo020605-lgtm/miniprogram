@@ -27,9 +27,10 @@
       <view class="rating-stars">
         <view 
           class="star-item" 
-          wx:for="{{5}}" wx 
-           
-          bindtap="setRating"
+          wx:for="{{5}}" 
+          wx:key="index"
+          data-rating="{{index + 1}}"
+          bindtap="handleRating"
         >
           <image src="/static/school-icon.png" style="width: 24rpx; height: 24rpx;" />
         </view>
@@ -42,10 +43,9 @@
       <text class="card-title">选择标签</text>
       <view class="tags-list">
         <view 
-          class="tag-item" 
-          wx:for="{{tags}}" wx:for-item="tag" wx:for-index="index" wx 
-          
-          :class="{ active: selectedTags.includes(index) }"
+          class="tag-item {{selectedTags.includes(tag) ? 'active' : ''}}" 
+          wx:for="{{tags}}" wx:for-item="tag" wx:for-index="index" 
+          data-tag="{{tag}}"
           bindtap="toggleTag"
         >
           <text>{{ tag }}</text>
@@ -57,17 +57,17 @@
     <view class="content-card">
       <text class="card-title">评价内容</text>
       <textarea 
-        value="{{reviewContent}}" bindinput="onreviewContentChange" 
+        value="{{content}}" bindinput="handleContentChange" 
         placeholder="分享您的服务体验，帮助其他用户.."
         class="review-textarea"
         maxlength="500"
       />
-      <view class="char-count">{{ reviewContent.length }}/500</view>
+      <view class="char-count">{{ content.length }}/500</view>
     </view>
 
     <!-- 提交按钮 -->
     <view class="submit-bar">
-      <button class="submit-btn" bindtap="submitReview" :disabled="!canSubmit">
+      <button class="submit-btn" bindtap="submitReview" disabled="{{!canSubmit}}">
         <text wx:if="{{!submitting}}">提交评价</text>
         <text wx:else>提交中..</text>
       </button>

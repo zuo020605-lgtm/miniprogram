@@ -25,7 +25,7 @@
     bindrefresherrefresh="onRefresh"
   >
     <!-- 骨架屏 -->
-    <view wx:if="{{loading && orders.length === 0}}" class="order-list">
+    <view wx:if="{{loading}}" class="order-list">
       <view class="skeleton-order-item" wx:for="{{5}}" wx:key="index">
         <view class="skeleton skeleton-order-header">
           <view class="skeleton skeleton-status"></view>

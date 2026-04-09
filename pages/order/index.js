@@ -125,12 +125,12 @@ Page({
   switchTab(e) {
     const key = e.currentTarget.dataset.key
     this.setData({ activeTab: key })
-    this.filterOrders()
+    this.filterOrders(key)
   },
 
   // 过滤订单
-  filterOrders() {
-    const activeTab = this.data.activeTab
+  filterOrders(key) {
+    const activeTab = key || this.data.activeTab
     const orders = this.data.orders
     let filtered = orders
     

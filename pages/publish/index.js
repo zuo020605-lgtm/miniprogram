@@ -250,7 +250,7 @@ Page({
     
     if (selectedType === 'campus-errand' || selectedType === 'express') {
       canPublish = price && taskDetail && contactInfo && pickupLocation && deliveryLocation
-    } else if (selectedType === 'exam' || selectedType === 'campus-class') {
+    } else if (selectedType === 'exam') {
       canPublish = price && taskDetail && contactInfo && examLocation && examSubject
     }
     
@@ -261,20 +261,48 @@ Page({
   publishTask() {
     if (!this.data.canPublish) return
     
-    wx.showLoading({ title: '发布中...' })
+    // 发布前预览弹窗
+    const { selectedType, selectedDate, startTime, price, taskDetail, contactInfo, pickupLocation, deliveryLocation, examLocation, examSubject } = this.data
+    let previewContent = `任务类型：${selectedType === 'campus-errand' ? '校园跑腿' : selectedType === 'express' ? '快递代取' : '考试代替'}\n`
+    previewContent += `日期：${selectedDate}\n`
+    previewContent += `时间：${startTime}\n`
     
-    // 模拟发布成功
-    setTimeout(() => {
-      wx.hideLoading()
-      wx.showToast({
-        title: '发布成功',
-        icon: 'success'
-      })
-      
-      // 返回首页
-      setTimeout(() => {
-        wx.switchTab({ url: '/pages/index/index' })
-      }, 1500)
-    }, 1000)
+    if (selectedType === 'campus-errand' || selectedType === 'express') {
+      previewContent += `取货地点：${pickupLocation}\n`
+      previewContent += `送达地点：${deliveryLocation}\n`
+    } else if (selectedType === 'exam') {
+      previewContent += `考试地点：${examLocation}\n`
+      previewContent += `考试科目：${examSubject}\n`
+    }
+    
+    previewContent += `金额：¥${price}\n`
+    previewContent += `详情：${taskDetail}\n`
+    previewContent += `联系方式：${contactInfo}`
+    
+    wx.showModal({
+      title: '发布确认',
+      content: previewContent,
+      confirmText: '确认发布',
+      cancelText: '取消',
+      success: (res) => {
+        if (res.confirm) {
+          wx.showLoading({ title: '发布中...' })
+          
+          // 模拟发布成功
+          setTimeout(() => {
+            wx.hideLoading()
+            wx.showToast({
+              title: '发布成功',
+              icon: 'success'
+            })
+            
+            // 返回首页
+            setTimeout(() => {
+              wx.switchTab({ url: '/pages/index/index' })
+            }, 1500)
+          }, 1000)
+        }
+      }
+    })
   }
 })

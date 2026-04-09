@@ -1,11 +1,11 @@
 <view class="exam-page">
     <view class="header">
-      <text class="header-title">考试代替</text>
+      <text class="header-title">模拟考陪练</text>
     </view>
     <view class="search-section">
       <view class="search-input">
         <image class="icon-search" src="/static/search-icon.png" style="width: 16rpx; height: 16rpx;" />
-        <input type="text" placeholder="搜索考试任务..." class="search-text" />
+        <input type="text" placeholder="搜索模拟考任务..." class="search-text" />
       </view>
     </view>
     <view class="filter-section">

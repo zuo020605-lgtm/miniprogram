@@ -65,12 +65,12 @@ Page({
 
   _getIconByServiceType(serviceType) {
     const iconMap = {
-      'campus-errand': { iconPath: '/static/run-icon.png', color: 'secondary', bg: 'secondary' },
-      'express': { iconPath: '/static/package-icon.png', color: 'tertiary', bg: 'tertiary' },
-      'exam': { iconPath: '/static/exam-icon.png', color: 'primary', bg: 'primary' },
-      'campus-class': { iconPath: '/static/class-icon.png', color: 'secondary', bg: 'secondary' }
+      'campus-errand': { iconName: 'directions_run', color: 'secondary', bg: 'secondary' },
+      'express': { iconName: 'package', color: 'tertiary', bg: 'tertiary' },
+      'exam': { iconName: 'quiz', color: 'primary', bg: 'primary' },
+      'campus-class': { iconName: 'class', color: 'secondary', bg: 'secondary' }
     }
-    return iconMap[serviceType] || { iconPath: '/static/school-icon.png', color: 'primary', bg: 'primary' }
+    return iconMap[serviceType] || { iconName: 'school', color: 'primary', bg: 'primary' }
   },
 
   _loadPopularTasks(callback) {
@@ -158,7 +158,7 @@ Page({
         price: 8,
         location: '五四食堂',
         timeAgo: '2分钟前',
-        iconPath: '/static/run-icon.png',
+        iconName: 'directions_run',
         color: 'secondary',
         bg: 'secondary'
       },
@@ -169,7 +169,7 @@ Page({
         price: 12,
         location: '图书馆南门',
         timeAgo: '15分钟前',
-        iconPath: '/static/package-icon.png',
+        iconName: 'package',
         color: 'tertiary',
         bg: 'tertiary'
       },
@@ -180,7 +180,7 @@ Page({
         price: 5,
         location: '45号楼',
         timeAgo: '40分钟前',
-        iconPath: '/static/run-icon.png',
+        iconName: 'directions_run',
         color: 'secondary',
         bg: 'secondary'
       }
@@ -211,7 +211,7 @@ Page({
           price: post.price,
           location: post.location || '校园内',
           timeAgo: post.timeAgo || post.time || '刚刚',
-          iconPath: iconInfo.iconPath,
+          iconName: iconInfo.iconName,
           color: iconInfo.color,
           bg: iconInfo.bg
         }
