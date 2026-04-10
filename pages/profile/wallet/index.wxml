@@ -35,7 +35,7 @@
           <text class="section-more" bindtap="viewAllTransactions">查看全部</text>
         </view>
         <view class="transaction-list">
-          <view class="transaction-item" wx:for="{{transactions}}" wx:for-item="item" wx:for-index="index" wx:key="index">
+          <view class="transaction-item" wx:for="{{transactions}}" wx:for-item="item" wx:for-index="index" wx:key="{{item._id || index}}">
             <view class="transaction-info">
               <text class="transaction-title">{{item.title}}</text>
               <text class="transaction-time">{{item.time}}</text>

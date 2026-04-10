@@ -463,16 +463,15 @@ page {
 
 .tasks-scroll {
   display: flex;
+  flex-direction: column;
   padding: 0 32rpx;
-  overflow-x: auto;
-  white-space: nowrap;
+  gap: 24rpx;
+  box-sizing: border-box;
 }
 
 .task-card {
   flex-shrink: 0;
-  width: calc(100vw - 64rpx);
-  max-width: calc(100vw - 64rpx);
-  min-width: calc(100vw - 64rpx);
+  width: 100%;
   padding: 32rpx;
   margin-bottom: 24rpx;
   background-color: #ffffff;
@@ -565,9 +564,7 @@ page {
 /* 空状态卡片 */
 .empty-card {
   flex-shrink: 0;
-  width: calc(100vw - 64rpx);
-  max-width: calc(100vw - 64rpx);
-  min-width: calc(100vw - 64rpx);
+  width: calc(75vw);
   height: 280rpx;
   display: flex;
   flex-direction: column;

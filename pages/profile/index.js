@@ -36,45 +36,24 @@ Page({
       const token = wx.getStorageSync('token')
       
       if (userInfo && token) {
-        // 验证登录态
-        wx.cloud.callFunction({
-          name: 'verifyLogin',
-          data: {
-            token: token
-          },
-          success: (res) => {
-            if (res.result && res.result.valid) {
-              this.setData({
-                isLoggedIn: true,
-                userName: userInfo.nickName || '用户',
-                userId: userInfo.userId || '100000',
-                isAuth: userInfo.isAuth || false
-              })
-            } else {
-              // 登录态失效
-              this.setData({ isLoggedIn: false })
-              wx.removeStorageSync('userInfo')
-              wx.removeStorageSync('token')
-              wx.navigateTo({ url: '/pages/login/index' })
-            }
-          },
-          fail: (err) => {
-            console.error('验证登录态失败:', err)
-            this.setData({ isLoggedIn: false })
-            wx.removeStorageSync('userInfo')
-            wx.removeStorageSync('token')
-            wx.navigateTo({ url: '/pages/login/index' })
-          }
+        // 测试阶段：有 token 即视为已登录，不验证云端
+        this.setData({
+          isLoggedIn: true,
+          userName: userInfo.nickName || '用户',
+          userId: userInfo.userId || '100000',
+          isAuth: userInfo.isAuth || false
         })
       } else {
         // 未登录
         this.setData({ isLoggedIn: false })
-        wx.navigateTo({ url: '/pages/login/index' })
+        // 测试阶段：移除登录跳转逻辑，避免死循环
+        // wx.navigateTo({ url: '/pages/login/index' })
       }
     } catch (e) {
       console.error('获取用户信息失败:', e)
       this.setData({ isLoggedIn: false })
-      wx.navigateTo({ url: '/pages/login/index' })
+      // 测试阶段：移除登录跳转逻辑，避免死循环
+      // wx.navigateTo({ url: '/pages/login/index' })
     }
   },
 

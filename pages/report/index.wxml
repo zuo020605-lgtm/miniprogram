@@ -13,9 +13,8 @@
       <text class="card-title">举报类型</text>
       <view class="type-list">
         <view 
-          class="type-item" 
-          wx:for="{{reportTypes}}" wx:for-item="type" wx:for-index="index" wx:key="index"
-          class="{{selectedType === index ? 'active' : ''}}"
+          class="type-item {{selectedType === index ? 'active' : ''}}" 
+          wx:for="{{reportTypes}}" wx:for-item="type" wx:for-index="index" wx:key="{{type.id || index}}"
           bindtap="selectType"
           data-index="{{index}}"
         >
@@ -41,7 +40,7 @@
     <view class="image-card">
       <text class="card-title">上传凭证（选填）</text>
       <view class="image-list">
-        <view class="image-item" wx:for="{{images}}" wx:for-item="img" wx:for-index="index" wx:key="index">
+        <view class="image-item" wx:for="{{images}}" wx:for-item="img" wx:for-index="index" wx:key="{{img || index}}">
           <image src="{{img}}" mode="aspectFill" class="preview-image" />
           <view class="remove-btn" bindtap="removeImage" data-index="{{index}}">
             <image class="icon-close" src="/static/close-icon.png" style="width: 16rpx; height: 16rpx;" />

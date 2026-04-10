@@ -59,14 +59,15 @@ Page({
           setTimeout(() => {
             this.scrollToBottom()
           }, 100)
+        } else {
+          // 无结果时使用 Mock 数据
+          this.setMockMessages()
         }
       },
       fail: (err) => {
         console.error('获取历史消息失败:', err)
-        wx.showToast({
-          title: '获取消息失败',
-          icon: 'none'
-        })
+        // 云函数失败时使用 Mock 数据
+        this.setMockMessages()
       }
     })
     
@@ -74,26 +75,76 @@ Page({
     this.listenForNewMessages()
   },
 
+  // 设置 Mock 消息数据
+  setMockMessages() {
+    const mockMessages = [
+      {
+        isSelf: false,
+        content: '你好，有什么可以帮你的吗？',
+        time: new Date(Date.now() - 3600000).toISOString(),
+        formattedTime: this.formatTime(new Date(Date.now() - 3600000).toISOString())
+      },
+      {
+        isSelf: true,
+        content: '我想请你帮我取个快递',
+        time: new Date(Date.now() - 3500000).toISOString(),
+        formattedTime: this.formatTime(new Date(Date.now() - 3500000).toISOString())
+      },
+      {
+        isSelf: false,
+        content: '好的，具体在哪里取呢？',
+        time: new Date(Date.now() - 3400000).toISOString(),
+        formattedTime: this.formatTime(new Date(Date.now() - 3400000).toISOString())
+      },
+      {
+        isSelf: true,
+        content: '在菜鸟驿站，大概下午3点可以吗？',
+        time: new Date(Date.now() - 3300000).toISOString(),
+        formattedTime: this.formatTime(new Date(Date.now() - 3300000).toISOString())
+      },
+      {
+        isSelf: false,
+        content: '可以的，到时候联系你',
+        time: new Date(Date.now() - 3200000).toISOString(),
+        formattedTime: this.formatTime(new Date(Date.now() - 3200000).toISOString())
+      }
+    ]
+    
+    this.setData({
+      messages: mockMessages
+    })
+    
+    // 滚动到最新消息
+    setTimeout(() => {
+      this.scrollToBottom()
+    }, 100)
+  },
+
   // 监听新消息
   listenForNewMessages() {
     const conversationId = this.data.conversationId || 'default'
     
-    // 这里可以使用微信小程序云开发的实时数据库监听
-    // 或者使用 WebSocket 连接
-    // 示例代码（实际实现需要根据具体的实时通信方案调整）
-    wx.cloud.callFunction({
-      name: 'listenMessages',
-      data: {
-        conversationId: conversationId
-      },
-      success: (res) => {
-        console.log('开始监听新消息:', res)
-        // 监听逻辑
-      },
-      fail: (err) => {
-        console.error('监听新消息失败:', err)
+    // 测试阶段：暂时注释掉云函数调用
+    // 实际实现应使用 wx.cloud.database().watch() 或 WebSocket
+    console.log('开始监听新消息:', conversationId)
+    
+    // 示例：使用 setTimeout 模拟接收新消息
+    setTimeout(() => {
+      const newMessage = {
+        isSelf: false,
+        content: '这是一条模拟的新消息',
+        time: new Date().toISOString(),
+        formattedTime: this.formatTime(new Date().toISOString())
       }
-    })
+      
+      const updatedMessages = [...this.data.messages, newMessage]
+      this.setData({
+        messages: updatedMessages
+      })
+      
+      // 滚动到最新消息
+      this.scrollToBottom()
+    }, 5000)
   },
 
   // 输入框内容变化

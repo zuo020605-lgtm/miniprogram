@@ -16,7 +16,7 @@ page {
 /* 内容区 */
 .content-scroll {
   padding: 24rpx;
-  padding-top: calc(24rpx + var(--status-bar-height, 44rpx));
+  padding-top: 24rpx;
   padding-bottom: 200rpx;
   box-sizing: border-box;
   max-width: 100vw;

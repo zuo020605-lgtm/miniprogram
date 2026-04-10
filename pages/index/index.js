@@ -65,12 +65,12 @@ Page({
 
   _getIconByServiceType(serviceType) {
     const iconMap = {
-      'campus-errand': { iconName: 'directions_run', color: 'secondary', bg: 'secondary' },
-      'express': { iconName: 'package', color: 'tertiary', bg: 'tertiary' },
-      'exam': { iconName: 'quiz', color: 'primary', bg: 'primary' },
-      'campus-class': { iconName: 'class', color: 'secondary', bg: 'secondary' }
+      'campus-errand': { iconName: '🏃', color: 'secondary', bg: 'secondary' },
+      'express': { iconName: '📦', color: 'tertiary', bg: 'tertiary' },
+      'exam': { iconName: '📝', color: 'primary', bg: 'primary' },
+      'campus-class': { iconName: '📚', color: 'secondary', bg: 'secondary' }
     }
-    return iconMap[serviceType] || { iconName: 'school', color: 'primary', bg: 'primary' }
+    return iconMap[serviceType] || { iconName: '🏫', color: 'primary', bg: 'primary' }
   },
 
   _loadPopularTasks(callback) {
@@ -101,8 +101,8 @@ Page({
       }
     ]
 
-    const done = function(tasks) {
-      const formattedTasks = tasks.map(function(task) {
+    const done = (tasks) => {
+      const formattedTasks = tasks.map((task) => {
         return {
           _id: task._id,
           serviceType: task.serviceType,
@@ -114,12 +114,12 @@ Page({
           locationText: task.locationText,
           timeText: task.timeText
         }
-      }.bind(this))
+      })
       this.setData({ popularOrders: formattedTasks, loading: false })
       if (typeof callback === 'function') {
         callback()
       }
-    }.bind(this)
+    }
 
     if (!this._isCloudAvailable()) {
       return done(mockTasks)
@@ -186,12 +186,12 @@ Page({
       }
     ]
 
-    const done = function(posts) {
+    const done = (posts) => {
       this.setData({ latestOrders: posts })
       if (typeof callback === 'function') {
         callback()
       }
-    }.bind(this)
+    }
 
     if (!this._isCloudAvailable()) {
       return done(mockPosts)

@@ -21,9 +21,8 @@
       bindscrolltoupper="loadMoreMessages"
     >
       <view 
-        class="message-item" 
-        wx:for="{{messages}}" wx:for-item="msg" wx:for-index="index" wx:key="index"
-        class="{{msg.isSelf ? 'message-self' : ''}}"
+        class="message-item {{msg.isSelf ? 'message-self' : ''}}" 
+        wx:for="{{messages}}" wx:for-item="msg" wx:for-index="index" wx:key="{{index}}"
       >
         <!-- 对方的消息 -->
         <view class="message-avatar" wx:if="{{!msg.isSelf}}">

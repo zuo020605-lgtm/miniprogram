@@ -2,7 +2,7 @@
     <view class="message-list">
       <view 
         class="message-item" 
-        wx:for="{{conversations}}" wx:for-item="conversation" wx:for-index="index" wx:key="index"
+        wx:for="{{conversations}}" wx:for-item="conversation" wx:for-index="index" wx:key="{{conversation._id || conversation.id || index}}"
         bindtap="navigateToChat"
         data-conversation="{{conversation}}"
       >

@@ -36,12 +36,22 @@ page {
 
 .section-title {
   font-size: 28rpx;
-  font-weight: 600;
+  font-weight: 700;
   color: #2c2f32;
+  margin-bottom: 16rpx;
+}
+
+.task-type-note {
+  background-color: #e5e8ec;
+  padding: 16rpx;
+  border-radius: 16rpx;
   margin-bottom: 24rpx;
-  display: flex;
-  align-items: center;
-  font-family: -apple-system, BlinkMacSystemFont, 'San Francisco', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.note-text {
+  font-size: 20rpx;
+  color: #595c5e;
+  line-height: 1.5;
 }
 
 .section-title::before {

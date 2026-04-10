@@ -1,19 +1,19 @@
 <view class="my-orders-page">
     <view class="my-orders-content">
       <view class="tabs">
-        <view class="tab" class="{{activeTab === 'pending' ? 'active' : ''}}" bindtap="switchTab" data-tab="pending">
+        <view class="tab {{activeTab === 'pending' ? 'active' : ''}}" bindtap="switchTab" data-tab="pending">
           <text class="tab-text">待处理</text>
         </view>
-        <view class="tab" class="{{activeTab === 'processing' ? 'active' : ''}}" bindtap="switchTab" data-tab="processing">
+        <view class="tab {{activeTab === 'processing' ? 'active' : ''}}" bindtap="switchTab" data-tab="processing">
           <text class="tab-text">进行中</text>
         </view>
-        <view class="tab" class="{{activeTab === 'completed' ? 'active' : ''}}" bindtap="switchTab" data-tab="completed">
+        <view class="tab {{activeTab === 'completed' ? 'active' : ''}}" bindtap="switchTab" data-tab="completed">
           <text class="tab-text">已完成</text>
         </view>
       </view>
       
       <view class="orders-list">
-        <view class="order-item" wx:for="{{filteredOrders}}" wx:key="index" bindtap="viewDetail" data-id="{{item._id}}">
+        <view class="order-item" wx:for="{{filteredOrders}}" wx:key="{{item._id}}" bindtap="viewDetail" data-id="{{item._id}}">
           <view class="order-header">
             <text class="order-title">{{item.title}}</text>
             <text class="order-status">{{item.statusText}}</text>

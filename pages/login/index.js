@@ -46,39 +46,24 @@ Page({
       return
     }
     this.setData({ sendingCode: true })
-    wx.cloud.callFunction({
-      name: 'login',
-      data: {
-        action: 'sendCode',
-        phone: phone
-      },
-      success: (res) => {
-        console.log('发送验证码成功:', res)
-        wx.showToast({
-          title: '验证码已发送',
-          icon: 'success'
+    // Mock 发送验证码
+    setTimeout(() => {
+      console.log('发送验证码成功: Mock 数据')
+      wx.showToast({
+        title: '验证码已发送',
+        icon: 'success'
+      })
+      this.setData({ countdown: 60 })
+      this.data.timer = setInterval(() => {
+        this.setData({
+          countdown: this.data.countdown - 1
         })
-        this.setData({ countdown: 60 })
-        this.data.timer = setInterval(() => {
-          this.setData({
-            countdown: this.data.countdown - 1
-          })
-          if (this.data.countdown <= 0) {
-            this.clearTimer()
-          }
-        }, 1000)
-      },
-      fail: (err) => {
-        console.error('发送验证码失败:', err)
-        wx.showToast({
-          title: '发送验证码失败',
-          icon: 'none'
-        })
-      },
-      complete: () => {
-        this.setData({ sendingCode: false })
-      }
-    })
+        if (this.data.countdown <= 0) {
+          this.clearTimer()
+        }
+      }, 1000)
+      this.setData({ sendingCode: false })
+    }, 500)
   },
 
   loginByPhone() {
@@ -97,99 +82,37 @@ Page({
       })
       return
     }
-    wx.cloud.callFunction({
-      name: 'login',
-      data: {
-        action: 'loginByPhone',
-        phone: phone,
-        code: code
-      },
-      success: (res) => {
-        console.log('手机号登录成功:', res)
-        if (res.result && res.result.token) {
-          wx.setStorageSync('token', res.result.token)
-          wx.setStorageSync('userInfo', res.result.userInfo)
-          wx.showToast({
-            title: '登录成功',
-            icon: 'success'
-          })
-          wx.switchTab({
-            url: '/pages/index/index'
-          })
-        } else {
-          wx.showToast({
-            title: '登录失败',
-            icon: 'none'
-          })
-        }
-      },
-      fail: (err) => {
-        console.error('手机号登录失败:', err)
-        wx.showToast({
-          title: '登录失败',
-          icon: 'none'
-        })
-      }
+    // Mock 手机号登录
+    console.log('手机号登录成功: Mock 数据')
+    wx.setStorageSync('token', 'mock-token')
+    wx.setStorageSync('userInfo', {
+      nickName: '测试用户',
+      avatar: '/static/default-avatar.png',
+      phone: phone
+    })
+    wx.showToast({
+      title: '登录成功',
+      icon: 'success'
+    })
+    wx.switchTab({
+      url: '/pages/index/index'
     })
   },
 
   loginByWechat() {
-    wx.login({
-      success: (loginRes) => {
-        wx.getUserProfile({
-          desc: '用于登录',
-          success: (userProfile) => {
-            wx.cloud.callFunction({
-              name: 'login',
-              data: {
-                action: 'loginByWechat',
-                code: loginRes.code,
-                userInfo: userProfile.userInfo
-              },
-              success: (res) => {
-                console.log('微信登录成功:', res)
-                if (res.result && res.result.token) {
-                  wx.setStorageSync('token', res.result.token)
-                  wx.setStorageSync('userInfo', res.result.userInfo)
-                  wx.showToast({
-                    title: '登录成功',
-                    icon: 'success'
-                  })
-                  wx.switchTab({
-                    url: '/pages/index/index'
-                  })
-                } else {
-                  wx.showToast({
-                    title: '登录失败',
-                    icon: 'none'
-                  })
-                }
-              },
-              fail: (err) => {
-                console.error('微信登录失败:', err)
-                wx.showToast({
-                  title: '登录失败',
-                  icon: 'none'
-                })
-              }
-            })
-          },
-          fail: (err) => {
-            console.error('获取用户信息失败:', err)
-            wx.showToast({
-              title: '登录失败',
-              icon: 'none'
-            })
-          }
-        })
-      },
-      fail: (err) => {
-        console.error('微信登录失败:', err)
-        wx.showToast({
-          title: '登录失败',
-          icon: 'none'
-        })
-      }
+    // Mock 微信登录
+    console.log('微信登录成功: Mock 数据')
+    wx.setStorageSync('token', 'mock-token')
+    wx.setStorageSync('userInfo', {
+      nickName: '微信用户',
+      avatar: '/static/default-avatar.png'
+    })
+    wx.showToast({
+      title: '登录成功',
+      icon: 'success'
+    })
+    wx.switchTab({
+      url: '/pages/index/index'
     })
   }
 })

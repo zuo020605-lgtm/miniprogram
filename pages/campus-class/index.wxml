@@ -90,9 +90,10 @@
           <!-- 课程块 -->
           <view 
             class="course-block"
-            wx:for="{{courses}}" wx:for-item="course" wx:for-index="idx" wx:key="idx"
+            wx:for="{{courses}}" wx:for-item="course" wx:for-index="idx" wx:key="{{course._id || idx}}"
             bindtap="showCourseInfo"
             data-course="{{course}}"
+            style="grid-column: {{course.gridColumn}}; grid-row: {{course.gridRow}} / {{course.gridRowEnd}}; background-color: {{['#E3F2FD', '#E8F5E9', '#FFF3E0', '#F3E5F5', '#E0F7FA'][idx % 5]}};"
           >
             <view class="course-content">
               <text class="course-name">{{ course.name }}</text>

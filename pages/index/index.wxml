@@ -2,18 +2,18 @@
   <!-- 顶部导航 - Glass Header -->
   <view class="header glass-header">
     <view class="campus-selector" bindtap="showCampusPicker">
-      <text class="material-icons icon-school">school</text>
+      <text class="icon-school">🏫</text>
       <view class="campus-info">
         <text class="campus-label">当前校区</text>
         <view class="campus-name-wrapper">
           <text class="campus-name">{{ currentCampus }}</text>
-          <text class="material-icons icon-chevron">chevron_right</text>
+          <text class="icon-chevron">→</text>
         </view>
       </view>
     </view>
     <view class="header-actions">
       <view class="notification-btn" bindtap="navigateToMessage">
-        <text class="material-icons icon-bell">notifications</text>
+        <text class="icon-bell">🔔</text>
         <view class="notification-badge" wx:if="{{unreadCount > 0}}">{{ unreadCount }}</view>
       </view>
       <view class="user-avatar" bindtap="navigateToProfile">
@@ -30,7 +30,7 @@
     </view>
     <view class="search-wrapper">
       <view class="search-icon-wrapper">
-        <text class="material-icons search-icon">search</text>
+        <text class="search-icon">🔍</text>
       </view>
       <input 
         type="text" 
@@ -51,7 +51,7 @@
     <view class="bento-grid">
       <!-- 校园代课 - 大卡片 -->
       <view class="bento-item bento-item-large gradient-primary" bindtap="navigateToCampusClass">
-        <text class="material-icons bento-icon-large">class</text>
+        <text class="bento-icon-large">📚</text>
         <view class="bento-info">
           <text class="bento-title">校园代课</text>
           <text class="bento-subtitle">知识共享</text>
@@ -63,7 +63,7 @@
         <!-- 校园跑腿 -->
         <view class="bento-item bento-item-small bg-secondary-container" bindtap="navigateToPublish" data-type="campus-errand">
           <view class="icon-wrapper-white">
-            <text class="material-icons bento-icon">directions_run</text>
+            <text class="bento-icon">🏃</text>
           </view>
           <view class="bento-info-small">
             <text class="bento-title-small text-on-secondary-container">校园跑腿</text>
@@ -74,7 +74,7 @@
         <!-- 快递代取 -->
         <view class="bento-item bento-item-small bg-surface-container-highest" bindtap="navigateToPublish" data-type="express">
           <view class="icon-wrapper-white">
-            <text class="material-icons bento-icon">package</text>
+            <text class="bento-icon">📦</text>
           </view>
           <view class="bento-info-small">
             <text class="bento-title-small text-on-surface">快递代取</text>
@@ -87,14 +87,14 @@
       <view class="bento-item bento-item-full bg-tertiary-container" bindtap="navigateToPublish" data-type="exam">
         <view class="bento-full-left">
           <view class="icon-wrapper-tertiary">
-            <text class="material-icons bento-icon">quiz</text>
+            <text class="bento-icon">📝</text>
           </view>
           <view class="bento-info">
             <text class="bento-title text-on-tertiary-container">考试代替</text>
             <text class="bento-subtitle text-on-tertiary-container-80">考试周支持</text>
           </view>
         </view>
-        <text class="material-icons chevron-right">chevron_right</text>
+        <text class="chevron-right">→</text>
       </view>
     </view>
   </view>
@@ -130,17 +130,17 @@
         <text class="task-title">{{item.title}}</text>
         <view class="task-meta">
           <view class="task-meta-item">
-            <text class="material-icons meta-icon">location_on</text>
+            <text class="meta-icon">📍</text>
             <text class="meta-text">{{item.locationText}}</text>
           </view>
           <view class="task-meta-item">
-            <text class="material-icons meta-icon">access_time</text>
+            <text class="meta-icon">🕒</text>
             <text class="meta-text">{{item.timeText}}</text>
           </view>
         </view>
       </view>
       <view wx:if="{{popularOrders.length === 0}}" class="empty-card">
-        <text class="material-symbols-outlined empty-icon">inbox</text>
+        <text class="empty-icon">📥</text>
         <text class="empty-text">暂无热门任务</text>
       </view>
     </scroll-view>
@@ -189,5 +189,5 @@
 
 <!-- Floating Action Button -->
 <view class="fab-button" bindtap="navigateToPublish">
-  <text class="material-icons fab-icon">add</text>
+  <text class="fab-icon">➕</text>
 </view>

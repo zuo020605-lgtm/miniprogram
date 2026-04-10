@@ -34,6 +34,7 @@ App({
   
   globalData: {
     userInfo: null,
-    hasLogin: false
+    hasLogin: false,
+    useMock: true
   }
 })

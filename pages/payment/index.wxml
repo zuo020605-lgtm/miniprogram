@@ -3,7 +3,7 @@
       <text class="payment-title">选择支付方式</text>
       
       <view class="payment-methods">
-        <view class="payment-item" class="{{selectedPayment === 'wechat' ? 'active' : ''}}" bindtap="selectPayment" data-method="wechat">
+        <view class="payment-item {{selectedPayment === 'wechat' ? 'active' : ''}}" bindtap="selectPayment" data-method="wechat">
           <view class="payment-icon payment-icon-wechat">
             <text class="icon">💳</text>
           </view>
@@ -11,12 +11,12 @@
             <text class="payment-name">微信支付</text>
             <text class="payment-desc">推荐使用微信支付</text>
           </view>
-          <view class="payment-radio" class="{{selectedPayment === 'wechat' ? 'active' : ''}}">
+          <view class="payment-radio {{selectedPayment === 'wechat' ? 'active' : ''}}">
             <text wx:if="{{selectedPayment === 'wechat'}}" class="radio-dot"></text>
           </view>
         </view>
         
-        <view class="payment-item" class="{{selectedPayment === 'alipay' ? 'active' : ''}}" bindtap="selectPayment" data-method="alipay">
+        <view class="payment-item {{selectedPayment === 'alipay' ? 'active' : ''}}" bindtap="selectPayment" data-method="alipay">
           <view class="payment-icon payment-icon-alipay">
             <text class="icon">💳</text>
           </view>
@@ -24,12 +24,12 @@
             <text class="payment-name">支付宝支付</text>
             <text class="payment-desc">使用支付宝进行支付</text>
           </view>
-          <view class="payment-radio" class="{{selectedPayment === 'alipay' ? 'active' : ''}}">
+          <view class="payment-radio {{selectedPayment === 'alipay' ? 'active' : ''}}">
             <text wx:if="{{selectedPayment === 'alipay'}}" class="radio-dot"></text>
           </view>
         </view>
         
-        <view class="payment-item" class="{{selectedPayment === 'balance' ? 'active' : ''}}" bindtap="selectPayment" data-method="balance">
+        <view class="payment-item {{selectedPayment === 'balance' ? 'active' : ''}}" bindtap="selectPayment" data-method="balance">
           <view class="payment-icon payment-icon-balance">
             <text class="icon">💰</text>
           </view>
@@ -37,7 +37,7 @@
             <text class="payment-name">余额支付</text>
             <text class="payment-desc">可用余额：¥128.50</text>
           </view>
-          <view class="payment-radio" class="{{selectedPayment === 'balance' ? 'active' : ''}}">
+          <view class="payment-radio {{selectedPayment === 'balance' ? 'active' : ''}}">
             <text wx:if="{{selectedPayment === 'balance'}}" class="radio-dot"></text>
           </view>
         </view>

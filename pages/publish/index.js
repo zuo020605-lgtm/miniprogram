@@ -81,7 +81,17 @@ Page({
     
     // 当选择校园代课时，跳转到专用页面
     if (type === 'campus-class') {
-      wx.navigateTo({ url: '/pages/campus-class/index' })
+      wx.showModal({
+        title: '确认跳转',
+        content: '选择校园代课后将跳转到专用课表页面，是否继续？',
+        confirmText: '确定',
+        cancelText: '取消',
+        success: (res) => {
+          if (res.confirm) {
+            wx.navigateTo({ url: '/pages/campus-class/index' })
+          }
+        }
+      })
       return
     }
     

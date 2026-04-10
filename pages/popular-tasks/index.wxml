@@ -1,7 +1,7 @@
 <view class="popular-tasks-page">
     <view class="tasks-list">
       <!-- 订单列表 -->
-      <view class="task-card" wx:for="{{unacceptedOrders}}" wx:key="index" bindtap="navigateToOrderDetail" data-id="{{item._id}}">
+      <view class="task-card" wx:for="{{unacceptedOrders}}" wx:key="_id" bindtap="navigateToOrderDetail" data-id="{{item._id}}">
         <view class="task-header">
           <view class="task-tag">
             <text>{{ item.tagText || '待接单' }}</text>

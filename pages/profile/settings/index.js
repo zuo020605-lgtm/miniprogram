@@ -1,7 +1,10 @@
 // 系统设置
 Page({
   data: {
-    cacheSize: '0KB'
+    cacheSize: '0KB',
+    messageNotification: true,
+    systemNotification: true,
+    publicProfile: false
   },
 
   onLoad(options) {
@@ -155,5 +158,23 @@ Page({
       }
     })
     wx.getUpdateManager().checkForUpdate()
+  },
+
+  toggleMessage(e) {
+    this.setData({
+      messageNotification: e.detail.value
+    })
+  },
+
+  toggleSystem(e) {
+    this.setData({
+      systemNotification: e.detail.value
+    })
+  },
+
+  togglePublic(e) {
+    this.setData({
+      publicProfile: e.detail.value
+    })
   }
 })

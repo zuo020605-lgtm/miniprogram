@@ -6,12 +6,16 @@ Page({
     selectedTags: [],
     content: '',
     canSubmit: false,
-    orderId: ''
+    orderId: '',
+    priceText: '¥0.00'
   },
 
   onLoad(options) {
     console.log('页面加载:', options)
-    this.setData({ orderId: options.orderId || '' })
+    this.setData({
+      orderId: options.orderId || '',
+      priceText: '¥' + (options.price || '0.00')
+    })
   },
 
   onShow() {

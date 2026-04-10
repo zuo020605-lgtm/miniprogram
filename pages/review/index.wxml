@@ -16,7 +16,7 @@
         </view>
         <view class="order-text">
           <text class="order-title">{{ order.title || '校园跑腿任务' }}</text>
-          <text class="order-price">¥{{ formatPrice(order.price) }}</text>
+          <text class="order-price">{{ priceText }}</text>
         </view>
       </view>
     </view>
@@ -44,9 +44,9 @@
       <view class="tags-list">
         <view 
           class="tag-item {{selectedTags.includes(tag) ? 'active' : ''}}" 
-          wx:for="{{tags}}" wx:for-item="tag" wx:for-index="index" 
-          data-tag="{{tag}}"
+          wx:for="{{tags}}" wx:for-item="tag" wx:for-index="index" wx:key="{{tag}}"
           bindtap="toggleTag"
+          data-tag="{{tag}}"
         >
           <text>{{ tag }}</text>
         </view>

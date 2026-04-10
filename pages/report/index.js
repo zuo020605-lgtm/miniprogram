@@ -11,7 +11,8 @@ Page({
     description: '',
     images: [],
     contact: '',
-    submitting: false
+    submitting: false,
+    canSubmit: false
   },
 
   onLoad(options) {
@@ -33,12 +34,20 @@ Page({
   // 选择举报类型
   selectType(e) {
     const { index } = e.currentTarget.dataset
-    this.setData({ selectedType: parseInt(index) })
+    const selectedType = parseInt(index)
+    this.setData({
+      selectedType: selectedType,
+      canSubmit: selectedType !== -1 && this.data.description.trim().length > 0
+    })
   },
 
   // 描述变更
   onDescriptionChange(e) {
-    this.setData({ description: e.detail.value })
+    const description = e.detail.value
+    this.setData({
+      description: description,
+      canSubmit: this.data.selectedType !== -1 && description.trim().length > 0
+    })
   },
 
   // 联系方式变更

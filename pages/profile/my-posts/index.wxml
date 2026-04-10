@@ -2,8 +2,7 @@
     <!-- 标签切换 -->
     <view class="tab-nav">
       <view 
-        class="tab-item" 
-        class="{{currentTab === 'unaccepted' ? 'active' : ''}}"
+        class="tab-item {{currentTab === 'unaccepted' ? 'active' : ''}}"
         bindtap="switchTab"
         data-tab="unaccepted"
       >
@@ -11,8 +10,7 @@
         <view class="tab-count" wx:if="{{tabCounts.unaccepted > 0}}">{{ tabCounts.unaccepted }}</view>
       </view>
       <view 
-        class="tab-item" 
-        class="{{currentTab === 'processing' ? 'active' : ''}}"
+        class="tab-item {{currentTab === 'processing' ? 'active' : ''}}"
         bindtap="switchTab"
         data-tab="processing"
       >
@@ -20,8 +18,7 @@
         <view class="tab-count processing" wx:if="{{tabCounts.processing > 0}}">{{ tabCounts.processing }}</view>
       </view>
       <view 
-        class="tab-item" 
-        class="{{currentTab === 'completed' ? 'active' : ''}}"
+        class="tab-item {{currentTab === 'completed' ? 'active' : ''}}"
         bindtap="switchTab"
         data-tab="completed"
       >
@@ -58,7 +55,7 @@
       <view class="order-list">
         <view 
           class="order-card"
-          wx:for="{{displayOrders}}" wx:key="index"
+          wx:for="{{displayOrders}}" wx:key="{{item._id}}"
           bindtap="openDetail"
           data-id="{{item._id}}"
         >
