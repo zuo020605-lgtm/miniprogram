@@ -1,4 +1,6 @@
 // 登录
+import api from '../../utils/api'
+
 Page({
   data: {
     phone: '',
@@ -66,7 +68,7 @@ Page({
     }, 500)
   },
 
-  loginByPhone() {
+  async loginByPhone() {
     const { phone, code } = this.data
     if (!phone || phone.length !== 11) {
       wx.showToast({
@@ -82,37 +84,49 @@ Page({
       })
       return
     }
-    // Mock 手机号登录
-    console.log('手机号登录成功: Mock 数据')
-    wx.setStorageSync('token', 'mock-token')
-    wx.setStorageSync('userInfo', {
-      nickName: '测试用户',
-      avatar: '/static/default-avatar.png',
-      phone: phone
-    })
-    wx.showToast({
-      title: '登录成功',
-      icon: 'success'
-    })
-    wx.switchTab({
-      url: '/pages/index/index'
-    })
+    try {
+      wx.showLoading({ title: '登录中...' })
+      const loginResult = await api.login('phone_mock_code_' + Date.now())
+      const userInfo = await api.getUserInfo(loginResult.openid)
+      userInfo.phone = phone
+      getApp().setLoginState(userInfo)
+      wx.hideLoading()
+      wx.showToast({
+        title: '登录成功',
+        icon: 'success'
+      })
+      wx.switchTab({
+        url: '/pages/index/index'
+      })
+    } catch (err) {
+      wx.hideLoading()
+      wx.showToast({
+        title: err.message || '登录失败',
+        icon: 'none'
+      })
+    }
   },
 
-  loginByWechat() {
-    // Mock 微信登录
-    console.log('微信登录成功: Mock 数据')
-    wx.setStorageSync('token', 'mock-token')
-    wx.setStorageSync('userInfo', {
-      nickName: '微信用户',
-      avatar: '/static/default-avatar.png'
-    })
-    wx.showToast({
-      title: '登录成功',
-      icon: 'success'
-    })
-    wx.switchTab({
-      url: '/pages/index/index'
-    })
+  async loginByWechat() {
+    try {
+      wx.showLoading({ title: '登录中...' })
+      const loginResult = await api.login('wechat_mock_code_' + Date.now())
+      const userInfo = await api.getUserInfo(loginResult.openid)
+      getApp().setLoginState(userInfo)
+      wx.hideLoading()
+      wx.showToast({
+        title: '登录成功',
+        icon: 'success'
+      })
+      wx.switchTab({
+        url: '/pages/index/index'
+      })
+    } catch (err) {
+      wx.hideLoading()
+      wx.showToast({
+        title: err.message || '登录失败',
+        icon: 'none'
+      })
+    }
   }
 })

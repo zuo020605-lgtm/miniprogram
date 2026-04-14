@@ -1,22 +1,88 @@
 /* ============================================
-   首页样式 - Material Design 3
+   首页样式 - 新设计规范
    ============================================ */
 
 page {
-  background-color: #f5f7fa;
+  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
 }
 
 .home-page {
   min-height: 100vh;
-  background-color: #f5f7fa;
+  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
   padding-bottom: constant(safe-area-inset-bottom);
   padding-bottom: env(safe-area-inset-bottom);
 }
 
 /* ========== 全局文字色 ========== */
-/* [修复] 将 text-primary 从局部选择器改为全局类，全页通用 */
 .text-primary {
-  color: #005da4;
+  color: #3b82f6;
+}
+
+.text-secondary {
+  color: #6b7280;
+}
+
+.text-tertiary {
+  color: #9ca3af;
+}
+
+/* ========== 动画效果 ========== */
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ========== 深色模式适配 ========== */
+@media (prefers-color-scheme: dark) {
+  .page-container {
+    background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+  }
+  
+  .text-primary {
+    color: #60a5fa;
+  }
+  
+  .text-secondary {
+    color: #94a3b8;
+  }
+  
+  .text-tertiary {
+    color: #cbd5e1;
+  }
+  
+  .header {
+    background: rgba(15, 23, 42, 0.85);
+  }
+  
+  .search-input {
+    background-color: #1e293b;
+    color: #f8fafc;
+  }
+  
+  .search-input::placeholder {
+    color: #94a3b8;
+  }
+  
+  .task-card,
+  .post-item {
+    background-color: #1e293b;
+    box-shadow: 0 4rpx 24rpx rgba(0, 0, 0, 0.15);
+  }
+  
+  .task-title,
+  .post-title {
+    color: #f8fafc;
+  }
+  
+  .meta-text,
+  .post-meta .meta-item {
+    color: #94a3b8;
+  }
 }
 
 /* ========== 顶部导航 ========== */
@@ -33,6 +99,7 @@ page {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1rpx solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
 }
 
 /* [修复] 补充缺失的 glass-header 类定义（WXML 中使用但 CSS 中未定义） */
@@ -40,6 +107,7 @@ page {
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
 }
 
 .campus-selector {
@@ -125,25 +193,27 @@ page {
   min-width: 32rpx;
   height: 32rpx;
   padding: 0 8rpx;
-  background-color: #b31b25;
-  color: #ffefee;
+  background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
+  color: #ffffff;
   font-size: 18rpx;
   font-weight: 700;
   border-radius: 16rpx;
   display: flex;
   align-items: center;
   justify-content: center;
+  animation: pulse 2s infinite;
+  box-shadow: 0 2rpx 8rpx rgba(59, 130, 246, 0.4);
 }
 
 .user-avatar {
   width: 64rpx;
   height: 64rpx;
   border-radius: 50%;
-  background: linear-gradient(135deg, #005da4 0%, #00518f 100%);
+  background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4rpx 12rpx rgba(0, 93, 164, 0.3);
+  box-shadow: 0 4rpx 12rpx rgba(59, 130, 246, 0.3);
   /* iOS 风格动画 */
   transition: transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.1s ease;
 }
@@ -170,7 +240,7 @@ page {
   font-size: 48rpx;
   font-weight: 800;
   line-height: 1.2;
-  color: #2c2f32;
+  color: #1a1a1a;
   margin-bottom: 32rpx;
   letter-spacing: -0.02em;
 }
@@ -179,6 +249,7 @@ page {
   position: relative;
   display: flex;
   align-items: center;
+  z-index: 20;
 }
 
 .search-icon-wrapper {
@@ -207,18 +278,80 @@ page {
   border: 2rpx solid transparent;
   border-radius: 32rpx;
   font-size: 28rpx;
-  color: #2c2f32;
-  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
+  color: #1a1a1a;
+  box-shadow: 0 4rpx 24rpx rgba(0, 0, 0, 0.06);
   transition: all 0.2s ease;
 }
 
 .search-input:focus {
-  border-color: #005da4;
-  box-shadow: 0 4rpx 24rpx rgba(0, 93, 164, 0.15);
+  border-color: #3b82f6;
+  box-shadow: 0 4rpx 24rpx rgba(59, 130, 246, 0.15);
 }
 
 .search-input::placeholder {
-  color: #74777a;
+  color: #6b7280;
+}
+
+.search-history-panel {
+  position: relative;
+  z-index: 19;
+  margin-top: 16rpx;
+  padding: 24rpx;
+  background: #ffffff;
+  border-radius: 24rpx;
+  box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.08);
+}
+
+.search-history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18rpx;
+}
+
+.search-history-title {
+  font-size: 26rpx;
+  font-weight: 800;
+  color: #2c2f32;
+}
+
+.search-history-clear {
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #005da4;
+}
+
+.search-history-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.search-history-item {
+  max-width: 100%;
+  height: 58rpx;
+  padding: 0 22rpx;
+  border-radius: 29rpx;
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  background: rgba(0, 93, 164, 0.08);
+  color: #005da4;
+  box-sizing: border-box;
+}
+
+.history-clock {
+  font-size: 22rpx;
+  flex-shrink: 0;
+}
+
+.history-keyword {
+  max-width: 520rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 24rpx;
+  font-weight: 600;
 }
 
 /* ========== Bento Grid ========== */
@@ -234,14 +367,14 @@ page {
 }
 
 .bento-item {
-  border-radius: 32rpx;
+  border-radius: 24rpx;
   /* iOS 风格动画 */
-  transition: transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.1s ease;
+  transition: all 0.2s ease;
 }
 
 .bento-item:active {
-  transform: scale(0.94);
-  opacity: 0.88;
+  transform: scale(0.985);
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.12);
 }
 
 /* 大卡片 - 校园代课 */
@@ -251,12 +384,12 @@ page {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-shadow: 0 8rpx 24rpx rgba(0, 93, 164, 0.25);
+  box-shadow: 0 4rpx 24rpx rgba(0, 0, 0, 0.06);
   align-self: stretch;
 }
 
 .gradient-primary {
-  background: linear-gradient(135deg, #005da4 0%, #00518f 100%);
+  background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
 }
 
 .bento-icon-large {
@@ -302,15 +435,16 @@ page {
   display: flex;
   align-items: center;
   gap: 20rpx;
-  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4rpx 24rpx rgba(0, 0, 0, 0.06);
+  background-color: #ffffff;
 }
 
 .bg-secondary-container {
-  background-color: #bfd1ff;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
 }
 
 .bg-surface-container-highest {
-  background-color: #d9dde1;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
 }
 
 .icon-wrapper-white {
@@ -373,19 +507,19 @@ page {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 4rpx 16rpx rgba(126, 63, 159, 0.15);
-  border-radius: 32rpx;
+  box-shadow: 0 4rpx 24rpx rgba(0, 0, 0, 0.06);
+  border-radius: 24rpx;
   /* iOS 风格动画 */
-  transition: transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.1s ease;
+  transition: all 0.2s ease;
 }
 
 .bento-item-full:active {
-  transform: scale(0.96);
-  opacity: 0.88;
+  transform: scale(0.985);
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.12);
 }
 
 .bg-tertiary-container {
-  background-color: #de98ff;
+  background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
 }
 
 .bento-full-left {
@@ -475,16 +609,15 @@ page {
   padding: 32rpx;
   margin-bottom: 24rpx;
   background-color: #ffffff;
-  border-radius: 32rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.04);
+  border-radius: 24rpx;
+  box-shadow: 0 4rpx 24rpx rgba(0, 0, 0, 0.06);
   box-sizing: border-box;
-  /* [修复] 原来 transition 定义了两次，合并为一条 iOS 风格动画 */
-  transition: transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.1s ease;
+  transition: all 0.2s ease;
 }
 
 .task-card:active {
-  transform: scale(0.96);
-  opacity: 0.9;
+  transform: scale(0.985);
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.12);
 }
 
 .task-card-header {
@@ -564,7 +697,7 @@ page {
 /* 空状态卡片 */
 .empty-card {
   flex-shrink: 0;
-  width: calc(75vw);
+  width: 100%;
   height: 280rpx;
   display: flex;
   flex-direction: column;
@@ -604,14 +737,13 @@ page {
   padding: 24rpx;
   background-color: #ffffff;
   border-radius: 24rpx;
-  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
-  /* iOS 风格动画 */
-  transition: transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.1s ease;
+  box-shadow: 0 4rpx 24rpx rgba(0, 0, 0, 0.06);
+  transition: all 0.2s ease;
 }
 
 .post-item:active {
-  transform: scale(0.97);
-  opacity: 0.88;
+  transform: scale(0.985);
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.12);
 }
 
 .post-icon-wrapper {
@@ -700,20 +832,19 @@ page {
   bottom: calc(120rpx + env(safe-area-inset-bottom));
   width: 112rpx;
   height: 112rpx;
-  background: linear-gradient(135deg, #005da4 0%, #00518f 100%);
+  background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8rpx 24rpx rgba(0, 93, 164, 0.35);
+  box-shadow: 0 8rpx 24rpx rgba(59, 130, 246, 0.35);
   z-index: 100;
-  /* iOS 风格动画 */
-  transition: transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.1s ease;
+  transition: all 0.2s ease;
 }
 
 .fab-button:active {
-  transform: scale(0.88);
-  box-shadow: 0 4rpx 12rpx rgba(0, 93, 164, 0.25);
+  transform: scale(0.97);
+  box-shadow: 0 4rpx 12rpx rgba(59, 130, 246, 0.25);
 }
 
 .fab-icon {
@@ -728,19 +859,10 @@ page {
 }
 
 .skeleton {
-  background: linear-gradient(90deg, #e5e8ec 25%, #dfe3e7 50%, #e5e8ec 75%);
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
   background-size: 200% 100%;
-  animation: skeleton-loading 1.5s infinite;
+  animation: shimmer 1.5s infinite;
   border-radius: 8rpx;
-}
-
-@keyframes skeleton-loading {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
-  }
 }
 
 .skeleton-header {

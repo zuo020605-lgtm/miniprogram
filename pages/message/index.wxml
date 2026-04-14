@@ -1,22 +1,50 @@
-<view class="message-page">
-    <view class="message-list">
-      <view 
-        class="message-item" 
-        wx:for="{{conversations}}" wx:for-item="conversation" wx:for-index="index" wx:key="{{conversation._id || conversation.id || index}}"
-        bindtap="navigateToChat"
-        data-conversation="{{conversation}}"
-      >
-        <view class="message-avatar">
-          <text class="avatar-text">{{conversation.name.charAt(0)}}</text>
-        </view>
-        <view class="message-info">
-          <view class="message-header">
-            <text class="message-name">{{conversation.name}}</text>
-            <text class="message-time">{{conversation.lastMessageTime}}</text>
+<view class="page-container">
+    <!-- 消息列表 -->
+    <scroll-view 
+      scroll-y 
+      class="message-scroll"
+      bindscrolltolower="loadMore"
+    >
+      <view class="message-list">
+        <view 
+          class="order-card message-item" 
+          wx:for="{{conversations}}" wx:for-item="conversation" wx:for-index="index" wx:key="index"
+          bindtap="navigateToChat"
+          data-conversation="{{conversation}}"
+        >
+          <view class="card-header">
+            <view class="service-badge badge-blue">
+              <text class="avatar-text">{{conversation.name.charAt(0)}}</text>
+            </view>
+            <view class="card-title-wrap">
+              <text class="card-title">{{conversation.name}}</text>
+              <view class="card-meta">
+                <text class="meta-text">{{conversation.lastMessageTime}}</text>
+              </view>
+            </view>
+            <view class="tab-count" wx:if="{{conversation.unreadCount > 0}}">{{conversation.unreadCount}}</view>
           </view>
-          <text class="message-preview">{{conversation.lastMessage}}</text>
+          <view class="card-body">
+            <text class="location-text">{{conversation.lastMessage}}</text>
+          </view>
         </view>
-        <view class="message-badge" wx:if="{{conversation.unreadCount > 0}}">{{conversation.unreadCount}}</view>
       </view>
-    </view>
+      
+      <!-- 加载更多 -->
+      <view class="load-more" wx:if="{{hasMore}}">
+        <text class="load-text">{{ loadingMore ? '加载中...' : '上拉加载更多' }}</text>
+      </view>
+      
+      <!-- 空状态 -->
+      <view wx:if="{{conversations.length === 0 && !isLoading}}" class="empty-container">
+        <view class="empty-visual">
+          <image class="icon-order" src="/static/bell-icon.png" style="width: 56rpx; height: 56rpx;" />
+        </view>
+        <text class="empty-title">暂无消息</text>
+        <text class="empty-desc">您还没有任何消息</text>
+      </view>
+      
+      <!-- 底部安全区 -->
+      <view class="safe-area"></view>
+    </scroll-view>
   </view>

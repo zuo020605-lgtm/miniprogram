@@ -1,0 +1,64 @@
+<view class="map-location-page">
+  <view class="header">
+    <view class="header-left" bindtap="onCancel">
+      <text class="header-back">←</text>
+    </view>
+    <view class="header-title">选择地点</view>
+    <view class="header-right"></view>
+  </view>
+  
+  <view class="map-container">
+    <map 
+      id="map" 
+      class="map" 
+      longitude="{{longitude}}" 
+      latitude="{{latitude}}" 
+      scale="16" 
+      show-location="true" 
+      bindmarkertap="onMarkerTap"
+      bindregionchange="onRegionChange"
+      bindtap="onMapTap"
+    />
+    <view class="map-center">
+      <view class="location-marker">
+        <view class="marker-inner"></view>
+      </view>
+    </view>
+  </view>
+  
+  <view class="location-info" wx:if="{{selectedLocation}}">
+    <view class="location-name">{{selectedLocation.name || '未命名地点'}}</view>
+    <view class="location-address">{{selectedLocation.address || '无详细地址'}}</view>
+  </view>
+  
+  <view class="search-bar">
+    <input 
+      class="search-input" 
+      placeholder="搜索地点" 
+      value="{{searchKeyword}}" 
+      bindinput="onSearchInput"
+      bindconfirm="onSearch"
+    />
+    <button class="search-btn" bindtap="onSearch">搜索</button>
+  </view>
+  
+  <view class="search-results" wx:if="{{searchResults.length > 0}}">
+    <view 
+      class="result-item" 
+      wx:for="{{searchResults}}" 
+      wx:key="id"
+      bindtap="onSelectResult"
+      data-index="{{index}}"
+    >
+      <view class="result-name">{{item.name}}</view>
+      <view class="result-address">{{item.address}}</view>
+    </view>
+  </view>
+  
+  <!-- 确认选择按钮 -->
+  <view class="confirm-button-container">
+    <button class="confirm-button" bindtap="onConfirm">
+      确认选择
+    </button>
+  </view>
+</view>

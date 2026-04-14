@@ -15,7 +15,7 @@
       <view class="filter-item"><text>补考</text></view>
     </view>
     <view class="task-list">
-      <view class="task-item" wx:for="{{tasks}}" wx:for-item="task" wx:for-index="index" wx >
+      <view class="task-item" wx:for="{{tasks}}" wx:for-item="task" wx:for-index="index" wx:key="id">
         <view class="task-header">
           <text class="task-title">{{ task.title }}</text>
           <text class="task-price">¥{{ task.price }}</text>
@@ -36,7 +36,7 @@
         </view>
         <view class="task-footer">
           <text class="task-publisher">发布者: {{ task.publisher }}</text>
-          <button class="task-btn" bindtap="acceptTask">接取任务</button>
+          <button class="task-btn" bindtap="acceptTask" data-id="{{task.id}}">接取任务</button>
         </view>
       </view>
     </view>

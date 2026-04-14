@@ -1,0 +1,25 @@
+<view class="custom-tabbar">
+  <view
+    wx:for="{{list}}"
+    wx:key="pagePath"
+    class="tabbar-item {{selected === index ? 'active' : ''}}"
+    data-path="{{item.pagePath}}"
+    data-index="{{index}}"
+    catchtap="switchTab"
+  >
+    <view class="tabbar-bulge"></view>
+    <view class="tabbar-icon-shell">
+      <image
+        class="tabbar-icon"
+        src="{{selected === index ? item.selectedIconPath : item.iconPath}}"
+        mode="aspectFit"
+      />
+    </view>
+    <text
+      class="tabbar-text"
+      style="color: {{selected === index ? selectedColor : color}};"
+    >
+      {{item.text}}
+    </text>
+  </view>
+</view>

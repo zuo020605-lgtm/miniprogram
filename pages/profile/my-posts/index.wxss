@@ -43,7 +43,7 @@ page { overflow-x: hidden; }
   letter-spacing: 1rpx;
 }
 .tab-item.active .tab-label {
-  color: #3b82f6;
+  color: #005da4;
   font-weight: 700;
 }
 .tab-item.active::after {
@@ -54,7 +54,7 @@ page { overflow-x: hidden; }
   transform: translateX(-50%);
   width: 56rpx;
   height: 8rpx;
-  background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
+  background: #005da4;
   border-radius: 4rpx;
   box-shadow: 0 2rpx 8rpx rgba(59, 130, 246, 0.4);
   transition: all 0.3s ease;
@@ -140,7 +140,7 @@ page { overflow-x: hidden; }
   align-items: center;
   gap: 12rpx;
   padding: 24rpx 48rpx;
-  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  background: #005da4;
   color: #fff;
   border: none;
   border-radius: 48rpx;
@@ -165,17 +165,57 @@ page { overflow-x: hidden; }
   gap: 24rpx;
 }
 
+.swipe-cell {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24rpx;
+}
+
+.swipe-delete {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 160rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #b31b25;
+  color: #ffffff;
+  font-size: 28rpx;
+  font-weight: 800;
+}
+
 /* 订单卡片 - 高级感设计 */
 .order-card {
+  position: relative;
+  z-index: 2;
   background: #fff;
   border-radius: 24rpx;
   padding: 28rpx;
   box-shadow: 0 4rpx 24rpx rgba(0, 0, 0, 0.06);
   transition: all 0.2s ease;
 }
+
+.swipe-content {
+  transform: translateX(0);
+}
+
+.swipe-cell.is-open .swipe-content {
+  transform: translateX(-160rpx);
+}
+
+.swipe-cell.is-open .swipe-content:active {
+  transform: translateX(-160rpx);
+}
+
 .order-card:active {
   transform: scale(0.985);
   box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.swipe-cell.is-open .order-card:active {
+  transform: translateX(-160rpx);
 }
 
 .card-header {

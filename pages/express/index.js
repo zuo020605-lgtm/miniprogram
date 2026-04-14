@@ -1,4 +1,6 @@
 // 快递代取
+import api from '../../utils/api'
+
 Page({
   data: {
     tasks: [],
@@ -23,54 +25,51 @@ Page({
     console.log('页面卸载')
   },
 
-  loadTasks() {
+  async loadTasks() {
     this.setData({ loading: true })
-    wx.cloud.callFunction({
-      name: 'getTasks',
-      data: {
-        type: 'express',
-        status: 'pending'
-      },
-      success: (res) => {
-        console.log('获取任务列表成功:', res)
-        this.setData({
-          tasks: res.result || [],
-          loading: false
-        })
-      },
-      fail: (err) => {
-        console.error('获取任务列表失败:', err)
-        this.setData({ loading: false })
-        wx.showToast({
-          title: '获取任务失败',
-          icon: 'none'
-        })
-      }
-    })
+
+    try {
+      const tasks = await api.getAvailableOrders('express')
+      this.setData({
+        tasks: this.formatTasks(tasks),
+        loading: false
+      })
+    } catch (err) {
+      console.error('获取任务列表失败:', err)
+      this.setData({ loading: false })
+      wx.showToast({
+        title: '获取任务失败',
+        icon: 'none'
+      })
+    }
   },
 
-  acceptTask(e) {
+  formatTasks(tasks) {
+    return tasks.map(task => ({
+      ...task,
+      price: Number(task.price || 0) / 100,
+      time: task.time || '尽快',
+      publisher: task.openid || '发布者',
+      location: task.location || task.pickupLocation || '校园内'
+    }))
+  },
+
+  async acceptTask(e) {
     const taskId = e.currentTarget.dataset.id
-    wx.cloud.callFunction({
-      name: 'acceptTask',
-      data: {
-        taskId: taskId
-      },
-      success: (res) => {
-        console.log('接单成功:', res)
-        wx.showToast({
-          title: '接单成功',
-          icon: 'success'
-        })
-        this.loadTasks()
-      },
-      fail: (err) => {
-        console.error('接单失败:', err)
-        wx.showToast({
-          title: '接单失败',
-          icon: 'none'
-        })
-      }
-    })
+    try {
+      const app = getApp()
+      await api.acceptOrder(taskId, app.globalData.userInfo && app.globalData.userInfo.openid)
+      wx.showToast({
+        title: '接单成功',
+        icon: 'success'
+      })
+      this.loadTasks()
+    } catch (err) {
+      console.error('接单失败:', err)
+      wx.showToast({
+        title: err.message || '接单失败',
+        icon: 'none'
+      })
+    }
   }
 })

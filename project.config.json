@@ -1,6 +1,6 @@
 {
-  "miniprogramRoot": "./",
-  "cloudfunctionRoot": "uniCloud-aliyun/cloudfunctions/",
+  "miniprogramRoot": "",
+  "cloudfunctionRoot": "",
   "projectname": "校园跑腿",
   "setting": {
     "es6": true,
@@ -24,69 +24,21 @@
     "minifyWXML": true,
     "ignoreDevUnusedFiles": false,
     "ignoreUploadUnusedFiles": false,
-    "urlCheck": false
+    "urlCheck": false,
+    "lazyCodeLoading": "requiredComponents",
+    "compileWorklet": false,
+    "uploadWithSourceMap": true,
+    "minifyWXSS": true,
+    "localPlugins": false,
+    "disableUseStrict": false,
+    "condition": false,
+    "swc": false,
+    "disableSWC": true
   },
   "compileType": "miniprogram",
   "simulatorPluginLibVersion": {},
   "simulatorType": "wechat",
-  "packOptions": {
-    "ignore": [
-      {
-        "type": "folder",
-        "value": "uni_modules"
-      },
-      {
-        "type": "folder",
-        "value": "uniCloud-aliyun"
-      },
-      {
-        "type": "folder",
-        "value": ".trae"
-      },
-      {
-        "type": "folder",
-        "value": "styles"
-      },
-      {
-        "type": "file",
-        "value": "*.md"
-      },
-      {
-        "type": "file",
-        "value": "*.scss"
-      },
-      {
-        "type": "file",
-        "value": "code.html"
-      },
-      {
-        "type": "file",
-        "value": "convert-vue-to-wx.js"
-      },
-      {
-        "type": "file",
-        "value": "convert-vue-to-wx-fixed.js"
-      },
-      {
-        "type": "file",
-        "value": "fix-wxml.js"
-      },
-      {
-        "type": "file",
-        "value": "_check_rem.js"
-      },
-      {
-        "type": "file",
-        "value": "package-lock.json"
-      },
-      {
-        "type": "file",
-        "value": ".env.local"
-      }
-    ],
-    "include": []
-  },
-  "appid": "wxa0e3927b4ee34ed0",
+  "appid": "wx665beed8f38e51eb",
   "editorSetting": {},
   "condition": {
     "search": {
@@ -107,8 +59,21 @@
           "query": "",
           "launchMode": "default",
           "scene": null
+        },
+        {
+          "name": "登录",
+          "id": -1,
+          "path": "pages/login/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
         }
       ]
     }
+  },
+  "libVersion": "3.15.1",
+  "packOptions": {
+    "ignore": [],
+    "include": []
   }
 }

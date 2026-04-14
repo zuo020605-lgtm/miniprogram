@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>优化功能测试页面</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #f5f7fa;
+    }
+    
+    .test-section {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    
+    h2 {
+      color: #2c3e50;
+      margin-bottom: 16px;
+      font-size: 20px;
+    }
+    
+    .test-result {
+      padding: 12px;
+      border-radius: 8px;
+      margin: 8px 0;
+      font-size: 14px;
+    }
+    
+    .test-success {
+      background: #d1fae5;
+      color: #065f46;
+      border-left: 4px solid #10b981;
+    }
+    
+    .test-error {
+      background: #fee2e2;
+      color: #991b1b;
+      border-left: 4px solid #ef4444;
+    }
+    
+    .test-info {
+      background: #dbeafe;
+      color: #1e40af;
+      border-left: 4px solid #3b82f6;
+    }
+    
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+    
+    .stat-item {
+      background: #f9fafb;
+      padding: 16px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-size: 24px;
+      font-weight: 600;
+      color: #3b82f6;
+      margin: 8px 0;
+    }
+    
+    .stat-change {
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    .positive { color: #52c41a; }
+    .negative { color: #ff4d4f; }
+    .neutral { color: #9ca3af; }
+    
+    button {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-right: 8px;
+    }
+    
+    button:hover {
+      background: #2563eb;
+    }
+    
+    button.secondary {
+      background: #6b7280;
+    }
+    
+    button.secondary:hover {
+      background: #4b5563;
+    }
+  </style>
+</head>
+<body>
+  <h1 style="color: #2c3e50; margin-bottom: 24px;">后台管理系统优化功能测试</h1>
+  
+  <!-- API 连接测试 -->
+  <div class="test-section">
+    <h2>1. API 连接测试</h2>
+    <button onclick="testApiConnection()">测试 API 连接</button>
+    <div id="api-test-result"></div>
+  </div>
+  
+  <!-- 数据缓存测试 -->
+  <div class="test-section">
+    <h2>2. 数据缓存测试</h2>
+    <button onclick="testCache()">测试缓存功能</button>
+    <button class="secondary" onclick="clearCache()">清除缓存</button>
+    <div id="cache-test-result"></div>
+  </div>
+  
+  <!-- 数据对比计算测试 -->
+  <div class="test-section">
+    <h2>3. 数据对比计算测试</h2>
+    <button onclick="testCalculation()">测试对比计算</button>
+    <div class="stat-grid" id="calculation-demo"></div>
+    <div id="calculation-result"></div>
+  </div>
+  
+  <!-- 边界情况测试 -->
+  <div class="test-section">
+    <h2>4. 边界情况测试</h2>
+    <button onclick="testEdgeCases()">测试边界情况</button>
+    <div id="edge-case-result"></div>
+  </div>
+  
+  <!-- 性能测试 -->
+  <div class="test-section">
+    <h2>5. 加载性能测试</h2>
+    <button onclick="testPerformance()">测试加载性能</button>
+    <div id="performance-result"></div>
+  </div>
+
+  <script src="../../js/data-utils.js"></script>
+  <script src="../../js/api-cache.js"></script>
+  
+  <script>
+    // 1. API 连接测试
+    async function testApiConnection() {
+      const resultDiv = document.getElementById('api-test-result');
+      resultDiv.innerHTML = '<div class="test-info">正在测试 API 连接...</div>';
+      
+      try {
+        const startTime = Date.now();
+        const result = await ApiCache.fetch('http://localhost:3000/api/order/all', {}, false);
+        const endTime = Date.now();
+        const duration = endTime - startTime;
+        
+        if (result && result.success) {
+          resultDiv.innerHTML = `
+            <div class="test-success">
+              <strong>✓ API 连接成功</strong><br>
+              响应时间：${duration}ms<br>
+              数据条数：${result.data.list.length}条<br>
+              状态码：200
+            </div>
+          `;
+        } else {
+          throw new Error('API 返回失败');
+        }
+      } catch (error) {
+        resultDiv.innerHTML = `
+          <div class="test-error">
+            <strong>✗ API 连接失败</strong><br>
+            错误信息：${error.message}
+          </div>
+        `;
+      }
+    }
+
+    // 2. 缓存功能测试
+    async function testCache() {
+      const resultDiv = document.getElementById('cache-test-result');
+      resultDiv.innerHTML = '<div class="test-info">正在测试缓存功能...</div>';
+      
+      try {
+        // 第一次请求（不使用缓存）
+        const start1 = Date.now();
+        const result1 = await ApiCache.fetch('http://localhost:3000/api/wallet/transactions', {}, false);
+        const time1 = Date.now() - start1;
+        
+        // 第二次请求（使用缓存）
+        const start2 = Date.now();
+        const result2 = await ApiCache.fetch('http://localhost:3000/api/wallet/transactions', {}, true);
+        const time2 = Date.now() - start2;
+        
+        const speedup = ((time1 - time2) / time1 * 100).toFixed(2);
+        
+        resultDiv.innerHTML = `
+          <div class="test-success">
+            <strong>✓ 缓存功能正常</strong><br>
+            首次请求时间：${time1}ms（不使用缓存）<br>
+            缓存请求时间：${time2}ms（使用缓存）<br>
+            性能提升：${speedup}%<br>
+            缓存键数量：${ApiCache.cache.size}
+          </div>
+        `;
+      } catch (error) {
+        resultDiv.innerHTML = `
+          <div class="test-error">
+            <strong>✗ 缓存测试失败</strong><br>
+            错误信息：${error.message}
+          </div>
+        `;
+      }
+    }
+
+    function clearCache() {
+      ApiCache.clear();
+      DataUtils.cache.historicalData = null;
+      localStorage.removeItem('dashboard_historical_data');
+      document.getElementById('cache-test-result').innerHTML = 
+        '<div class="test-info">✓ 缓存已清除</div>';
+    }
+
+    // 3. 数据对比计算测试
+    function testCalculation() {
+      const resultDiv = document.getElementById('calculation-result');
+      const demoDiv = document.getElementById('calculation-demo');
+      
+      // 测试数据
+      const testData = [
+        { label: '总订单数', current: 150, historical: 120 },
+        { label: '今日收入', current: 85000, historical: 78000 },
+        { label: '活跃用户', current: 45, historical: 50 },
+        { label: '待处理消息', current: 12, historical: 12 }
+      ];
+      
+      demoDiv.innerHTML = '';
+      testData.forEach(item => {
+        const percentage = DataUtils.calculateChangePercentage(item.current, item.historical);
+        const cssClass = DataUtils.getChangeClass(percentage);
+        
+        demoDiv.innerHTML += `
+          <div class="stat-item">
+            <div>${item.label}</div>
+            <div class="stat-value">${item.current}</div>
+            <div class="stat-change ${cssClass}">较昨日 ${percentage}</div>
+          </div>
+        `;
+      });
+      
+      resultDiv.innerHTML = '<div class="test-success">✓ 对比计算功能正常</div>';
+    }
+
+    // 4. 边界情况测试
+    function testEdgeCases() {
+      const resultDiv = document.getElementById('edge-case-result');
+      
+      const edgeCases = [
+        { label: '昨日为零', current: 100, historical: 0, expected: '+∞' },
+        { label: '今日为零', current: 0, historical: 100, expected: '-100.00%' },
+        { label: '都为零', current: 0, historical: 0, expected: '0.00%' },
+        { label: '历史数据为 null', current: 50, historical: null, expected: '+∞' },
+        { label: '大幅增长', current: 1000, historical: 100, expected: '+900.00%' },
+        { label: '大幅下降', current: 10, historical: 100, expected: '-90.00%' }
+      ];
+      
+      let allPassed = true;
+      let html = '';
+      
+      edgeCases.forEach(test => {
+        const result = DataUtils.calculateChangePercentage(test.current, test.historical);
+        const passed = result === test.expected || 
+                      (test.expected === '+∞' && result === '+∞') ||
+                      (test.expected === '-100.00%' && result === '-100.00%');
+        
+        if (!passed) allPassed = false;
+        
+        html += `
+          <div class="test-${passed ? 'success' : 'error'}" style="margin: 4px 0;">
+            ${passed ? '✓' : '✗'} ${test.label}: 
+            当前=${test.current}, 历史=${test.historical}, 
+            结果=${result}, 预期=${test.expected}
+          </div>
+        `;
+      });
+      
+      resultDiv.innerHTML = `
+        <div class="test-${allPassed ? 'success' : 'error'}">
+          <strong>${allPassed ? '✓' : '✗'} 边界情况测试${allPassed ? '全部通过' : '存在失败'}</strong>
+        </div>
+        ${html}
+      `;
+    }
+
+    // 5. 性能测试
+    async function testPerformance() {
+      const resultDiv = document.getElementById('performance-result');
+      resultDiv.innerHTML = '<div class="test-info">正在进行性能测试...</div>';
+      
+      const iterations = 10;
+      const times = [];
+      
+      try {
+        for (let i = 0; i < iterations; i++) {
+          const start = Date.now();
+          await ApiCache.fetch('http://localhost:3000/api/order/all', {}, i === 0 ? false : true);
+          times.push(Date.now() - start);
+        }
+        
+        const avgTime = (times.reduce((a, b) => a + b, 0) / times.length).toFixed(2);
+        const minTime = Math.min(...times);
+        const maxTime = Math.max(...times);
+        
+        const passed = avgTime < 3000; // 3 秒以内
+        
+        resultDiv.innerHTML = `
+          <div class="test-${passed ? 'success' : 'error'}">
+            <strong>${passed ? '✓' : '✗'} 性能测试${passed ? '通过' : '未通过'}</strong><br>
+            平均加载时间：${avgTime}ms<br>
+            最快：${minTime}ms<br>
+            最慢：${maxTime}ms<br>
+            测试次数：${iterations}次<br>
+            要求：< 3000ms
+          </div>
+        `;
+      } catch (error) {
+        resultDiv.innerHTML = `
+          <div class="test-error">
+            <strong>✗ 性能测试失败</strong><br>
+            错误信息：${error.message}
+          </div>
+        `;
+      }
+    }
+
+    // 页面加载时自动运行部分测试
+    window.addEventListener('DOMContentLoaded', () => {
+      console.log('测试页面已加载');
+      console.log('DataUtils:', typeof DataUtils !== 'undefined' ? '已加载' : '未加载');
+      console.log('ApiCache:', typeof ApiCache !== 'undefined' ? '已加载' : '未加载');
+    });
+  </script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 .profile-page {
   min-height: 100vh;
-  background-color: #f5f7fa;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf4 100%);
   padding-top: 20px;
   padding-bottom: 80px;
   font-family: -apple-system, BlinkMacSystemFont, 'San Francisco', 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -12,11 +12,17 @@
 
 /* 账户管理 */
 .account-section {
-  background-color: #ffffff;
+  background: #ffffff;
   border-radius: 32rpx;
   padding: 24px;
   margin-bottom: 20px;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.03);
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.account-section:active {
+  transform: translateY(-2rpx);
+  box-shadow: 0 12rpx 40rpx rgba(0, 0, 0, 0.12);
 }
 
 .account-header {
@@ -94,11 +100,17 @@
 
 /* 数据统计 */
 .stats-section {
-  background-color: #ffffff;
+  background: #ffffff;
   border-radius: 32rpx;
   padding: 20px;
   margin-bottom: 20px;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.03);
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.stats-section:active {
+  transform: translateY(-2rpx);
+  box-shadow: 0 12rpx 40rpx rgba(0, 0, 0, 0.12);
 }
 
 .stats-header {
@@ -140,11 +152,17 @@
 
 /* 功能入口 */
 .menu-section {
-  background-color: #ffffff;
+  background: #ffffff;
   border-radius: 32rpx;
   padding: 20px;
   margin-bottom: 20px;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.03);
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.menu-section:active {
+  transform: translateY(-2rpx);
+  box-shadow: 0 12rpx 40rpx rgba(0, 0, 0, 0.12);
 }
 
 .menu-header {
@@ -195,11 +213,17 @@
 
 /* 身份切换 */
 .identity-section {
-  background-color: #ffffff;
+  background: #ffffff;
   border-radius: 32rpx;
   padding: 20px;
   margin-bottom: 20px;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.03);
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.identity-section:active {
+  transform: translateY(-2rpx);
+  box-shadow: 0 12rpx 40rpx rgba(0, 0, 0, 0.12);
 }
 
 .identity-header {

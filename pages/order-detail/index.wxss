@@ -48,6 +48,10 @@ page {
   background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
 }
 
+.status-card.status-reviewed {
+  background: linear-gradient(135deg, #005da4 0%, #4CAF50 100%);
+}
+
 .status-card.status-cancelled {
   background: linear-gradient(135deg, #b31b25 0%, #9f0519 100%);
 }
@@ -121,17 +125,32 @@ page {
 }
 
 .step-dot {
-  width: 20rpx;
-  height: 20rpx;
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 10rpx;
+  width: 28rpx;
+  height: 28rpx;
+  background: rgba(255, 255, 255, 0.28);
+  border: 2rpx solid rgba(255, 255, 255, 0.55);
+  border-radius: 50%;
   margin-bottom: 8rpx;
   transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .progress-step.active .step-dot {
   background: #ffffff;
   transform: scale(1.2);
+}
+
+.progress-step.current .step-dot {
+  box-shadow: 0 0 0 8rpx rgba(255, 255, 255, 0.18);
+}
+
+.step-check {
+  color: #005da4;
+  font-size: 18rpx;
+  font-weight: 800;
+  line-height: 1;
 }
 
 .step-label {
@@ -313,13 +332,20 @@ page {
 .action-btn {
   flex: 1;
   padding: 24rpx;
-  border-radius: 24rpx;
+  border-radius: 8rpx;
   font-size: 26rpx;
   font-weight: 600;
   transition: all 0.3s ease;
+  min-height: 80rpx;
   display: flex;
   align-items: center;
   justify-content: center;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.action-btn::after {
+  border: none;
 }
 
 .action-btn:active {

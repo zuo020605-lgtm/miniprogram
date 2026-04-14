@@ -19,18 +19,19 @@
   box-sizing: border-box;
 }
 
-.message-item { 
-  display: flex; 
-  align-items: flex-end; 
-  gap: 12rpx; 
+.message-item {
+  display: flex;
+  align-items: flex-end;
   margin-bottom: 20rpx;
   width: 100%;
   box-sizing: border-box;
-  justify-content: flex-start;
 }
 
-.message-item.message-self { 
-  flex-direction: row-reverse; 
+.message-item.message-self {
+  justify-content: flex-end;
+}
+
+.message-item:not(.message-self) {
   justify-content: flex-start;
 }
 

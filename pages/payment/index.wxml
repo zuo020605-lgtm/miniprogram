@@ -46,15 +46,15 @@
       <view class="order-info">
         <view class="order-item">
           <text class="order-label">任务金额</text>
-          <text class="order-value">¥25.00</text>
+          <text class="order-value">¥{{orderAmountText}}</text>
         </view>
         <view class="order-item">
           <text class="order-label">服务费用</text>
-          <text class="order-value">¥2.00</text>
+          <text class="order-value">¥{{serviceFeeText}}</text>
         </view>
         <view class="order-item total">
           <text class="order-label">总计</text>
-          <text class="order-value total">¥27.00</text>
+          <text class="order-value total">¥{{totalAmountText}}</text>
         </view>
       </view>
       

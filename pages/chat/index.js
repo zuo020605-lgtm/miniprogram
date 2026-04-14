@@ -1,4 +1,6 @@
 // 聊天
+import api from '../../utils/api'
+
 Page({
   data: {
     chatUserName: '张三',
@@ -10,11 +12,13 @@ Page({
   onLoad(options) {
     console.log('页面加载:', options)
     const conversationId = options.id || 'default'
-    const chatUserName = options.name || '张三'
+    const chatUserName = options.name ? decodeURIComponent(options.name) : '订单会话'
+    const targetOpenid = options.targetOpenid ? decodeURIComponent(options.targetOpenid) : ''
     
     this.setData({
       conversationId: conversationId,
-      chatUserName: chatUserName
+      chatUserName: chatUserName,
+      targetOpenid: targetOpenid
     })
     
     this.initializeChat()
@@ -33,118 +37,44 @@ Page({
   },
 
   // 初始化聊天
-  initializeChat() {
+  async initializeChat() {
     const conversationId = this.data.conversationId || 'default'
-    
-    // 接入云函数获取历史消息
-    wx.cloud.callFunction({
-      name: 'getMessages',
-      data: {
-        conversationId: conversationId
-      },
-      success: (res) => {
-        console.log('获取历史消息成功:', res)
-        if (res.result) {
-          // 预处理时间字段
-          const processedMessages = res.result.map(msg => ({
-            ...msg,
-            formattedTime: this.formatTime(msg.time)
-          }))
-          
-          this.setData({
-            messages: processedMessages
-          })
-          
-          // 滚动到最新消息
-          setTimeout(() => {
-            this.scrollToBottom()
-          }, 100)
-        } else {
-          // 无结果时使用 Mock 数据
-          this.setMockMessages()
-        }
-      },
-      fail: (err) => {
-        console.error('获取历史消息失败:', err)
-        // 云函数失败时使用 Mock 数据
-        this.setMockMessages()
-      }
-    })
+
+    try {
+      const app = getApp()
+      const openid = app.globalData.userInfo && app.globalData.userInfo.openid
+      const result = await api.getMessages(openid, conversationId)
+      const messageList = result.list || []
+      const processedMessages = messageList.map(msg => ({
+        ...msg,
+        isSelf: msg.fromOpenid === openid || msg.userId === openid,
+        time: msg.createTime,
+        formattedTime: this.formatTime(msg.createTime)
+      })).reverse()
+
+      this.setData({ messages: processedMessages })
+      setTimeout(() => {
+        this.scrollToBottom()
+      }, 100)
+    } catch (err) {
+      console.error('获取历史消息失败:', err)
+      wx.showToast({
+        title: err.message || '获取消息失败',
+        icon: 'none'
+      })
+      this.setData({ messages: [] })
+    }
     
     // 监听新消息
     this.listenForNewMessages()
-  },
-
-  // 设置 Mock 消息数据
-  setMockMessages() {
-    const mockMessages = [
-      {
-        isSelf: false,
-        content: '你好，有什么可以帮你的吗？',
-        time: new Date(Date.now() - 3600000).toISOString(),
-        formattedTime: this.formatTime(new Date(Date.now() - 3600000).toISOString())
-      },
-      {
-        isSelf: true,
-        content: '我想请你帮我取个快递',
-        time: new Date(Date.now() - 3500000).toISOString(),
-        formattedTime: this.formatTime(new Date(Date.now() - 3500000).toISOString())
-      },
-      {
-        isSelf: false,
-        content: '好的，具体在哪里取呢？',
-        time: new Date(Date.now() - 3400000).toISOString(),
-        formattedTime: this.formatTime(new Date(Date.now() - 3400000).toISOString())
-      },
-      {
-        isSelf: true,
-        content: '在菜鸟驿站，大概下午3点可以吗？',
-        time: new Date(Date.now() - 3300000).toISOString(),
-        formattedTime: this.formatTime(new Date(Date.now() - 3300000).toISOString())
-      },
-      {
-        isSelf: false,
-        content: '可以的，到时候联系你',
-        time: new Date(Date.now() - 3200000).toISOString(),
-        formattedTime: this.formatTime(new Date(Date.now() - 3200000).toISOString())
-      }
-    ]
-    
-    this.setData({
-      messages: mockMessages
-    })
-    
-    // 滚动到最新消息
-    setTimeout(() => {
-      this.scrollToBottom()
-    }, 100)
   },
 
   // 监听新消息
   listenForNewMessages() {
     const conversationId = this.data.conversationId || 'default'
     
-    // 测试阶段：暂时注释掉云函数调用
-    // 实际实现应使用 wx.cloud.database().watch() 或 WebSocket
+    // 后续可在 3000 Mock 服务稳定后升级为 WebSocket 或轮询
     console.log('开始监听新消息:', conversationId)
-    
-    // 示例：使用 setTimeout 模拟接收新消息
-    setTimeout(() => {
-      const newMessage = {
-        isSelf: false,
-        content: '这是一条模拟的新消息',
-        time: new Date().toISOString(),
-        formattedTime: this.formatTime(new Date().toISOString())
-      }
-      
-      const updatedMessages = [...this.data.messages, newMessage]
-      this.setData({
-        messages: updatedMessages
-      })
-      
-      // 滚动到最新消息
-      this.scrollToBottom()
-    }, 5000)
   },
 
   // 输入框内容变化
@@ -155,45 +85,37 @@ Page({
   },
 
   // 发送消息
-  sendMessage() {
+  async sendMessage() {
     const content = this.data.inputText.trim()
     if (!content) return
     
-    const newMessage = {
-      isSelf: true,
-      content: content,
-      time: new Date().toISOString(),
-      formattedTime: this.formatTime(new Date().toISOString())
-    }
-    
-    const updatedMessages = [...this.data.messages, newMessage]
-    
-    this.setData({
-      messages: updatedMessages,
-      inputText: ''
-    })
-    
-    // 滚动到最新消息
-    this.scrollToBottom()
-    
-    // 接入云函数发送消息
-    wx.cloud.callFunction({
-      name: 'sendMessage',
-      data: {
-        content: content,
-        conversationId: this.data.conversationId
-      },
-      success: (res) => {
-        console.log('发送消息成功:', res)
-      },
-      fail: (err) => {
-        console.error('发送消息失败:', err)
-        wx.showToast({
-          title: '发送消息失败',
-          icon: 'none'
-        })
+    try {
+      const app = getApp()
+      const fromOpenid = app.globalData.userInfo && app.globalData.userInfo.openid
+      const savedMessage = await api.sendMessage(fromOpenid, this.data.targetOpenid || '', content, this.data.conversationId)
+      const newMessage = {
+        ...savedMessage,
+        isSelf: true,
+        content: savedMessage.content || content,
+        time: savedMessage.createTime || new Date().toISOString(),
+        formattedTime: this.formatTime(savedMessage.createTime || new Date().toISOString())
       }
-    })
+
+      this.setData({
+        messages: [...this.data.messages, newMessage],
+        inputText: '',
+        targetOpenid: savedMessage.toOpenid || this.data.targetOpenid || ''
+      })
+
+      // 滚动到最新消息
+      this.scrollToBottom()
+    } catch (err) {
+      console.error('发送消息失败:', err)
+      wx.showToast({
+        title: err.message || '发送消息失败',
+        icon: 'none'
+      })
+    }
   },
 
   // 滚动到最新消息

@@ -1,0 +1,113 @@
+<view class="publish-page">
+  <scroll-view scroll-y class="publish-content">
+    <view class="section-card">
+      <view class="section-title">课程信息</view>
+      <view class="course-summary">
+        <view class="course-summary-main">
+          <text class="course-summary-title">{{courseName || '校园代课'}}</text>
+          <text class="course-summary-desc">{{courseTeacher || '教师待确认'}} · {{courseTime || '时间待确认'}}</text>
+        </view>
+        <view class="course-summary-badge">代课</view>
+      </view>
+    </view>
+
+    <view class="section-card">
+      <view class="section-title">地点信息</view>
+      <view class="form-row">
+        <text class="row-label">教学楼</text>
+        <input
+          type="text"
+          value="{{teachingBuilding}}"
+          bindinput="onTeachingBuildingChange"
+          placeholder="请输入教学楼"
+          class="form-input"
+        />
+      </view>
+      <view class="form-row">
+        <text class="row-label">教室</text>
+        <input
+          type="text"
+          value="{{classroom}}"
+          bindinput="onClassroomChange"
+          placeholder="请输入教室"
+          class="form-input"
+        />
+      </view>
+    </view>
+
+    <view class="section-card">
+      <view class="section-title">详细信息</view>
+      <view class="form-row">
+        <text class="row-label">是否签到</text>
+        <switch checked="{{needSignIn}}" color="#005da4" bindchange="onNeedSignInChange" />
+      </view>
+      <view class="form-row segmented-row">
+        <text class="row-label">教室类型</text>
+        <view class="segmented-control">
+          <view
+            class="segmented-item {{classroomSize === 'small' ? 'active' : ''}}"
+            bindtap="selectClassroomSize"
+            data-size="small"
+          >
+            小教室
+          </view>
+          <view
+            class="segmented-item {{classroomSize === 'large' ? 'active' : ''}}"
+            bindtap="selectClassroomSize"
+            data-size="large"
+          >
+            大教室
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="section-card">
+      <view class="section-title">任务信息</view>
+      <view class="form-row">
+        <text class="row-label">任务金额</text>
+        <view class="price-input-wrapper">
+          <text class="price-symbol">¥</text>
+          <input
+            type="digit"
+            value="{{price}}"
+            bindinput="onPriceChange"
+            placeholder="0.00"
+            class="price-input"
+          />
+        </view>
+      </view>
+      <view class="form-row textarea-row">
+        <text class="row-label">任务详情</text>
+        <textarea
+          value="{{taskDetail}}"
+          bindinput="onTaskDetailChange"
+          placeholder="请详细描述代课要求..."
+          class="form-textarea"
+          maxlength="500"
+        />
+      </view>
+      <view class="form-row">
+        <text class="row-label">联系方式</text>
+        <input
+          type="text"
+          value="{{contactInfo}}"
+          bindinput="onContactInfoChange"
+          placeholder="请输入手机号或微信号"
+          class="form-input"
+        />
+      </view>
+    </view>
+
+    <button class="publish-btn {{canPublish ? '' : 'disabled'}}" bindtap="publishTask" disabled="{{!canPublish}}">
+      立即发布
+    </button>
+
+    <view class="tips-card">
+      <text class="tips-title">发布须知</text>
+      <text class="tips-item">1. 请确保课程、教室与联系方式真实有效</text>
+      <text class="tips-item">2. 如需签到，请提前写清签到方式与注意事项</text>
+      <text class="tips-item">3. 发布后可在订单列表查看进度</text>
+    </view>
+  </scroll-view>
+</view>

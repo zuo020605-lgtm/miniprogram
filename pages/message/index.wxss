@@ -1,6 +1,7 @@
 .message-page {
   min-height: 100vh;
   background-color: #f5f7fa;
+  padding-bottom: calc(140rpx + env(safe-area-inset-bottom));
   font-family: -apple-system, BlinkMacSystemFont, 'San Francisco', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 

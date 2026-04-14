@@ -1,8 +1,25 @@
 {
   "name": "campus-errand",
   "version": "1.0.0",
-  "description": "校园跑腿小程序",
+  "description": "校园跑腿微信小程序",
+  "main": "app.js",
+  "scripts": {
+    "dev": "echo '请在微信开发者工具中运行项目'",
+    "backend": "npm --prefix local-server start"
+  },
+  "keywords": [
+    "微信小程序",
+    "校园跑腿",
+    "uni-app"
+  ],
+  "author": "",
+  "license": "ISC",
   "dependencies": {
-    "@babel/runtime": "^7.29.2"
+    "@babel/runtime": "^7.29.2",
+    "cors": "^2.8.6",
+    "express": "^4.22.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
   }
 }

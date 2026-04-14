@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>登录 - 校园跑腿后台管理系统</title>
+  <link rel="stylesheet" href="css/login.css">
+  <script src="js/auth-service.js?v=20260413-login"></script>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-box">
+      <!-- Logo 和标题 -->
+      <div class="login-header">
+        <div class="login-logo">🎓</div>
+        <h1 class="login-title">校园跑腿后台管理系统</h1>
+        <p class="login-subtitle">欢迎登录，请使用管理员账号登录</p>
+      </div>
+
+      <!-- 登录表单 -->
+      <form class="login-form" id="loginForm" onsubmit="handleLogin(event)">
+        <!-- 用户名输入 -->
+        <div class="form-group">
+          <label class="form-label" for="username">
+            <span class="label-icon">👤</span>
+            用户名
+          </label>
+          <div class="input-wrapper">
+            <input
+              type="text"
+              id="username"
+              name="username"
+              class="form-input"
+              placeholder="请输入用户名"
+              autocomplete="username"
+              required
+            />
+          </div>
+        </div>
+
+        <!-- 密码输入 -->
+        <div class="form-group">
+          <label class="form-label" for="password">
+            <span class="label-icon">🔒</span>
+            密码
+          </label>
+          <div class="input-wrapper">
+            <input
+              type="password"
+              id="password"
+              name="password"
+              class="form-input"
+              placeholder="请输入密码"
+              autocomplete="current-password"
+              required
+            />
+            <button type="button" class="password-toggle" onclick="togglePassword()">
+              👁️
+            </button>
+          </div>
+        </div>
+
+        <!-- 记住我 -->
+        <div class="form-options">
+          <label class="checkbox-label">
+            <input type="checkbox" id="rememberMe" name="rememberMe" />
+            <span class="checkbox-text">记住我（7 天免登录）</span>
+          </label>
+        </div>
+
+        <!-- 错误提示 -->
+        <div class="error-message" id="errorMessage" style="display: none;">
+          <span class="error-icon">⚠️</span>
+          <span class="error-text" id="errorText"></span>
+        </div>
+
+        <!-- 登录按钮 -->
+        <button type="submit" class="btn-login" id="loginBtn">
+          <span class="btn-text">登录</span>
+          <span class="btn-loading" style="display: none;">
+            <span class="loading-spinner"></span>
+            登录中...
+          </span>
+        </button>
+      </form>
+
+      <!-- 底部信息 -->
+      <div class="login-footer">
+        <p class="footer-text">
+          <span class="info-icon">ℹ️</span>
+          默认管理员账号：admin / 123456
+        </p>
+        <p class="footer-text">
+          <span class="info-icon">🔐</span>
+          为了安全，请定期修改密码
+        </p>
+      </div>
+    </div>
+
+    <!-- 背景装饰 -->
+    <div class="background-decoration">
+      <div class="decoration-circle circle-1"></div>
+      <div class="decoration-circle circle-2"></div>
+      <div class="decoration-circle circle-3"></div>
+    </div>
+  </div>
+
+  <script src="js/login.js?v=20260413-login"></script>
+  <script>
+    // 页面加载时检查是否已登录
+    window.addEventListener('DOMContentLoaded', function() {
+      // 检查是否有记住的用户名
+      const savedUsername = AuthService.storage.get(AuthService.REMEMBER_KEY);
+      if (savedUsername) {
+        document.getElementById('username').value = savedUsername;
+        document.getElementById('rememberMe').checked = true;
+      }
+    });
+  </script>
+</body>
+</html>

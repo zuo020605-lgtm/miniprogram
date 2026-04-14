@@ -1,144 +1,192 @@
-<view class="page-container">
-    <!-- 自定义导航 -->
-    <view class="navbar">
-      <view class="navbar-left" bindtap="showtip">
-        <text class="navbar-icon">⋮</text>
-      </view>
-      <view class="navbar-center" bindtap="showpoint">
-        <text class="navbar-week">第 {{ week }} 周</text>
-        <text class="navbar-arrow">▼</text>
-      </view>
-      <view class="navbar-right" bindtap="importCourse">
-        <text class="navbar-action">📅 导入</text>
-      </view>
+<view class="schedule-page">
+  <view class="schedule-nav">
+    <view class="nav-action-btn" bindtap="showtip">
+      <text class="nav-action-icon">☰</text>
+      <text class="nav-action-text">课表操作</text>
     </view>
-
-    <!-- 弹出菜单 -->
-    <view wx:if="{{loading}}" class="loading-overlay">
-      <view class="loading-box">
-        <text class="loading-text">导入课表中...</text>
-      </view>
+    <view class="nav-week" bindtap="showpoint">
+      <text>第 {{ currentWeek }} 周</text>
+      <text class="nav-arrow">▼</text>
     </view>
-    
-    <view wx:if="{{showtip}}" class="modal-overlay" bindtap="showtip">
-      <view class="modal-menu" catchtap="">
-        <view class="modal-title">课表操作</view>
-        <view class="modal-operations">
-          <view class="modal-item" bindtap="handleImportCourse">
-            <text class="modal-icon">📅</text>
-            <text class="modal-text">导入课表</text>
-          </view>
-          <view class="modal-item" bindtap="handleRefreshCourse">
-            <text class="modal-icon">🔄</text>
-            <text class="modal-text">刷新课表</text>
-          </view>
-          <view class="modal-item" bindtap="handleClearCourse">
-            <text class="modal-icon">🗑️</text>
-            <text class="modal-text">清空课表</text>
-          </view>
-        </view>
-      </view>
+    <view class="nav-spacer"></view>
+  </view>
+
+  <view wx:if="{{loading}}" class="loading-overlay">
+    <view class="loading-box">
+      <text class="loading-text">导入课表中...</text>
     </view>
+  </view>
 
-    <!-- 主页面 -->
-    <scroll-view scroll-y class="main-content" enable-flex>
-      <!-- 周次选择 -->
-      <view class="week-selector-wrapper" wx:if="{{showpoint}}">
-        <scroll-view 
-          scroll-x
-          scroll-with-animation
-          class="week-selector"
-        >
-          <view 
-            id="week{{index + 1}}"
-            class="week-item"
-            wx:for="{{20}}" wx:key="index"
-            bindtap="onPoint"
-            data-week="{{index + 1}}"
-          >
-            <text>第{{ index + 1 }}周</text>
-          </view>
-        </scroll-view>
+  <view wx:if="{{showtip}}" class="menu-mask" catchtap="showtip">
+    <view class="menu-panel" catchtap="noop">
+      <view class="menu-title">课表操作</view>
+      <view class="menu-item" catchtap="handleImportCourse">
+        <text class="menu-icon">📅</text>
+        <text>导入课表</text>
       </view>
-
-      <!-- 课表头部（日期） -->
-      <view class="schedule-header">
-        <view class="schedule-header-slot">
-          <text class="slot-label">节次</text>
-        </view>
-        <view class="schedule-header-day" wx:for="{{weeks}}" wx:for-item="weekDay" wx:for-index="idx" wx:key="idx">
-          <text class="day-name">{{ weekDay }}</text>
-          <text class="day-date">{{ dates[idx] }}</text>
-        </view>
+      <view class="menu-item" catchtap="handleRefreshCourse">
+        <text class="menu-icon">↻</text>
+        <text>刷新课表</text>
       </view>
-
-      <!-- 课表主体 -->
-      <view class="schedule-container">
-        <view class="schedule-slots">
-          <view class="slot-item" wx:for="{{courseTime}}" wx:for-item="time" wx:for-index="idx" wx:key="idx">
-            <text class="slot-number">{{ idx + 1 }}</text>
-            <text class="slot-time">{{ time }}</text>
-          </view>
-        </view>
-        
-        <view class="schedule-grid">
-          <!-- 网格背景 -->
-          <view class="grid-background">
-            <view class="grid-cell" wx:for="{{77}}" wx:key="index"></view>
-          </view>
-          
-          <!-- 课程块 -->
-          <view 
-            class="course-block"
-            wx:for="{{courses}}" wx:for-item="course" wx:for-index="idx" wx:key="{{course._id || idx}}"
-            bindtap="showCourseInfo"
-            data-course="{{course}}"
-            style="grid-column: {{course.gridColumn}}; grid-row: {{course.gridRow}} / {{course.gridRowEnd}}; background-color: {{['#E3F2FD', '#E8F5E9', '#FFF3E0', '#F3E5F5', '#E0F7FA'][idx % 5]}};"
-          >
-            <view class="course-content">
-              <text class="course-name">{{ course.name }}</text>
-              <text class="course-location">{{ course.location }}</text>
-            </view>
-          </view>
-          
-          <!-- 空状态 -->
-          <view wx:if="{{courses.length === 0}}" class="empty-state">
-            <text class="empty-icon">📚</text>
-            <text class="empty-text">请先导入课表</text>
-          </view>
-        </view>
-      </view>
-    </scroll-view>
-
-    <!-- 课程详情弹窗 -->
-    <view wx:if="{{showCourseDialog}}" class="dialog-overlay" bindtap="showCourseDialog">
-      <view class="dialog-box" catchtap="">
-        <view class="dialog-header">
-          <text class="dialog-title">{{ selectedCourse.name }}</text>
-          <view class="dialog-close" bindtap="showCourseDialog">
-            <text>✕</text>
-          </view>
-        </view>
-        
-        <view class="dialog-content">
-          <view class="info-item">
-            <text class="info-label">教师</text>
-            <text class="info-value">{{ selectedCourse.teacher }}</text>
-          </view>
-          <view class="info-item">
-            <text class="info-label">地点</text>
-            <text class="info-value">{{ selectedCourse.location }}</text>
-          </view>
-          <view class="info-item">
-            <text class="info-label">时间</text>
-            <text class="info-value">第{{ week }}周 {{ weeks[selectedCourse.day - 1] }} {{ courseTime[selectedCourse.startTime - 1] }}-{{ courseTime[selectedCourse.endTime - 1] }}</text>
-          </view>
-        </view>
-        
-        <view class="dialog-actions">
-          <button class="btn-cancel" bindtap="showCourseDialog">取消</button>
-          <button class="btn-confirm" bindtap="confirmSubstitute">呼叫代课</button>
-        </view>
+      <view class="menu-item danger" catchtap="handleClearCourse">
+        <text class="menu-icon">×</text>
+        <text>清空课表</text>
       </view>
     </view>
   </view>
+
+  <scroll-view scroll-y class="schedule-scroll" enable-flex>
+    <view class="week-selector-wrapper" wx:if="{{showpoint}}">
+      <scroll-view scroll-x scroll-with-animation class="week-selector" enable-flex>
+        <view
+          class="week-item {{currentWeek === item ? 'active' : ''}}"
+          wx:for="{{weekNumbers}}"
+          wx:key="*this"
+          bindtap="onPoint"
+          data-week="{{item}}"
+        >
+          <text>第{{ item }}周</text>
+        </view>
+      </scroll-view>
+    </view>
+
+    <view class="schedule-head flex-row">
+      <view class="head-left flex-column j_c">
+        <view class="head-pin"></view>
+        <text class="head-left-text one">第</text>
+        <text class="head-left-text two">周</text>
+        <text class="head-curr-week">{{currentWeek}}</text>
+      </view>
+      <view class="head-right flex-row j_b">
+        <view class="flex-column j_c" wx:for="{{weekList}}" wx:key="week">
+          <text class="head-week {{item.isCurr ? 'head-right-curr' : ''}}">{{item.week}}</text>
+          <text class="{{item.isCurr ? 'head-right-curr' : ''}}">{{item.isCurr ? '今天' : item.day}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="container flex-row mb20">
+      <view class="container-left flex-column j_b">
+        <block wx:for="{{time.one}}" wx:key="index">
+          <view class="time-cell flex-column j_c">
+            <text class="con-title">{{item.index}}</text>
+            <text>{{item.timeStart}}</text>
+            <text>{{item.timeEnd}}</text>
+          </view>
+        </block>
+      </view>
+      <view class="container-right flex-column j_c">
+        <view class="flex-row mb10">
+          <view
+            class="con-item flex-column j_c {{item.type ? '' : 'empty-course'}}"
+            wx:for="{{schedule.one}}"
+            wx:key="index"
+            style="background: {{item.color}};"
+            catchtap="getDetail"
+            data-item="{{item}}"
+          >
+            <text class="con-item-subj line-ellipsis">{{item.sub}}</text>
+            <text class="line-ellipsis">{{item.tec}}</text>
+            <text class="line-ellipsis">{{item.add}}</text>
+          </view>
+        </view>
+        <view class="flex-row">
+          <view
+            class="con-item flex-column j_c {{item.type ? '' : 'empty-course'}}"
+            wx:for="{{schedule.two}}"
+            wx:key="index"
+            style="background: {{item.color}};"
+            catchtap="getDetail"
+            data-item="{{item}}"
+          >
+            <text class="con-item-subj line-ellipsis">{{item.sub}}</text>
+            <text class="line-ellipsis">{{item.tec}}</text>
+            <text class="line-ellipsis">{{item.add}}</text>
+          </view>
+        </view>
+        <view class="con-corner"></view>
+      </view>
+    </view>
+
+    <view class="container flex-row mb20">
+      <view class="container-left left-small flex-column j_b">
+        <block wx:for="{{time.two}}" wx:key="index">
+          <view class="time-cell flex-column j_c">
+            <text class="con-title">{{item.index}}</text>
+            <text>{{item.timeStart}}</text>
+            <text>{{item.timeEnd}}</text>
+          </view>
+        </block>
+      </view>
+      <view class="container-right right-small flex-column j_c">
+        <view class="flex-row">
+          <view
+            class="con-item flex-column j_c {{item.type ? '' : 'empty-course'}}"
+            wx:for="{{schedule.three}}"
+            wx:key="index"
+            style="background: {{item.color}};"
+            catchtap="getDetail"
+            data-item="{{item}}"
+          >
+            <text class="con-item-subj line-ellipsis">{{item.sub}}</text>
+            <text class="line-ellipsis">{{item.tec}}</text>
+            <text class="line-ellipsis">{{item.add}}</text>
+          </view>
+        </view>
+        <view class="con-corner"></view>
+      </view>
+    </view>
+
+    <view class="container flex-row">
+      <view class="container-left left-small flex-column j_b">
+        <block wx:for="{{time.three}}" wx:key="index">
+          <view class="time-cell flex-column j_c">
+            <text class="con-title">{{item.index}}</text>
+            <text>{{item.timeStart}}</text>
+            <text>{{item.timeEnd}}</text>
+          </view>
+        </block>
+      </view>
+      <view class="container-right right-small flex-column j_c">
+        <view class="flex-row">
+          <view
+            class="con-item flex-column j_c {{item.type ? '' : 'empty-course'}}"
+            wx:for="{{schedule.four}}"
+            wx:key="index"
+            style="background: {{item.color}};"
+            catchtap="getDetail"
+            data-item="{{item}}"
+          >
+            <text class="con-item-subj line-ellipsis">{{item.sub}}</text>
+            <text class="line-ellipsis">{{item.tec}}</text>
+            <text class="line-ellipsis">{{item.add}}</text>
+          </view>
+        </view>
+        <view class="con-corner"></view>
+      </view>
+    </view>
+
+    <view wx:if="{{courses.length === 0}}" class="empty-state">
+      <text class="empty-title">暂无课表</text>
+      <text class="empty-desc">请先导入课表后再发布代课任务</text>
+      <button class="empty-btn" bindtap="importCourse">导入课表</button>
+    </view>
+  </scroll-view>
+
+  <view class="detail-mask" wx:if="{{isShow}}" catchtap="close"></view>
+  <view
+    wx:if="{{isShow}}"
+    class="course-modal {{isShow ? 'show' : ''}}"
+    style="background: {{current.color}};"
+    catchtap="noop"
+  >
+    <view class="modal-course-name">{{current.sub}}</view>
+    <view class="modal-row">教师：{{current.tec}}</view>
+    <view class="modal-row">地点：{{current.add}}</view>
+    <view class="modal-row">时间：第{{currentWeek}}周 {{current.timeLabel}}</view>
+    <view class="modal-actions">
+      <button class="modal-btn ghost" catchtap="close">取消</button>
+      <button class="modal-btn solid" catchtap="publishSubstitute">发布</button>
+    </view>
+  </view>
+</view>

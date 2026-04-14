@@ -18,7 +18,15 @@ Page({
 
   onShow() {
     console.log('页面显示')
+    this.syncTabBar()
     this.loadUserInfo()
+  },
+
+  syncTabBar() {
+    const tabBar = typeof this.getTabBar === 'function' ? this.getTabBar() : null
+    if (tabBar && tabBar.data.selected !== 3) {
+      tabBar.setData({ selected: 3 })
+    }
   },
 
   onHide() {
@@ -32,28 +40,30 @@ Page({
   // 加载用户信息
   loadUserInfo() {
     try {
-      const userInfo = wx.getStorageSync('userInfo')
-      const token = wx.getStorageSync('token')
-      
-      if (userInfo && token) {
-        // 测试阶段：有 token 即视为已登录，不验证云端
+      const app = getApp()
+      const userInfo = app.globalData.userInfo
+
+      if (userInfo && app.globalData.hasLogin) {
+        // 使用全局用户信息
         this.setData({
           isLoggedIn: true,
           userName: userInfo.nickName || '用户',
-          userId: userInfo.userId || '100000',
-          isAuth: userInfo.isAuth || false
+          userId: userInfo.openid || '100000',
+          isAuth: !!userInfo.phone,
+          avatarUrl: userInfo.avatarUrl || '/images/default-avatar.png'
         })
       } else {
         // 未登录
-        this.setData({ isLoggedIn: false })
-        // 测试阶段：移除登录跳转逻辑，避免死循环
-        // wx.navigateTo({ url: '/pages/login/index' })
+        this.setData({
+          isLoggedIn: false,
+          userName: '未登录',
+          userId: '',
+          isAuth: false
+        })
       }
     } catch (e) {
       console.error('获取用户信息失败:', e)
       this.setData({ isLoggedIn: false })
-      // 测试阶段：移除登录跳转逻辑，避免死循环
-      // wx.navigateTo({ url: '/pages/login/index' })
     }
   },
 
@@ -113,10 +123,9 @@ Page({
       content: '确定要退出登录吗？',
       success: (res) => {
         if (res.confirm) {
-          // 清除本地存储的用户信息
-          wx.removeStorageSync('userInfo')
-          // 跳转到登录页面
-          wx.navigateTo({ url: '/pages/login/index' })
+          const app = getApp()
+          app.setLoginState(null)
+          app.navigateToLogin('profile logout')
         }
       }
     })

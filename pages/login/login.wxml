@@ -1,0 +1,51 @@
+<view class="container">
+  <view class="login-header">
+    <image class="logo" src="/images/logo.png" mode="aspectFit"></image>
+    <text class="title">校园跑腿</text>
+  </view>
+
+  <view class="login-content">
+    <view class="login-card">
+      <block wx:if="{{!hasUserInfo}}">
+        <view class="login-info">
+          <image class="avatar" src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill"></image>
+          <text class="nickname">{{userInfo.nickName || '未登录'}}</text>
+        </view>
+
+        <button class="login-btn" bindtap="handleLogin" loading="{{loading}}">
+          {{loading ? '登录中...' : '微信登录'}}
+        </button>
+
+        <view class="tips" wx:if="{{loginError}}">
+          <text class="error-text">{{loginError}}</text>
+        </view>
+      </block>
+
+      <block wx:else>
+        <view class="success-info">
+          <image class="avatar" src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill"></image>
+          <text class="nickname">{{userInfo.nickName}}</text>
+          <text class="openid">ID: {{userInfo.openid}}</text>
+        </view>
+
+        <button class="logout-btn" bindtap="handleLogout">退出登录</button>
+      </block>
+    </view>
+
+    <view class="login-tips">
+      <text>登录后即可使用校园跑腿服务</text>
+    </view>
+
+    <!-- 调试信息 -->
+    <view class="debug-info" wx:if="{{debugInfo}}">
+      <text class="debug-title">调试信息:</text>
+      <text>{{debugInfo}}</text>
+    </view>
+
+    <!-- 调试按钮 -->
+    <view class="debug-buttons" wx:if="{{showDebugButtons}}">
+      <button class="debug-btn" bindtap="debugStatus">调试状态</button>
+      <button class="debug-btn" bindtap="clearStorage">清除存储</button>
+    </view>
+  </view>
+</view>

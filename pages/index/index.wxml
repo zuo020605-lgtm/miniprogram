@@ -44,6 +44,24 @@
         confirm-type="search"
       />
     </view>
+    <view class="search-history-panel" wx:if="{{showSearchHistory && searchHistory.length > 0}}">
+      <view class="search-history-header">
+        <text class="search-history-title">搜索历史</text>
+        <text class="search-history-clear" catchtap="clearSearchHistory">清空</text>
+      </view>
+      <view class="search-history-list">
+        <view
+          class="search-history-item"
+          wx:for="{{searchHistory}}"
+          wx:key="*this"
+          catchtap="selectSearchHistory"
+          data-keyword="{{item}}"
+        >
+          <text class="history-clock">⌕</text>
+          <text class="history-keyword">{{item}}</text>
+        </view>
+      </view>
+    </view>
   </view>
 
   <!-- Function Grid: Bento Style -->
@@ -161,7 +179,7 @@
         data-id="{{item._id}}"
       >
         <view class="post-icon-wrapper bg-{{item.bg}}-container-30">
-          <text class="material-icons post-icon">{{item.iconName}}</text>
+          <text class="post-icon">{{item.iconName}}</text>
         </view>
         <view class="post-content">
           <view class="post-header">

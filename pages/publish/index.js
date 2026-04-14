@@ -1,3 +1,5 @@
+import api from '../../utils/api.js'
+
 // 发布任务
 Page({
   data: {
@@ -6,7 +8,11 @@ Page({
     startTime: '',
     endTime: '',
     pickupLocation: '',
+    pickupLocationLatitude: null,
+    pickupLocationLongitude: null,
     deliveryLocation: '',
+    deliveryLocationLatitude: null,
+    deliveryLocationLongitude: null,
     examLocation: '',
     examSubject: '',
     weightOptions: [
@@ -24,6 +30,8 @@ Page({
     taskDetail: '',
     contactInfo: '',
     canPublish: false,
+    orderInfo: null,
+    isPublishing: false,
     // 滑动相关
     sliderStartX: 0,
     sliderWidth: 0,
@@ -41,6 +49,7 @@ Page({
 
   onShow() {
     console.log('页面显示')
+    this.setData({ isPublishing: false })
     // 获取滑块宽度
     this.getSliderWidth()
   },
@@ -106,12 +115,37 @@ Page({
 
   // 开始时间变更
   onStartTimeChange(e) {
-    this.setData({ startTime: e.detail.value })
+    const startTime = e.detail.value
+    this.setData({ startTime })
+
+    // 校验开始时间是否晚于结束时间
+    this.validateTimeRange()
   },
 
   // 结束时间变更
   onEndTimeChange(e) {
-    this.setData({ endTime: e.detail.value })
+    const endTime = e.detail.value
+    this.setData({ endTime })
+
+    // 校验开始时间是否晚于结束时间
+    this.validateTimeRange()
+  },
+
+  // 校验时间范围
+  validateTimeRange() {
+    const { startTime, endTime } = this.data
+
+    if (startTime && endTime) {
+      // 比较时间
+      if (startTime > endTime) {
+        wx.showToast({
+          title: '开始时间不能晚于结束时间',
+          icon: 'none'
+        })
+        // 清除结束时间
+        this.setData({ endTime: '' })
+      }
+    }
   },
 
   // 取货地点变更
@@ -148,21 +182,21 @@ Page({
     query.exec((res) => {
       if (res && res[0]) {
         const rect = res[0]
-        const sliderWidth = rect.width - 40 // 减去左右边距
-        const startX = rect.left + 20 // 左边距
+        const sliderWidth = rect.width // 使用实际宽度
+        const startX = rect.left // 使用实际起始位置
         const currentX = touch.clientX - startX
         let progress = (currentX / sliderWidth) * 100
-        
+
         // 限制范围 0-100
         progress = Math.max(0, Math.min(100, progress))
-        
+
         this.setData({
           sliderStartX: startX,
           sliderWidth: sliderWidth,
           currentProgress: progress,
           sliderProgress: progress
         })
-        
+
         this.snapToNearestNode(progress)
       }
     })
@@ -172,15 +206,15 @@ Page({
   onSliderTouchMove(e) {
     const touch = e.touches[0]
     const { sliderStartX, sliderWidth } = this.data
-    
+
     if (sliderWidth === 0) return
-    
+
     const currentX = touch.clientX - sliderStartX
     let progress = (currentX / sliderWidth) * 100
-    
+
     // 限制范围 0-100
     progress = Math.max(0, Math.min(100, progress))
-    
+
     this.setData({
       currentProgress: progress,
       sliderProgress: progress
@@ -268,51 +302,187 @@ Page({
   },
 
   // 发布任务
-  publishTask() {
-    if (!this.data.canPublish) return
-    
+  async publishTask() {
+    if (!this.data.canPublish || this.data.isPublishing) return
+
     // 发布前预览弹窗
-    const { selectedType, selectedDate, startTime, price, taskDetail, contactInfo, pickupLocation, deliveryLocation, examLocation, examSubject } = this.data
+    const { selectedType, selectedDate, startTime, endTime, price, taskDetail, contactInfo, pickupLocation, deliveryLocation, examLocation, examSubject, selectedWeight, pickupLocationLatitude, pickupLocationLongitude, deliveryLocationLatitude, deliveryLocationLongitude } = this.data
+
+    // 校验时间范围
+    if (startTime && endTime && startTime > endTime) {
+      wx.showToast({
+        title: '开始时间不能晚于结束时间',
+        icon: 'none'
+      })
+      return
+    }
+    const priceNumber = Number(price)
+    if (!Number.isFinite(priceNumber) || priceNumber <= 0) {
+      wx.showToast({
+        title: '请输入正确的金额',
+        icon: 'none'
+      })
+      return
+    }
     let previewContent = `任务类型：${selectedType === 'campus-errand' ? '校园跑腿' : selectedType === 'express' ? '快递代取' : '考试代替'}\n`
     previewContent += `日期：${selectedDate}\n`
     previewContent += `时间：${startTime}\n`
-    
+
     if (selectedType === 'campus-errand' || selectedType === 'express') {
       previewContent += `取货地点：${pickupLocation}\n`
       previewContent += `送达地点：${deliveryLocation}\n`
+      previewContent += `重量：${selectedWeight}\n`
     } else if (selectedType === 'exam') {
       previewContent += `考试地点：${examLocation}\n`
       previewContent += `考试科目：${examSubject}\n`
     }
-    
+
     previewContent += `金额：¥${price}\n`
     previewContent += `详情：${taskDetail}\n`
     previewContent += `联系方式：${contactInfo}`
-    
+
     wx.showModal({
       title: '发布确认',
       content: previewContent,
       confirmText: '确认发布',
       cancelText: '取消',
-      success: (res) => {
+      success: async (res) => {
         if (res.confirm) {
+          this.setData({ isPublishing: true })
           wx.showLoading({ title: '发布中...' })
-          
-          // 模拟发布成功
-          setTimeout(() => {
+
+          try {
+            // 获取用户信息
+            const app = getApp()
+            const userInfo = app.globalData.userInfo
+
+            if (!userInfo || !userInfo.openid) {
+              throw new Error('请先登录')
+            }
+
+            // 准备订单数据
+            const orderData = {
+              openid: userInfo.openid,
+              title: selectedType === 'campus-errand' ? '校园跑腿' : selectedType === 'express' ? '快递代取' : '考试代替',
+              description: taskDetail,
+              price: Math.round(priceNumber * 100), // 转换为分
+              location: selectedType === 'campus-errand' || selectedType === 'express'
+                ? `${pickupLocation} -> ${deliveryLocation}`
+                : examLocation,
+              contact: {
+                phone: contactInfo,
+                method: 'wechat'
+              },
+              type: selectedType,
+              weight: selectedWeight,
+              pickupLocation: pickupLocation,
+              pickupLocationLatitude: pickupLocationLatitude,
+              pickupLocationLongitude: pickupLocationLongitude,
+              deliveryLocation: deliveryLocation,
+              deliveryLocationLatitude: deliveryLocationLatitude,
+              deliveryLocationLongitude: deliveryLocationLongitude,
+              examLocation: examLocation,
+              examSubject: examSubject,
+              date: selectedDate,
+              time: startTime
+            }
+
+            // 调用 3000 Mock API 创建订单
+            const order = await api.createOrder(orderData)
+
+            if (order) {
+              // 保存订单信息
+              this.setData({
+                orderInfo: order
+              })
+
+              wx.hideLoading({
+                complete: () => {
+                  this.navigateToPayment(order)
+                }
+              })
+            } else {
+              throw new Error('发布失败')
+            }
+          } catch (error) {
             wx.hideLoading()
+            this.setData({ isPublishing: false })
             wx.showToast({
-              title: '发布成功',
-              icon: 'success'
+              title: error.message || '发布失败',
+              icon: 'none'
             })
-            
-            // 返回首页
-            setTimeout(() => {
-              wx.switchTab({ url: '/pages/index/index' })
-            }, 1500)
-          }, 1000)
+          }
         }
       }
+    })
+  },
+
+  // 跳转到支付页
+  navigateToPayment(order) {
+    const orderId = order && order.id
+    if (!orderId) {
+      this.setData({ isPublishing: false })
+      wx.showToast({ title: '订单数据异常', icon: 'none' })
+      return
+    }
+
+    const url = `/pages/payment/index?orderId=${encodeURIComponent(orderId)}`
+    setTimeout(() => {
+      wx.navigateTo({
+        url,
+        fail: (err) => {
+          console.warn('navigateTo 支付页失败，尝试 redirectTo:', err)
+          wx.redirectTo({
+            url,
+            fail: (redirectErr) => {
+              console.error('跳转支付页失败:', redirectErr)
+              this.setData({ isPublishing: false })
+              wx.showToast({ title: '进入支付页失败', icon: 'none' })
+            }
+          })
+        }
+      })
+    }, 300)
+  },
+
+  // ========== 地图选点功能 ==========
+
+  // 选择取货地点
+  choosePickupLocation() {
+    // 跳转到地图选点页面
+    wx.navigateTo({
+      url: `/pages/map-location/index?type=pickup&location=${encodeURIComponent(JSON.stringify({
+        name: this.data.pickupLocation,
+        address: this.data.pickupLocation,
+        longitude: this.data.pickupLocationLongitude,
+        latitude: this.data.pickupLocationLatitude
+      }))}`
+    })
+  },
+
+  // 选择送达地点
+  chooseDeliveryLocation() {
+    // 跳转到地图选点页面
+    wx.navigateTo({
+      url: `/pages/map-location/index?type=delivery&location=${encodeURIComponent(JSON.stringify({
+        name: this.data.deliveryLocation,
+        address: this.data.deliveryLocation,
+        longitude: this.data.deliveryLocationLongitude,
+        latitude: this.data.deliveryLocationLatitude
+      }))}`
+    })
+  },
+
+  // 选择考试地点
+  chooseExamLocation() {
+    // 跳转到地图选点页面
+    wx.navigateTo({
+      url: `/pages/map-location/index?type=exam&location=${encodeURIComponent(JSON.stringify({
+        name: this.data.examLocation,
+        address: this.data.examLocation,
+        longitude: 113.3249, // 默认经度（广州）
+        latitude: 23.1065   // 默认纬度（广州）
+      }))}`
     })
   }
 })

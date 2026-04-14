@@ -12,20 +12,23 @@
           <text class="status-desc">{{ order.statusDesc }}</text>
         </view>
       </view>
-      
+
       <!-- 进度条 -->
       <view class="progress-container" wx:if="{{order.status !== 'cancelled'}}">
         <view class="progress-track">
           <view class="progress-fill" style="width: {{order.progressPercent}}%"></view>
         </view>
         <view class="progress-steps">
-          <view 
-            class="progress-step {{i <= order.currentStep ? 'active' : ''}}" 
-            wx:for="{{steps}}" 
+          <view
+            class="progress-step {{index <= order.currentStep ? 'active' : ''}} {{index === order.currentStep ? 'current' : ''}}"
+            wx:for="{{steps}}"
+            wx:for-item="step"
             wx:key="index"
           >
-            <view class="step-dot"></view>
-            <text class="step-label">{{item}}</text>
+            <view class="step-dot">
+              <text class="step-check" wx:if="{{index < order.currentStep}}">✓</text>
+            </view>
+            <text class="step-label">{{step}}</text>
           </view>
         </view>
       </view>
@@ -68,7 +71,7 @@
       <view class="card-header">
         <text class="card-title">服务详情</text>
       </view>
-      
+
       <!-- 校园跑腿/快递代取 -->
       <view wx:if="{{order.serviceType === 'campus-errand' || order.serviceType === 'express'}}">
         <view class="info-item">
@@ -84,23 +87,31 @@
           <text class="info-value">{{order.weight}}</text>
         </view>
       </view>
-      
+
       <!-- 校园代课/考试代替 -->
       <view wx:if="{{order.serviceType === 'campus-class' || order.serviceType === 'exam'}}">
         <view class="info-item">
-          <text class="info-label">考试地点</text>
+          <text class="info-label">{{order.serviceType === 'campus-class' ? '上课地点' : '考试地点'}}</text>
           <text class="info-value">{{order.examLocation || order.teachingBuilding || '未设置'}}</text>
         </view>
         <view class="info-item" wx:if="{{order.examSubject}}">
-          <text class="info-label">考试科目</text>
+          <text class="info-label">{{order.serviceType === 'campus-class' ? '课程' : '考试科目'}}</text>
           <text class="info-value">{{order.examSubject || '未设置'}}</text>
         </view>
         <view class="info-item" wx:if="{{order.examClassroom}}">
           <text class="info-label">教室</text>
           <text class="info-value">{{order.examClassroom || '未设置'}}</text>
         </view>
+        <view class="info-item" wx:if="{{order.serviceType === 'campus-class'}}">
+          <text class="info-label">是否签到</text>
+          <text class="info-value">{{order.needSignIn ? '需要' : '不需要'}}</text>
+        </view>
+        <view class="info-item" wx:if="{{order.serviceType === 'campus-class' && order.classroomSize}}">
+          <text class="info-label">教室类型</text>
+          <text class="info-value">{{order.classroomSize === 'large' ? '大教室' : '小教室'}}</text>
+        </view>
       </view>
-      
+
       <!-- 任务详情 -->
       <view class="info-item" wx:if="{{order.taskDetail}}">
         <text class="info-label">任务详情</text>
@@ -130,29 +141,36 @@
 
     <!-- 底部操作区 -->
     <view class="bottom-actions">
-      <button 
-        class="action-btn secondary" 
-        wx:if="{{order.status === 'unaccepted' || order.status === 'pending'}}"
+      <button
+        class="action-btn secondary"
+        wx:if="{{order.status === 'unaccepted' || order.status === 'pending' || order.status === 'waitingPayment'}}"
         bindtap="cancelOrder"
       >
         取消订单
       </button>
-      <button 
-        class="action-btn primary" 
+      <button
+        class="action-btn primary"
+        wx:if="{{order.status === 'waitingPayment'}}"
+        bindtap="goPay"
+      >
+        去支付
+      </button>
+      <button
+        class="action-btn primary"
         wx:if="{{order.status === 'unaccepted'}}"
         bindtap="editOrder"
       >
         修改订单
       </button>
-      <button 
-        class="action-btn primary" 
+      <button
+        class="action-btn primary"
         wx:if="{{order.status === 'processing'}}"
         bindtap="confirmComplete"
       >
         确认完成
       </button>
-      <button 
-        class="action-btn primary" 
+      <button
+        class="action-btn primary"
         wx:if="{{order.status === 'completed' && !order.reviewed}}"
         bindtap="goReview"
       >

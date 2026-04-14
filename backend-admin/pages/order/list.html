@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>订单管理 - 校园跑腿后台管理系统</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+      min-height: 100vh;
+    }
+    
+    .header {
+      background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
+      color: white;
+      padding: 20px 40px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .header h1 {
+      font-size: 24px;
+      font-weight: 600;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    
+    .toolbar {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    
+    .toolbar input {
+      flex: 1;
+      min-width: 200px;
+      padding: 10px 16px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    
+    .toolbar button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+    
+    .btn-secondary {
+      background: #f3f4f6;
+      color: #374151;
+    }
+    
+    .btn-secondary:hover {
+      background: #e5e7eb;
+    }
+    
+    .table-container {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    thead {
+      background: #f9fafb;
+    }
+    
+    th {
+      padding: 16px;
+      text-align: left;
+      font-size: 14px;
+      font-weight: 600;
+      color: #6b7280;
+      border-bottom: 2px solid #e5e7eb;
+    }
+    
+    td {
+      padding: 16px;
+      font-size: 14px;
+      color: #1f2937;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    
+    tbody tr:hover {
+      background: #f9fafb;
+    }
+    
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    
+    .status-pending {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    
+    .status-processing {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+    
+    .status-completed {
+      background: #d1fae5;
+      color: #065f46;
+    }
+    
+    .status-cancelled {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+    
+    .type-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+      background: #f3f4f6;
+      color: #374151;
+    }
+    
+    .actions {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .actions button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    
+    .btn-view {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+    
+    .btn-edit {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    
+    .btn-delete {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+    
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      padding: 20px;
+    }
+    
+    .pagination button {
+      padding: 8px 16px;
+      border: 1px solid #e5e7eb;
+      background: white;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .pagination button:hover:not(:disabled) {
+      background: #3b82f6;
+      color: white;
+      border-color: #3b82f6;
+    }
+    
+    .pagination button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .pagination span {
+      color: #6b7280;
+      font-size: 14px;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #6b7280;
+    }
+    
+    .error {
+      text-align: center;
+      padding: 40px;
+      color: #dc2626;
+      background: #fee2e2;
+      border-radius: 8px;
+      margin: 20px;
+    }
+    
+    .empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: #9ca3af;
+    }
+    
+    .empty-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>订单管理</h1>
+  </div>
+  
+  <div class="container">
+    <div class="toolbar">
+      <input type="text" id="searchInput" placeholder="搜索订单标题、描述..." />
+      <select id="typeFilter" style="padding: 10px 16px; border: 1px solid #e5e7eb; border-radius: 8px;">
+        <option value="">全部类型</option>
+        <option value="campus-errand">校园跑腿</option>
+        <option value="express">快递代取</option>
+        <option value="exam">考试代替</option>
+        <option value="campus-class">校园代课</option>
+      </select>
+      <select id="statusFilter" style="padding: 10px 16px; border: 1px solid #e5e7eb; border-radius: 8px;">
+        <option value="">全部状态</option>
+        <option value="PENDING">待接取</option>
+        <option value="PROCESSING">进行中</option>
+        <option value="COMPLETED">已完成</option>
+        <option value="CANCELLED">已取消</option>
+      </select>
+      <button class="btn-primary" onclick="search()">搜索</button>
+      <button class="btn-secondary" onclick="resetSearch()">重置</button>
+      <button class="btn-primary" onclick="addOrder()">新增订单</button>
+    </div>
+    
+    <div class="table-container">
+      <div id="loading" class="loading">加载中...</div>
+      <div id="error" class="error" style="display: none;"></div>
+      
+      <table id="orderTable" style="display: none;">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>订单标题</th>
+            <th>类型</th>
+            <th>价格</th>
+            <th>状态</th>
+            <th>创建时间</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody id="orderTableBody">
+        </tbody>
+      </table>
+      
+      <div id="empty" class="empty" style="display: none;">
+        <div class="empty-icon">📭</div>
+        <div>暂无订单数据</div>
+      </div>
+    </div>
+    
+    <div class="pagination" id="pagination" style="display: none;">
+      <button onclick="prevPage()" id="prevBtn">上一页</button>
+      <span id="pageInfo">第 1 页</span>
+      <button onclick="nextPage()" id="nextBtn">下一页</button>
+    </div>
+  </div>
+  
+  <script>
+    // API 配置 - 内联
+    const API_BASE_URL = 'http://localhost:3000/api'
+    const API_ENDPOINTS = {
+      ORDER: {
+        ALL: '/order/all',
+        DELETE: '/order/delete'
+      }
+    }
+    
+    // HTTP 请求工具 - 内联
+    async function request(url, method = 'GET', data = null) {
+      const options = {
+        method: method,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+
+      if (method === 'GET' && data) {
+        const queryString = new URLSearchParams(data).toString()
+        url += (url.includes('?') ? '&' : '?') + queryString
+      } else if (data && (method === 'POST' || method === 'PUT')) {
+        options.body = JSON.stringify(data)
+      }
+
+      try {
+        const response = await fetch(`${API_BASE_URL}${url}`, options)
+        const result = await response.json()
+        
+        if (!result.success) {
+          throw new Error(result.message || '请求失败')
+        }
+        
+        return result
+      } catch (error) {
+        console.error('Request error:', error)
+        throw error
+      }
+    }
+
+    function get(url, data) {
+      return request(url, 'GET', data)
+    }
+
+    function post(url, data) {
+      return request(url, 'POST', data)
+    }
+    
+    // 订单 API 服务 - 内联
+    const orderAPI = {
+      getAll() {
+        return get(API_ENDPOINTS.ORDER.ALL)
+      },
+      delete(id) {
+        return post(API_ENDPOINTS.ORDER.DELETE, { id })
+      }
+    }
+    
+    // 使用 window 对象存储状态，避免变量重复声明
+    window.orderPageState = window.orderPageState || {
+      currentPage: 1,
+      currentData: []
+    };
+    
+    // 等待 DOM 加载完成
+    window.addEventListener('DOMContentLoaded', function() {
+      console.log('=== 订单管理页面加载 ===');
+      console.log('API_BASE_URL:', API_BASE_URL);
+      console.log('orderAPI:', orderAPI);
+      
+      // 初始化状态
+      window.orderPageState.currentPage = 1;
+      window.orderPageState.currentData = [];
+      
+      // 加载订单数据
+      loadOrders();
+    });
+    
+    // 加载订单列表
+    async function loadOrders() {
+      const loading = document.getElementById('loading')
+      const error = document.getElementById('error')
+      const table = document.getElementById('orderTable')
+      const empty = document.getElementById('empty')
+      const pagination = document.getElementById('pagination')
+      
+      loading.style.display = 'block'
+      error.style.display = 'none'
+      table.style.display = 'none'
+      empty.style.display = 'none'
+      pagination.style.display = 'none'
+      
+      try {
+        console.log('正在请求:', API_BASE_URL + API_ENDPOINTS.ORDER.ALL);
+        
+        const result = await orderAPI.getAll()
+        console.log('API 返回结果:', result);
+        
+        loading.style.display = 'none'
+        
+        if (result.success && result.data && result.data.list) {
+          window.orderPageState.currentData = result.data.list
+          console.log('获取到订单数据:', window.orderPageState.currentData.length, '条');
+          
+          if (window.orderPageState.currentData.length === 0) {
+            empty.style.display = 'block'
+          } else {
+            table.style.display = 'block'
+            pagination.style.display = 'flex'
+            renderTable(window.orderPageState.currentData)
+            updatePageInfo()
+          }
+        } else {
+          throw new Error('数据格式错误：' + JSON.stringify(result))
+        }
+      } catch (err) {
+        loading.style.display = 'none'
+        error.style.display = 'block'
+        error.textContent = '加载失败：' + err.message
+        console.error('Load orders error:', err)
+      }
+    }
+    
+    // 渲染表格
+    function renderTable(orders) {
+      const tbody = document.getElementById('orderTableBody')
+      tbody.innerHTML = ''
+      
+      orders.forEach(order => {
+        const tr = document.createElement('tr')
+        tr.innerHTML = `
+          <td>${order.id}</td>
+          <td>${order.title || '无标题'}</td>
+          <td><span class="type-badge">${getOrderTypeText(order.type)}</span></td>
+          <td>¥${((order.price || 0) / 100).toFixed(2)}</td>
+          <td><span class="status-badge status-${(order.status || 'pending').toLowerCase()}">${getStatusText(order.status)}</span></td>
+          <td>${new Date(order.createTime || order.createdAt || Date.now()).toLocaleString('zh-CN')}</td>
+          <td class="actions">
+            <button class="btn-view" onclick="viewOrder('${order.id}')">查看</button>
+            <button class="btn-edit" onclick="editOrder('${order.id}')">编辑</button>
+            <button class="btn-delete" onclick="deleteOrder('${order.id}')">删除</button>
+          </td>
+        `
+        tbody.appendChild(tr)
+      })
+    }
+    
+    // 获取类型文本
+    function getOrderTypeText(type) {
+      const typeMap = {
+        'campus-errand': '校园跑腿',
+        'express': '快递代取',
+        'exam': '考试代替',
+        'campus-class': '校园代课',
+        'running': '校园跑腿',
+        'delivering': '快递代取'
+      }
+      return typeMap[type] || type || '未知'
+    }
+    
+    // 获取状态文本
+    function getStatusText(status) {
+      const statusMap = {
+        'PENDING': '待接取',
+        'PROCESSING': '进行中',
+        'COMPLETED': '已完成',
+        'CANCELLED': '已取消',
+        'pending': '待接取',
+        'accepted': '已接单',
+        'finished': '已完成'
+      }
+      return statusMap[status] || status || '未知'
+    }
+    
+    // 搜索
+    function search() {
+      const keyword = document.getElementById('searchInput').value.trim()
+      const type = document.getElementById('typeFilter').value
+      const status = document.getElementById('statusFilter').value
+      
+      let filtered = window.orderPageState.currentData
+      
+      if (keyword) {
+        filtered = filtered.filter(order => 
+          (order.title && order.title.includes(keyword)) ||
+          (order.description && order.description.includes(keyword))
+        )
+      }
+      
+      if (type) {
+        filtered = filtered.filter(order => order.type === type)
+      }
+      
+      if (status) {
+        filtered = filtered.filter(order => (order.status || '').toUpperCase() === status.toUpperCase())
+      }
+      
+      renderTable(filtered)
+    }
+    
+    // 重置搜索
+    function resetSearch() {
+      document.getElementById('searchInput').value = ''
+      document.getElementById('typeFilter').value = ''
+      document.getElementById('statusFilter').value = ''
+      renderTable(window.orderPageState.currentData)
+    }
+    
+    // 新增订单
+    function addOrder() {
+      alert('新增订单功能待实现')
+    }
+    
+    // 查看订单
+    function viewOrder(id) {
+      alert('查看订单详情：' + id)
+    }
+    
+    // 编辑订单
+    function editOrder(id) {
+      alert('编辑订单：' + id)
+    }
+    
+    // 删除订单
+    async function deleteOrder(id) {
+      if (!confirm('确定要删除订单 ' + id + ' 吗？')) {
+        return
+      }
+      
+      try {
+        const result = await orderAPI.delete(id)
+        if (result.success) {
+          alert('删除成功')
+          loadOrders()
+        } else {
+          alert('删除失败：' + result.message)
+        }
+      } catch (err) {
+        alert('删除失败：' + err.message)
+      }
+    }
+    
+    // 上一页
+    function prevPage() {
+      if (window.orderPageState.currentPage > 1) {
+        window.orderPageState.currentPage--
+        updatePageInfo()
+      }
+    }
+    
+    // 下一页
+    function nextPage() {
+      window.orderPageState.currentPage++
+      updatePageInfo()
+    }
+    
+    // 更新页码信息
+    function updatePageInfo() {
+      document.getElementById('pageInfo').textContent = `第 ${window.orderPageState.currentPage} 页`
+      document.getElementById('prevBtn').disabled = window.orderPageState.currentPage <= 1
+      document.getElementById('nextBtn').disabled = window.orderPageState.currentPage >= Math.ceil(window.orderPageState.currentData.length / 10)
+    }
+  </script>
+</body>
+</html>

@@ -1,3 +1,5 @@
+import api from '../../utils/api.js'
+
 // 订单详情
 Page({
   data: {
@@ -45,44 +47,72 @@ Page({
   },
 
   // 加载订单详情
-  loadOrderDetail(orderId) {
+  async loadOrderDetail(orderId) {
     this.setData({ loading: true })
-    
-    wx.cloud.callFunction({
-      name: 'getOrderDetail',
-      data: {
-        orderId: orderId
-      },
-      success: (res) => {
-        console.log('获取订单详情成功:', res)
-        if (res.result) {
-          this.setData({
-            order: res.result,
-            loading: false
-          })
-        } else {
-          // 云函数成功但无结果，使用 Mock 数据
-          this.setMockOrderData()
-        }
-      },
-      fail: (err) => {
-        console.error('获取订单详情失败:', err)
-        // 云函数失败，使用 Mock 数据
-        this.setMockOrderData()
-      }
-    })
+
+    try {
+      const order = await api.getOrderDetail(orderId)
+      this.setData({
+        order: this.formatOrder(order),
+        loading: false
+      })
+    } catch (err) {
+      console.error('获取订单详情失败:', err)
+      this.setMockOrderData()
+    }
+  },
+
+  formatOrder(order) {
+    const normalizedStatus = this.normalizeStatus(order.status)
+    const status = normalizedStatus === 'completed' && order.reviewed ? 'reviewed' : normalizedStatus
+    const price = Number(order.price || 0) / 100
+    const createdAt = order.createTime || order.createdAt || Date.now()
+
+    return {
+      ...order,
+      _id: order.id,
+      status,
+      statusText: this.getStatusText(status),
+      statusDesc: this.getStatusDesc(status),
+      progressPercent: this.getProgressPercent(status),
+      currentStep: this.getCurrentStep(status),
+      price,
+      createdAtText: new Date(createdAt).toLocaleString('zh-CN'),
+      startTimeText: order.time || order.startTimeText || '尽快',
+      orderNo: 'ORD' + order.id,
+      serviceType: order.type || order.serviceType || 'campus-errand',
+      pickupLocation: order.pickupLocation || order.location || '校园内',
+      deliveryLocation: order.deliveryLocation || order.location || '校园内',
+      courierNickname: order.runner && order.runner.nickName ? order.runner.nickName : ''
+    }
+  },
+
+  normalizeStatus(status) {
+    const statusMap = {
+      PENDING: 'pending',
+      WAITING_PAYMENT: 'waitingPayment',
+      PROCESSING: 'processing',
+      COMPLETED: 'completed',
+      REVIEWED: 'reviewed',
+      CANCELLED: 'cancelled',
+      accepted: 'processing',
+      finished: 'completed',
+      reviewed: 'reviewed'
+    }
+    return statusMap[status] || status || 'pending'
   },
 
   // 设置 Mock 订单数据
   setMockOrderData() {
     const options = this.options || {}
+    const mockStatus = this.normalizeStatus(options.status || 'pending')
     const mockOrder = {
       _id: options.id || 'mock-order-id',
-      status: options.status || 'pending',
-      statusText: this.getStatusText(options.status || 'pending'),
-      statusDesc: this.getStatusDesc(options.status || 'pending'),
-      progressPercent: this.getProgressPercent(options.status || 'pending'),
-      currentStep: this.getCurrentStep(options.status || 'pending'),
+      status: mockStatus,
+      statusText: this.getStatusText(mockStatus),
+      statusDesc: this.getStatusDesc(mockStatus),
+      progressPercent: this.getProgressPercent(mockStatus),
+      currentStep: this.getCurrentStep(mockStatus),
       title: '订单详情',
       price: 15,
       createdAt: new Date().toISOString(),
@@ -108,9 +138,11 @@ Page({
   getStatusText(status) {
     const statusMap = {
       'unaccepted': '待接单',
+      'waitingPayment': '待支付',
       'pending': '待接单',
       'processing': '进行中',
       'completed': '已完成',
+      'reviewed': '已评价',
       'cancelled': '已取消'
     }
     return statusMap[status] || '待接单'
@@ -120,9 +152,11 @@ Page({
   getStatusDesc(status) {
     const descMap = {
       'unaccepted': '等待接单人接单',
+      'waitingPayment': '等待发布人完成支付',
       'pending': '等待接单人接单',
       'processing': '任务进行中',
       'completed': '任务已完成',
+      'reviewed': '任务已完成评价',
       'cancelled': '订单已取消'
     }
     return descMap[status] || '等待接单人接单'
@@ -132,9 +166,11 @@ Page({
   getProgressPercent(status) {
     const percentMap = {
       'unaccepted': 0,
+      'waitingPayment': 0,
       'pending': 0,
-      'processing': 50,
-      'completed': 100,
+      'processing': 33,
+      'completed': 66,
+      'reviewed': 100,
       'cancelled': 100
     }
     return percentMap[status] || 0
@@ -144,9 +180,11 @@ Page({
   getCurrentStep(status) {
     const stepMap = {
       'unaccepted': 0,
+      'waitingPayment': 0,
       'pending': 0,
       'processing': 1,
       'completed': 2,
+      'reviewed': 3,
       'cancelled': 3
     }
     return stepMap[status] || 0
@@ -182,17 +220,22 @@ Page({
   },
 
   // 取消订单
-  cancelOrder() {
+  async cancelOrder() {
     wx.showModal({
       title: '取消订单',
       content: '确定要取消这个订单吗？',
-      success: (res) => {
+      success: async (res) => {
         if (res.confirm) {
-          // 这里可以调用取消订单的API
-          wx.showToast({ title: '订单已取消', icon: 'success' })
-          setTimeout(() => {
-            wx.navigateBack()
-          }, 1500)
+          try {
+            const app = getApp()
+            await api.cancelOrder(this.data.order._id, app.globalData.userInfo.openid)
+            wx.showToast({ title: '订单已取消', icon: 'success' })
+            setTimeout(() => {
+              wx.navigateBack()
+            }, 1500)
+          } catch (error) {
+            wx.showToast({ title: error.message || '取消失败', icon: 'none' })
+          }
         }
       }
     })
@@ -209,19 +252,22 @@ Page({
     wx.showModal({
       title: '确认完成',
       content: '确认任务已完成？',
-      success: (res) => {
+      success: async (res) => {
         if (res.confirm) {
-          // 这里可以调用确认完成的API
-          wx.showToast({ title: '任务已完成', icon: 'success' })
-          setTimeout(() => {
+          try {
+            const app = getApp()
+            await api.finishOrder(this.data.order._id, app.globalData.userInfo.openid)
+            wx.showToast({ title: '任务已完成', icon: 'success' })
             this.setData({
               'order.status': 'completed',
               'order.statusText': '已完成',
               'order.statusDesc': '任务已完成',
-              'order.progressPercent': 100,
+              'order.progressPercent': 66,
               'order.currentStep': 2
             })
-          }, 1000)
+          } catch (error) {
+            wx.showToast({ title: error.message || '确认失败', icon: 'none' })
+          }
         }
       }
     })
@@ -230,6 +276,11 @@ Page({
   // 去评价
   goReview() {
     const orderId = this.data.order._id
-    wx.navigateTo({ url: `/pages/review/index?id=${orderId}` })
+    wx.navigateTo({ url: `/pages/review/index?orderId=${orderId}&price=${this.data.order.price}` })
+  },
+
+  goPay() {
+    const orderId = this.data.order._id
+    wx.navigateTo({ url: `/pages/payment/index?orderId=${orderId}` })
   }
 })

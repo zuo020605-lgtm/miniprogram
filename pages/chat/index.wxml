@@ -20,21 +20,21 @@
       scroll-top="{{scrollTop}}"
       bindscrolltoupper="loadMoreMessages"
     >
-      <view 
-        class="message-item {{msg.isSelf ? 'message-self' : ''}}" 
+      <view
+        class="message-item {{msg.isSelf ? 'message-self' : ''}}"
         wx:for="{{messages}}" wx:for-item="msg" wx:for-index="index" wx:key="{{index}}"
       >
-        <!-- 对方的消息 -->
         <view class="message-avatar" wx:if="{{!msg.isSelf}}">
           <text class="avatar-text">{{ chatUserName ? chatUserName.charAt(0) : 'U' }}</text>
         </view>
-        <view class="message-content {{msg.isSelf ? 'message-self' : ''}}">
+
+        <view class="message-content">
           <view class="message-bubble">
             <text class="message-text">{{ msg.content }}</text>
           </view>
           <text class="message-time">{{ msg.formattedTime }}</text>
         </view>
-        <!-- 自己的消息 -->
+
         <view class="message-avatar" wx:if="{{msg.isSelf}}">
           <text class="avatar-text">我</text>
         </view>

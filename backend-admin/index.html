@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>校园跑腿后台管理系统</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+  <link rel="stylesheet" href="css/empty-state.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #f5f7fa;
+      min-height: 100vh;
+    }
+    
+    /* 侧边栏样式 */
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 250px;
+      height: 100vh;
+      background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
+      color: white;
+      z-index: 1000;
+      overflow-y: auto;
+      transition: transform 0.3s ease;
+    }
+    
+    .sidebar-header {
+      padding: 20px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .sidebar-header h1 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    
+    .sidebar-header p {
+      font-size: 12px;
+      opacity: 0.7;
+    }
+    
+    .sidebar-menu {
+      list-style: none;
+      padding: 20px 0;
+    }
+    
+    .sidebar-menu li {
+      margin-bottom: 5px;
+    }
+    
+    .sidebar-menu a {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .sidebar-menu a:hover,
+    .sidebar-menu a.active {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+    
+    .sidebar-menu a i {
+      margin-right: 12px;
+      width: 20px;
+      text-align: center;
+      font-size: 16px;
+    }
+    
+    /* 主内容区域 */
+    .main-content {
+      margin-left: 250px;
+      min-height: 100vh;
+      transition: margin-left 0.3s ease;
+    }
+    
+    /* 顶部导航栏 */
+    .topbar {
+      position: sticky;
+      top: 0;
+      background: white;
+      padding: 15px 30px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      z-index: 999;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #2c3e50;
+    }
+    
+    .breadcrumb {
+      color: #666;
+      font-size: 14px;
+    }
+    
+    .breadcrumb span {
+      color: #2c3e50;
+      font-weight: 500;
+    }
+    
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 15px;
+      background: #f5f7fa;
+      border-radius: 20px;
+    }
+    
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+    }
+    
+    .user-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: #2c3e50;
+    }
+    
+    .btn-logout {
+      background: none;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      opacity: 0.6;
+      transition: all 0.3s ease;
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+    
+    .btn-logout:hover {
+      opacity: 1;
+      background: rgba(0, 0, 0, 0.05);
+      transform: scale(1.1);
+    }
+    
+    /* 内容区域 */
+    .content-area {
+      padding: 30px;
+    }
+
+    .content-frame {
+      width: 100%;
+      min-height: calc(100vh - 120px);
+      border: none;
+      display: block;
+      background: transparent;
+    }
+
+    .retry-btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      background: #1890ff;
+      color: #fff;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    
+    .page-container {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      margin-bottom: 24px;
+    }
+    
+    .page-header {
+      margin-bottom: 24px;
+    }
+    
+    .page-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 8px;
+    }
+    
+    .page-description {
+      color: #666;
+      font-size: 14px;
+    }
+    
+    /* 统计卡片 */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+    
+    .stat-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 12px;
+      padding: 24px;
+      color: white;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+    
+    .stat-card.blue {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+    
+    .stat-card.green {
+      background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+      box-shadow: 0 4px 12px rgba(17, 153, 142, 0.3);
+    }
+    
+    .stat-card.orange {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      box-shadow: 0 4px 12px rgba(240, 147, 251, 0.3);
+    }
+    
+    .stat-card.purple {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      box-shadow: 0 4px 12px rgba(79, 172, 254, 0.3);
+    }
+    
+    .stat-card h3 {
+      font-size: 14px;
+      font-weight: 500;
+      opacity: 0.9;
+      margin-bottom: 12px;
+    }
+    
+    .stat-card .number {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    
+    .stat-card .change {
+      font-size: 12px;
+      opacity: 0.8;
+    }
+    
+    /* 响应式设计 */
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      
+      .sidebar.show {
+        transform: translateX(0);
+      }
+      
+      .main-content {
+        margin-left: 0;
+      }
+      
+      .menu-toggle {
+        display: block;
+      }
+      
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .topbar {
+        padding: 15px;
+      }
+      
+      .content-area {
+        padding: 15px;
+      }
+    }
+    
+    /* 按钮样式 */
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+    
+    .btn-secondary {
+      background: #f5f7fa;
+      color: #2c3e50;
+    }
+    
+    .btn-secondary:hover {
+      background: #e8ecf1;
+    }
+    
+    .btn-danger {
+      background: #f56c6c;
+      color: white;
+    }
+    
+    .btn-danger:hover {
+      background: #f78989;
+    }
+    
+    /* 表格样式 */
+    .table-responsive {
+      overflow-x: auto;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    thead {
+      background: #f5f7fa;
+    }
+    
+    th {
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 13px;
+      font-weight: 600;
+      color: #606266;
+      border-bottom: 2px solid #e8ecf1;
+    }
+    
+    td {
+      padding: 16px;
+      font-size: 14px;
+      color: #2c3e50;
+      border-bottom: 1px solid #f5f7fa;
+    }
+    
+    tbody tr:hover {
+      background: #f8f9fb;
+    }
+    
+    /* 状态标签 */
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    
+    .badge-success {
+      background: #d4edda;
+      color: #155724;
+    }
+    
+    .badge-warning {
+      background: #fff3cd;
+      color: #856404;
+    }
+    
+    .badge-danger {
+      background: #f8d7da;
+      color: #721c24;
+    }
+    
+    .badge-info {
+      background: #d1ecf1;
+      color: #0c5460;
+    }
+    
+    /* 模态框 */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal.show {
+      display: flex;
+    }
+    
+    .modal-content {
+      background: white;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    
+    .modal-header {
+      padding: 20px;
+      border-bottom: 1px solid #e8ecf1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .modal-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+    
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #999;
+    }
+    
+    .modal-body {
+      padding: 20px;
+    }
+    
+    .modal-footer {
+      padding: 20px;
+      border-top: 1px solid #e8ecf1;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+    
+    /* 表单样式 */
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #2c3e50;
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 10px 15px;
+      border: 1px solid #dcdfe6;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    textarea.form-control {
+      min-height: 100px;
+      resize: vertical;
+    }
+    
+    /* 加载动画 */
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+    }
+    
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #667eea;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* 空状态 */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #999;
+    }
+    
+    .empty-state-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+    
+    .empty-state-title {
+      font-size: 18px;
+      margin-bottom: 8px;
+      color: #666;
+    }
+    
+    .empty-state-desc {
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <!-- 侧边栏 -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h1>🎓 校园跑腿</h1>
+      <p>后台管理系统</p>
+    </div>
+    <ul class="sidebar-menu">
+      <li><a href="#" class="menu-item active" data-page="dashboard"><i>📊</i> 仪表盘</a></li>
+      <li><a href="#" class="menu-item" data-page="orders"><i>📦</i> 订单管理</a></li>
+      <li><a href="#" class="menu-item" data-page="messages"><i>💬</i> 消息管理</a></li>
+      <li><a href="#" class="menu-item" data-page="users"><i>👥</i> 用户管理</a></li>
+      <li><a href="#" class="menu-item" data-page="wallet"><i>💰</i> 钱包管理</a></li>
+    </ul>
+  </aside>
+
+  <!-- 主内容区 -->
+  <div class="main-content">
+    <!-- 顶部导航栏 -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <button class="menu-toggle" id="menuToggle">☰</button>
+        <div class="breadcrumb">
+          首页 / <span id="pageTitle">仪表盘</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="user-info">
+          <div class="user-avatar" id="userAvatar">A</div>
+          <span class="user-name" id="userName">管理员</span>
+          <button class="btn-logout" onclick="handleLogout()" title="退出登录">
+            🚪
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 内容区域 -->
+    <div class="content-area" id="contentArea">
+      <!-- 动态加载页面内容 -->
+    </div>
+  </div>
+
+  <script src="js/auth-service.js?v=20260413-login"></script>
+  <script>
+    // 避免重复声明
+    if (typeof DataUtils === 'undefined') {
+      // 数据工具类 - 简化版本
+      const DataUtils = {
+        loadHistoricalData() {
+          try {
+            const stored = localStorage.getItem('dashboard_historical_data');
+            if (stored) {
+              const data = JSON.parse(stored);
+              const now = Date.now();
+              const oneDay = 24 * 60 * 60 * 1000;
+              if (now - data.timestamp < oneDay) {
+                return data.data;
+              }
+            }
+          } catch (error) {
+            console.error('加载历史数据失败:', error);
+          }
+          return null;
+        },
+
+        saveHistoricalData(data) {
+          try {
+            const stored = {
+              timestamp: Date.now(),
+              data: data
+            };
+            localStorage.setItem('dashboard_historical_data', JSON.stringify(stored));
+          } catch (error) {
+            console.error('保存历史数据失败:', error);
+          }
+        },
+
+        calculateChangePercentage(currentValue, historicalValue) {
+          if (historicalValue === 0 || historicalValue === null || historicalValue === undefined) {
+            if (currentValue === 0 || currentValue === null || currentValue === undefined) {
+              return '0.00%';
+            }
+            return '+∞';
+          }
+
+          if (currentValue === 0 || currentValue === null || currentValue === undefined) {
+            return '-100.00%';
+          }
+
+          const change = ((currentValue - historicalValue) / historicalValue) * 100;
+          const formatted = change.toFixed(2);
+
+          if (change > 0) {
+            return '+' + formatted + '%';
+          } else if (change < 0) {
+            return formatted + '%';
+          } else {
+            return '0.00%';
+          }
+        },
+
+        getChangeClass(percentageStr) {
+          if (percentageStr === 'N/A' || percentageStr === '0.00%') {
+            return 'change-neutral';
+          }
+
+          if (percentageStr.startsWith('+')) {
+            return 'change-positive';
+          } else if (percentageStr.startsWith('-')) {
+            return 'change-negative';
+          } else if (percentageStr === '+∞') {
+            return 'change-positive';
+          }
+
+          return 'change-neutral';
+        },
+
+        generateHistoricalData(currentData) {
+          const historicalData = {
+            totalOrders: Math.floor(currentData.totalOrders * 0.85),
+            todayRevenue: currentData.todayRevenue * 0.9,
+            activeUsers: Math.floor(currentData.activeUsers * 0.88),
+            pendingMessages: Math.floor(currentData.pendingMessages * 1.2)
+          };
+
+          this.saveHistoricalData(historicalData);
+          return historicalData;
+        },
+
+        getHistoricalData(currentData) {
+          let historicalData = this.loadHistoricalData();
+
+          if (!historicalData && currentData) {
+            historicalData = this.generateHistoricalData(currentData);
+          }
+
+          return historicalData;
+        }
+      };
+    }
+
+    if (typeof ApiCache === 'undefined') {
+      // API 缓存服务 - 简化版本
+      const ApiCache = {
+        cache: new Map(),
+        pendingRequests: new Map(),
+        defaultCacheDuration: 300000,
+        requestTimeout: 10000,
+
+        get(key) {
+          const item = this.cache.get(key);
+          if (!item) return null;
+
+          if (Date.now() > item.expiry) {
+            this.cache.delete(key);
+            return null;
+          }
+
+          return item.data;
+        },
+
+        set(key, data, duration = this.defaultCacheDuration) {
+          this.cache.set(key, {
+            data,
+            expiry: Date.now() + duration,
+            timestamp: Date.now()
+          });
+        },
+
+        async fetch(url, options = {}, useCache = true, cacheDuration = this.defaultCacheDuration) {
+          const cacheKey = `fetch:${url}:${JSON.stringify(options)}`;
+
+          if (this.pendingRequests.has(cacheKey)) {
+            return this.pendingRequests.get(cacheKey);
+          }
+
+          if (useCache) {
+            const cached = this.get(cacheKey);
+            if (cached) {
+              return Promise.resolve(cached);
+            }
+          }
+
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), this.requestTimeout);
+
+          const requestPromise = fetch(url, {
+            ...options,
+            signal: controller.signal
+          })
+            .then(response => {
+              clearTimeout(timeoutId);
+              if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+              }
+              return response.json();
+            })
+            .then(data => {
+              if (useCache && data && data.success !== false) {
+                this.set(cacheKey, data, cacheDuration);
+              }
+              return data;
+            })
+            .catch(error => {
+              clearTimeout(timeoutId);
+              if (error.name === 'AbortError') {
+                throw new Error('请求超时，请检查网络连接');
+              }
+              throw error;
+            })
+            .finally(() => {
+              this.pendingRequests.delete(cacheKey);
+            });
+
+          this.pendingRequests.set(cacheKey, requestPromise);
+          return requestPromise;
+        }
+      };
+    }
+
+    // 全局状态
+    const AppState = {
+      currentPage: '',
+      loadingPage: '',
+      apiBaseUrl: 'http://localhost:3000/api'
+    };
+
+    // 页面路由配置
+    const pages = {
+      dashboard: 'pages/dashboard.html',
+      orders: 'pages/order/list.html',
+      messages: 'pages/messages/list.html',
+      users: 'pages/users/list.html',
+      wallet: 'pages/wallet/list.html'
+    };
+
+    // 初始化
+    document.addEventListener('DOMContentLoaded', function() {
+      // 检查登录状态
+      if (!AuthService.isLoggedIn()) {
+        renderLoginRequired();
+        return;
+      }
+      
+      console.log('后台管理系统初始化...');
+      initNavigation();
+      loadPage('dashboard');
+      updateUserInfo();
+    });
+
+    // 初始化导航
+    function initNavigation() {
+      const menuItems = document.querySelectorAll('.menu-item');
+      menuItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+          e.preventDefault();
+          const page = this.dataset.page;
+          loadPage(page);
+          
+          // 更新激活状态
+          menuItems.forEach(i => i.classList.remove('active'));
+          this.classList.add('active');
+          
+          // 移动端自动关闭菜单
+          if (window.innerWidth <= 768) {
+            document.getElementById('sidebar').classList.remove('show');
+          }
+        });
+      });
+
+      // 菜单切换
+      document.getElementById('menuToggle').addEventListener('click', function() {
+        document.getElementById('sidebar').classList.toggle('show');
+      });
+    }
+
+    // 加载页面
+    async function loadPage(pageName) {
+      if (
+        (AppState.currentPage === pageName || AppState.loadingPage === pageName) &&
+        document.querySelector('#contentArea .content-frame')
+      ) {
+        return;
+      }
+
+      AppState.loadingPage = pageName;
+      const contentArea = document.getElementById('contentArea');
+      const pageTitle = document.getElementById('pageTitle');
+      
+      // 更新标题
+      const titles = {
+        dashboard: '仪表盘',
+        orders: '订单管理',
+        messages: '消息管理',
+        users: '用户管理',
+        wallet: '钱包管理'
+      };
+      pageTitle.textContent = titles[pageName] || pageName;
+
+      // 显示加载状态
+      contentArea.innerHTML = `
+        <div class="loading">
+          <div class="spinner"></div>
+        </div>
+      `;
+
+      try {
+        const pageUrl = pages[pageName];
+        if (!pageUrl) throw new Error('页面不存在');
+
+        const iframe = document.createElement('iframe');
+        iframe.className = 'content-frame';
+        iframe.src = pageUrl;
+        iframe.title = titles[pageName] || pageName;
+        iframe.onload = () => {
+          console.log('页面加载完成:', pageName);
+          AppState.currentPage = pageName;
+          AppState.loadingPage = '';
+        };
+        iframe.onerror = () => {
+          AppState.loadingPage = '';
+          console.error('页面加载失败:', pageName);
+        };
+
+        contentArea.innerHTML = '';
+        contentArea.appendChild(iframe);
+      } catch (error) {
+        AppState.loadingPage = '';
+        console.error('加载页面失败:', error);
+        contentArea.innerHTML = `
+          <div class="page-container">
+            <div class="empty-state">
+              <div class="empty-state-icon">⚠️</div>
+              <div class="empty-state-title">页面加载失败</div>
+              <div class="empty-state-desc">${error.message}</div>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function renderLoginRequired() {
+      const contentArea = document.getElementById('contentArea');
+      const pageTitle = document.getElementById('pageTitle');
+      pageTitle.textContent = '需要登录';
+      contentArea.innerHTML = `
+        <div class="page-container">
+          <div class="empty-state">
+            <div class="empty-state-icon">🔐</div>
+            <div class="empty-state-title">请先登录后台管理系统</div>
+            <div class="empty-state-desc">登录后再进入仪表盘、订单、用户、消息和钱包管理。</div>
+            <button class="retry-btn" onclick="window.location.replace('login.html')">前往登录</button>
+          </div>
+        </div>
+      `;
+    }
+
+    // 工具函数
+    function formatCurrency(amount) {
+      return '¥' + (amount / 100).toFixed(2);
+    }
+
+    function formatDate(timestamp) {
+      return new Date(timestamp).toLocaleString('zh-CN');
+    }
+
+    function showNotification(message, type = 'info') {
+      const notification = document.createElement('div');
+      notification.className = `notification notification-${type}`;
+      notification.textContent = message;
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 25px;
+        background: ${type === 'success' ? '#52c41a' : type === 'error' ? '#ff4d4f' : '#1890ff'};
+        color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 3000;
+        animation: slideIn 0.3s ease;
+      `;
+      document.body.appendChild(notification);
+      setTimeout(() => notification.remove(), 3000);
+    }
+    
+    // 更新用户信息显示
+    function updateUserInfo() {
+      const user = AuthService.getCurrentUser();
+      if (user) {
+        document.getElementById('userName').textContent = user.name || user.username;
+        document.getElementById('userAvatar').textContent = (user.name || user.username || 'A')[0].toUpperCase();
+      }
+    }
+    
+    // 处理退出
+    function handleLogout() {
+      if (confirm('确定要退出登录吗？')) {
+        AuthService.logout();
+      }
+    }
+  </script>
+</body>
+</html>

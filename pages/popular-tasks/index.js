@@ -1,4 +1,6 @@
 // 热门任务
+import api from '../../utils/api'
+
 Page({
   data: {
     unacceptedOrders: [],
@@ -26,46 +28,61 @@ Page({
   // 加载未接取订单
   loadUnacceptedOrders() {
     this.setData({ loading: true })
-    
-    // 模拟数据加载
-    setTimeout(() => {
-      const mockOrders = [
-        {
-          _id: '1',
-          title: '帮我买校园超市的咖啡',
-          price: 15,
-          tagText: '紧急',
-          pickupLocation: '校园超市',
-          deliveryLocation: '南区宿舍',
-          startTimeText: '尽快',
-          createdAtText: '10分钟前'
-        },
-        {
-          _id: '2',
-          title: '代取菜鸟驿站包裹',
-          price: 5,
-          tagText: '新任务',
-          pickupLocation: '菜鸟驿站',
-          deliveryLocation: '北区宿舍',
-          startTimeText: '下午3点前',
-          createdAtText: '30分钟前'
-        },
-        {
-          _id: '3',
-          title: '帮忙打印资料',
-          price: 8,
-          tagText: '待接单',
-          location: '打印店',
-          startTimeText: '明天上午',
-          createdAtText: '1小时前'
-        }
-      ]
-      
-      this.setData({
-        unacceptedOrders: mockOrders,
-        loading: false
-      })
-    }, 1000)
+
+    // 从本地服务器获取订单数据
+    api.request('/api/order/all').then(res => {
+      if (res.success && res.data && res.data.list) {
+        const orders = res.data.list
+
+        // 过滤出已支付且未接取的订单
+        const unacceptedOrders = orders.filter(order => order.status === 'PENDING' && order.paymentStatus === 'PAID').map(order => {
+          return {
+            _id: order.id,
+            title: order.title,
+            price: Number(order.price || 0) / 100,
+            tagText: '待接单',
+            pickupLocation: order.location || '校园内',
+            deliveryLocation: order.location || '校园内',
+            startTimeText: '尽快',
+            createdAtText: this._getTimeAgo(order.createTime || order.createdAt)
+          }
+        })
+
+        this.setData({
+          unacceptedOrders: unacceptedOrders,
+          loading: false
+        })
+      } else {
+        this.setData({
+          unacceptedOrders: [],
+          loading: false
+        })
+      }
+    }).catch(err => {
+      console.error('加载未接取订单失败:', err)
+      this.setData({ loading: false })
+    })
+  },
+
+  // 计算时间差
+  _getTimeAgo(timestamp) {
+    const now = new Date().getTime()
+    const postTime = new Date(timestamp).getTime()
+    const diff = now - postTime
+
+    const minutes = Math.floor(diff / 60000)
+    const hours = Math.floor(diff / 3600000)
+    const days = Math.floor(diff / 86400000)
+
+    if (minutes < 1) {
+      return '刚刚'
+    } else if (minutes < 60) {
+      return `${minutes}分钟前`
+    } else if (hours < 24) {
+      return `${hours}小时前`
+    } else {
+      return `${days}天前`
+    }
   },
 
   // 导航到订单详情

@@ -1,4 +1,6 @@
 // 评价
+import api from '../../utils/api'
+
 Page({
   data: {
     rating: 0,
@@ -59,32 +61,36 @@ Page({
     this.setData({ canSubmit: canSubmit })
   },
 
-  submitReview() {
+  async submitReview() {
     const { rating, selectedTags, content, orderId } = this.data
     if (!this.data.canSubmit) return
-    wx.cloud.callFunction({
-      name: 'submitReview',
-      data: {
-        orderId: orderId,
-        rating: rating,
+
+    this.setData({ submitting: true })
+    try {
+      const app = getApp()
+      await api.submitReview(orderId, {
+        openid: app.globalData.userInfo && app.globalData.userInfo.openid,
+        rating,
         tags: selectedTags,
-        content: content
-      },
-      success: (res) => {
-        console.log('评价提交成功:', res)
-        wx.showToast({
-          title: '评价成功',
-          icon: 'success'
-        })
-        wx.navigateBack()
-      },
-      fail: (err) => {
-        console.error('评价提交失败:', err)
-        wx.showToast({
-          title: '评价失败',
-          icon: 'none'
-        })
-      }
-    })
+        content
+      })
+      wx.showToast({
+        title: '评价成功',
+        icon: 'success'
+      })
+      wx.navigateBack()
+    } catch (err) {
+      console.error('评价提交失败:', err)
+      wx.showToast({
+        title: err.message || '评价失败',
+        icon: 'none'
+      })
+    } finally {
+      this.setData({ submitting: false })
+    }
+  },
+
+  navigateBack() {
+    wx.navigateBack()
   }
 })

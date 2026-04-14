@@ -1,0 +1,364 @@
+<div class="page-header">
+  <h2 class="page-title">消息管理</h2>
+  <p class="page-description">管理平台消息，包括消息列表、详情查看、发送消息、状态标记和删除功能</p>
+</div>
+
+<!-- 操作工具栏 -->
+<div class="page-container" style="margin-bottom: 20px;">
+  <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+    <input type="text" id="searchInput" placeholder="搜索消息内容..." class="form-control" style="flex: 1; min-width: 200px;">
+    <select id="statusFilter" class="form-control" style="width: auto;">
+      <option value="">全部状态</option>
+      <option value="unread">未读</option>
+      <option value="read">已读</option>
+    </select>
+    <button class="btn btn-primary" onclick="searchMessages()">搜索</button>
+    <button class="btn btn-secondary" onclick="resetSearch()">重置</button>
+    <button class="btn btn-primary" onclick="showSendMessageModal()">发送消息</button>
+    <button class="btn btn-danger" onclick="batchDelete()">批量删除</button>
+  </div>
+</div>
+
+<!-- 消息列表 -->
+<div class="page-container">
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th><input type="checkbox" id="selectAll" onchange="toggleSelectAll()"></th>
+          <th>ID</th>
+          <th>发送者</th>
+          <th>接收者</th>
+          <th>内容</th>
+          <th>状态</th>
+          <th>发送时间</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody id="messagesBody">
+        <tr>
+          <td colspan="8" class="loading">
+            <div class="spinner"></div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <!-- 分页 -->
+  <div class="pagination" id="pagination" style="display: none; margin-top: 20px;">
+    <button class="btn btn-secondary" onclick="prevPage()">上一页</button>
+    <span style="padding: 0 20px;" id="pageInfo">第 1 页</span>
+    <button class="btn btn-secondary" onclick="nextPage()">下一页</button>
+  </div>
+</div>
+
+<!-- 发送消息模态框 -->
+<div class="modal" id="sendMessageModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title">发送消息</h3>
+      <button class="modal-close" onclick="closeModal('sendMessageModal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">接收者 ID</label>
+        <input type="text" id="receiverId" class="form-control" placeholder="请输入用户 ID">
+      </div>
+      <div class="form-group">
+        <label class="form-label">消息内容</label>
+        <textarea id="messageContent" class="form-control" placeholder="请输入消息内容"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('sendMessageModal')">取消</button>
+      <button class="btn btn-primary" onclick="sendMessage()">发送</button>
+    </div>
+  </div>
+</div>
+
+<!-- 消息详情模态框 -->
+<div class="modal" id="messageDetailModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title">消息详情</h3>
+      <button class="modal-close" onclick="closeModal('messageDetailModal')">&times;</button>
+    </div>
+    <div class="modal-body" id="messageDetailContent">
+      <!-- 动态加载详情 -->
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('messageDetailModal')">关闭</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // 使用 window 对象存储状态，避免变量冲突
+  window.messagePageState = window.messagePageState || {
+    currentPage: 1,
+    allMessages: [],
+    selectedMessages: []
+  };
+
+  // 加载消息列表
+  async function loadMessages() {
+    const tbody = document.getElementById('messagesBody');
+    tbody.innerHTML = '<tr><td colspan="8" class="loading"><div class="spinner"></div></td></tr>';
+    
+    try {
+      const response = await fetch('http://localhost:3000/api/message/list');
+      const result = await response.json();
+      
+      if (result.success && result.data && result.data.list) {
+        window.messagePageState.allMessages = result.data.list;
+        displayMessages(window.messagePageState.allMessages);
+      } else {
+        tbody.innerHTML = '<tr><td colspan="8" class="empty-state">暂无消息数据</td></tr>';
+      }
+    } catch (error) {
+      console.error('加载消息失败:', error);
+      tbody.innerHTML = '<tr><td colspan="8" class="empty-state">加载失败：' + error.message + '</td></tr>';
+    }
+  }
+
+  // 显示消息列表
+  function displayMessages(messages) {
+    const tbody = document.getElementById('messagesBody');
+    tbody.innerHTML = '';
+    
+    if (messages.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="8" class="empty-state">暂无消息数据</td></tr>';
+      return;
+    }
+    
+    messages.forEach(msg => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><input type="checkbox" class="message-checkbox" value="${msg.id}" onchange="updateSelectedMessages()"></td>
+        <td>${msg.id}</td>
+        <td>${msg.senderId || '系统'}</td>
+        <td>${msg.receiverId || '全部'}</td>
+        <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${msg.content || '无内容'}</td>
+        <td><span class="badge badge-${msg.isRead ? 'success' : 'warning'}">${msg.isRead ? '已读' : '未读'}</span></td>
+        <td>${formatDate(msg.createdAt || msg.createTime)}</td>
+        <td>
+          <button class="btn btn-secondary" style="padding: 6px 12px;" onclick="viewMessage('${msg.id}')">查看</button>
+          <button class="btn btn-primary" style="padding: 6px 12px;" onclick="markAsRead('${msg.id}')">标记已读</button>
+          <button class="btn btn-danger" style="padding: 6px 12px;" onclick="deleteMessage('${msg.id}')">删除</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // 搜索消息
+  function searchMessages() {
+    const keyword = document.getElementById('searchInput').value.trim().toLowerCase();
+    const status = document.getElementById('statusFilter').value;
+    
+    let filtered = window.messagePageState.allMessages;
+    
+    if (keyword) {
+      filtered = filtered.filter(msg => 
+        (msg.content && msg.content.toLowerCase().includes(keyword)) ||
+        (msg.senderId && msg.senderId.toLowerCase().includes(keyword))
+      );
+    }
+    
+    if (status) {
+      if (status === 'read') {
+        filtered = filtered.filter(msg => msg.isRead);
+      } else {
+        filtered = filtered.filter(msg => !msg.isRead);
+      }
+    }
+    
+    displayMessages(filtered);
+  }
+
+  // 重置搜索
+  function resetSearch() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('statusFilter').value = '';
+    displayMessages(window.messagePageState.allMessages);
+  }
+
+  // 查看消息详情
+  function viewMessage(id) {
+    const msg = window.messagePageState.allMessages.find(m => m.id === id);
+    if (!msg) return;
+    
+    const content = document.getElementById('messageDetailContent');
+    content.innerHTML = `
+      <div style="line-height: 1.8;">
+        <p><strong>消息 ID:</strong> ${msg.id}</p>
+        <p><strong>发送者:</strong> ${msg.senderId || '系统'}</p>
+        <p><strong>接收者:</strong> ${msg.receiverId || '全部'}</p>
+        <p><strong>状态:</strong> <span class="badge badge-${msg.isRead ? 'success' : 'warning'}">${msg.isRead ? '已读' : '未读'}</span></p>
+        <p><strong>发送时间:</strong> ${formatDate(msg.createdAt || msg.createTime)}</p>
+        <hr style="margin: 20px 0; border: none; border-top: 1px solid #e8ecf1;">
+        <p><strong>消息内容:</strong></p>
+        <div style="background: #f5f7fa; padding: 15px; border-radius: 8px; margin-top: 10px;">
+          ${msg.content || '无内容'}
+        </div>
+      </div>
+    `;
+    
+    document.getElementById('messageDetailModal').classList.add('show');
+  }
+
+  // 标记已读
+  async function markAsRead(id) {
+    try {
+      const response = await fetch('http://localhost:3000/api/message/mark-read', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      });
+      const result = await response.json();
+      
+      if (result.success) {
+        showNotification('标记成功', 'success');
+        loadMessages();
+      } else {
+        showNotification('操作失败：' + result.message, 'error');
+      }
+    } catch (error) {
+      showNotification('操作失败：' + error.message, 'error');
+    }
+  }
+
+  // 删除消息
+  async function deleteMessage(id) {
+    if (!confirm('确定要删除这条消息吗？')) return;
+    
+    try {
+      const response = await fetch('http://localhost:3000/api/message/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      });
+      const result = await response.json();
+      
+      if (result.success) {
+        showNotification('删除成功', 'success');
+        loadMessages();
+      } else {
+        showNotification('删除失败：' + result.message, 'error');
+      }
+    } catch (error) {
+      showNotification('删除失败：' + error.message, 'error');
+    }
+  }
+
+  // 批量删除
+  function batchDelete() {
+    if (window.messagePageState.selectedMessages.length === 0) {
+      showNotification('请先选择要删除的消息', 'error');
+      return;
+    }
+    
+    if (!confirm(`确定要删除选中的 ${window.messagePageState.selectedMessages.length} 条消息吗？`)) return;
+    
+    // 实现批量删除逻辑
+    showNotification('批量删除功能开发中', 'info');
+  }
+
+  // 显示发送消息模态框
+  function showSendMessageModal() {
+    document.getElementById('sendMessageModal').classList.add('show');
+  }
+
+  // 发送消息
+  async function sendMessage() {
+    const receiverId = document.getElementById('receiverId').value.trim();
+    const content = document.getElementById('messageContent').value.trim();
+    
+    if (!receiverId) {
+      showNotification('请输入接收者 ID', 'error');
+      return;
+    }
+    
+    if (!content) {
+      showNotification('请输入消息内容', 'error');
+      return;
+    }
+    
+    try {
+      const response = await fetch('http://localhost:3000/api/message/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ receiverId, content })
+      });
+      const result = await response.json();
+      
+      if (result.success) {
+        showNotification('发送成功', 'success');
+        closeModal('sendMessageModal');
+        loadMessages();
+        document.getElementById('receiverId').value = '';
+        document.getElementById('messageContent').value = '';
+      } else {
+        showNotification('发送失败：' + result.message, 'error');
+      }
+    } catch (error) {
+      showNotification('发送失败：' + error.message, 'error');
+    }
+  }
+
+  // 工具函数
+  function toggleSelectAll() {
+    const selectAll = document.getElementById('selectAll');
+    const checkboxes = document.querySelectorAll('.message-checkbox');
+    checkboxes.forEach(cb => cb.checked = selectAll.checked);
+    updateSelectedMessages();
+  }
+
+  function updateSelectedMessages() {
+    const checkboxes = document.querySelectorAll('.message-checkbox:checked');
+    window.messagePageState.selectedMessages = Array.from(checkboxes).map(cb => cb.value);
+  }
+
+  function closeModal(modalId) {
+    document.getElementById(modalId).classList.remove('show');
+  }
+
+  function prevPage() {
+    if (window.messagePageState.currentPage > 1) {
+      window.messagePageState.currentPage--;
+      loadMessages();
+    }
+  }
+
+  function nextPage() {
+    window.messagePageState.currentPage++;
+    loadMessages();
+  }
+
+  function formatDate(timestamp) {
+    return new Date(timestamp).toLocaleString('zh-CN');
+  }
+
+  function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.textContent = message;
+    notification.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 25px;
+      background: ${type === 'success' ? '#52c41a' : type === 'error' ? '#ff4d4f' : '#1890ff'};
+      color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 3000;
+      animation: slideIn 0.3s ease;
+    `;
+    document.body.appendChild(notification);
+    setTimeout(() => notification.remove(), 3000);
+  }
+
+  // 初始化
+  loadMessages();
+</script>
