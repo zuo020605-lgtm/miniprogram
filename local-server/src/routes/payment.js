@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const { mockUnifiedOrder, mockQueryOrder } = require('../models/payment')
+const { mockMarkOrderPaid } = require('../models/order')
 
 // Mock统一下单接口
 router.post('/unifiedorder', async (req, res) => {
@@ -10,8 +11,13 @@ router.post('/unifiedorder', async (req, res) => {
       return res.status(400).json({ success: false, message: '缺少body参数' })
     }
 
+    let order = null
+    if (req.body.orderId) {
+      const paidResult = await mockMarkOrderPaid(req.body.orderId, req.body)
+      order = paidResult.data
+    }
     const result = await mockUnifiedOrder(req.body)
-    res.json({ success: true, data: result })
+    res.json({ success: true, data: { ...result, order } })
   } catch (error) {
     console.error('Unified order error:', error)
     res.status(400).json({ success: false, message: error.message || '下单失败' })

@@ -1,0 +1,340 @@
+<div class="page-header">
+  <h2 class="page-title">接单员审核</h2>
+  <p class="page-description">审核接单员认证申请，管理已认证接单员资格</p>
+</div>
+
+<style>
+  .runner-toolbar {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .runner-status-tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .runner-filter-btn {
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    background: #f5f7fa;
+    color: #2c3e50;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .runner-filter-btn.active {
+    background: #1890ff;
+    color: #ffffff;
+  }
+
+  .runner-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .runner-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+
+  .runner-btn.approve {
+    background: #52c41a;
+    color: #ffffff;
+  }
+
+  .runner-btn.reject {
+    background: #ff4d4f;
+    color: #ffffff;
+  }
+
+  .runner-btn.revoke {
+    background: #faad14;
+    color: #ffffff;
+  }
+
+  .runner-btn.detail {
+    background: #f5f7fa;
+    color: #2c3e50;
+  }
+</style>
+
+<div class="page-container" style="margin-bottom: 20px;">
+  <div class="runner-toolbar">
+    <div class="runner-status-tabs">
+      <button class="runner-filter-btn active" data-filter="all" onclick="setRunnerFilter('all')">全部</button>
+      <button class="runner-filter-btn" data-filter="applied" onclick="setRunnerFilter('applied')">申请中</button>
+      <button class="runner-filter-btn" data-filter="verified" onclick="setRunnerFilter('verified')">已认证</button>
+    </div>
+    <input type="text" id="runnerSearchInput" placeholder="搜索用户ID、昵称、手机号" class="form-control" style="flex: 1; min-width: 220px;">
+    <button class="btn btn-primary" onclick="searchRunners()">搜索</button>
+    <button class="btn btn-secondary" onclick="resetRunnerSearch()">重置</button>
+  </div>
+</div>
+
+<div class="page-container">
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th>用户ID</th>
+          <th>昵称</th>
+          <th>手机号</th>
+          <th>申请时间</th>
+          <th>认证状态</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody id="runnersBody">
+        <tr>
+          <td colspan="6" class="loading">
+            <div class="spinner"></div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="modal" id="runnerDetailModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title">接单员资料</h3>
+      <button class="modal-close" onclick="closeRunnerModal()">&times;</button>
+    </div>
+    <div class="modal-body" id="runnerDetailContent"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeRunnerModal()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.runnerAuditState = {
+    allUsers: [],
+    filteredUsers: [],
+    currentFilter: 'all'
+  };
+
+  async function loadRunners() {
+    const tbody = document.getElementById('runnersBody');
+    tbody.innerHTML = '<tr><td colspan="6" class="loading"><div class="spinner"></div></td></tr>';
+
+    try {
+      const response = await fetch('http://localhost:3000/api/user/list?pageSize=100');
+      const result = await response.json();
+      window.runnerAuditState.allUsers = result.success && result.data && result.data.list ? result.data.list : [];
+      applyRunnerFilters();
+    } catch (error) {
+      console.error('加载接单员审核列表失败:', error);
+      window.runnerAuditState.allUsers = [];
+      displayRunners([]);
+    }
+  }
+
+  function setRunnerFilter(filter) {
+    window.runnerAuditState.currentFilter = filter;
+    document.querySelectorAll('.runner-filter-btn').forEach(button => {
+      button.classList.toggle('active', button.dataset.filter === filter);
+    });
+    applyRunnerFilters();
+  }
+
+  function applyRunnerFilters() {
+    const keyword = (document.getElementById('runnerSearchInput').value || '').trim().toLowerCase();
+    const filter = window.runnerAuditState.currentFilter;
+    let users = window.runnerAuditState.allUsers.slice();
+
+    if (filter === 'applied') {
+      users = users.filter(user => user.runnerAppliedAt && !user.isRunner);
+    } else if (filter === 'verified') {
+      users = users.filter(user => user.isRunner);
+    } else {
+      users = users.filter(user => user.runnerAppliedAt || user.isRunner);
+    }
+
+    if (keyword) {
+      users = users.filter(user => {
+        const id = String(user.id || user.openid || '').toLowerCase();
+        const name = String(user.nickName || user.username || user.name || '').toLowerCase();
+        const phone = String(user.phone || '').toLowerCase();
+        return id.includes(keyword) || name.includes(keyword) || phone.includes(keyword);
+      });
+    }
+
+    window.runnerAuditState.filteredUsers = users;
+    displayRunners(users);
+  }
+
+  function displayRunners(users) {
+    const tbody = document.getElementById('runnersBody');
+    tbody.innerHTML = '';
+
+    if (users.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" class="empty-state">暂无接单员申请数据</td></tr>';
+      return;
+    }
+
+    users.forEach(user => {
+      const tr = document.createElement('tr');
+      const statusBadge = getRunnerStatusBadge(user);
+      tr.innerHTML = `
+        <td>${escapeHtml(user.id || user.openid || '-')}</td>
+        <td>${escapeHtml(user.nickName || user.username || user.name || '未知用户')}</td>
+        <td>${escapeHtml(user.phone || '-')}</td>
+        <td>${user.runnerAppliedAt ? formatDate(user.runnerAppliedAt) : '-'}</td>
+        <td>${statusBadge}</td>
+        <td><div class="runner-actions">${renderRunnerActions(user)}</div></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function getRunnerStatusBadge(user) {
+    if (user.isRunner) {
+      return '<span class="badge badge-success">已认证</span>';
+    }
+    if (user.runnerAppliedAt) {
+      return '<span class="badge badge-warning">申请中</span>';
+    }
+    return '<span class="badge badge-info">未申请</span>';
+  }
+
+  function renderRunnerActions(user) {
+    const id = escapeHtml(user.id || user.openid || '');
+    const detailButton = `<button class="runner-btn detail" onclick="viewRunner('${id}')">详情</button>`;
+    if (user.isRunner) {
+      return `${detailButton}<button class="runner-btn revoke" onclick="revokeRunner('${id}')">撤销认证</button>`;
+    }
+    if (user.runnerAppliedAt) {
+      return `${detailButton}<button class="runner-btn approve" onclick="approveRunner('${id}')">通过</button><button class="runner-btn reject" onclick="rejectRunner('${id}')">拒绝</button>`;
+    }
+    return detailButton;
+  }
+
+  function searchRunners() {
+    applyRunnerFilters();
+  }
+
+  function resetRunnerSearch() {
+    document.getElementById('runnerSearchInput').value = '';
+    setRunnerFilter('all');
+  }
+
+  function viewRunner(id) {
+    const user = window.runnerAuditState.allUsers.find(item => String(item.id || item.openid) === String(id));
+    if (!user) return;
+
+    document.getElementById('runnerDetailContent').innerHTML = `
+      <div style="line-height: 1.8;">
+        <p><strong>用户ID:</strong> ${escapeHtml(user.id || user.openid || '-')}</p>
+        <p><strong>昵称:</strong> ${escapeHtml(user.nickName || user.username || user.name || '未知用户')}</p>
+        <p><strong>手机号:</strong> ${escapeHtml(user.phone || '-')}</p>
+        <p><strong>申请时间:</strong> ${user.runnerAppliedAt ? formatDate(user.runnerAppliedAt) : '-'}</p>
+        <p><strong>通过时间:</strong> ${user.runnerVerifiedAt ? formatDate(user.runnerVerifiedAt) : '-'}</p>
+        <p><strong>徽章:</strong> ${escapeHtml(user.runnerBadge || 'none')}</p>
+        <p><strong>状态:</strong> ${getRunnerStatusBadge(user)}</p>
+      </div>
+    `;
+    document.getElementById('runnerDetailModal').classList.add('show');
+  }
+
+  async function approveRunner(id) {
+    if (!confirm('确定通过该用户的接单员认证吗？')) return;
+    try {
+      await postRunnerAction('/api/user/approve-runner', { id });
+      showNotification('已通过接单员认证', 'success');
+      await loadRunners();
+    } catch (error) {
+      showNotification(error.message || '通过失败', 'error');
+    }
+  }
+
+  async function rejectRunner(id) {
+    if (!confirm('确定拒绝该用户的接单员认证申请吗？')) return;
+    try {
+      await postRunnerAction('/api/user/revoke-runner', { id });
+      await postRunnerAction('/api/user/update', {
+        id,
+        isRunner: false,
+        runnerVerified: false,
+        runnerAppliedAt: null,
+        runnerVerifiedAt: null,
+        runnerBadge: 'none'
+      });
+      showNotification('已拒绝接单员认证申请', 'success');
+      await loadRunners();
+    } catch (error) {
+      showNotification(error.message || '拒绝失败', 'error');
+    }
+  }
+
+  async function revokeRunner(id) {
+    if (!confirm('确定撤销该用户的接单员资格吗？')) return;
+    try {
+      await postRunnerAction('/api/user/revoke-runner', { id });
+      showNotification('已撤销接单员资格', 'success');
+      await loadRunners();
+    } catch (error) {
+      showNotification(error.message || '撤销失败', 'error');
+    }
+  }
+
+  async function postRunnerAction(path, body) {
+    const response = await fetch(`http://localhost:3000${path}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const result = await response.json();
+    if (!response.ok || result.success === false) {
+      throw new Error(result.message || result.error || `请求失败：${response.status}`);
+    }
+    return result;
+  }
+
+  function closeRunnerModal() {
+    document.getElementById('runnerDetailModal').classList.remove('show');
+  }
+
+  function formatDate(timestamp) {
+    return timestamp ? new Date(timestamp).toLocaleString('zh-CN') : '-';
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.textContent = message;
+    notification.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 25px;
+      background: ${type === 'success' ? '#52c41a' : type === 'error' ? '#ff4d4f' : '#1890ff'};
+      color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 3000;
+    `;
+    document.body.appendChild(notification);
+    setTimeout(() => notification.remove(), 3000);
+  }
+
+  loadRunners();
+</script>

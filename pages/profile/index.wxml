@@ -5,8 +5,12 @@
         <!-- 账户管理 -->
         <view class="account-section">
           <view class="account-header">
-            <view class="avatar-placeholder">
-              <image class="avatar" src="/static/default-avatar.png" mode="aspectFill"></image>
+            <view class="avatar-container">
+              <view class="avatar-placeholder">
+                <image class="avatar" src="{{avatarUrl}}" mode="aspectFill"></image>
+              </view>
+              <view wx:if="{{isRunner}}" class="runner-badge">接</view>
+              <view wx:elif="{{runnerApplied && !isRunner}}" class="runner-badge-pending">审</view>
             </view>
             <view class="account-info">
               <text class="user-name">{{userName}}</text>
@@ -35,8 +39,29 @@
               <text class="stats-label">完单量</text>
             </view>
             <view class="stats-item">
+              <text class="stats-value">{{averageRating}}</text>
+              <text class="stats-label">平均评分</text>
+            </view>
+            <view class="stats-item">
               <text class="stats-value">{{rating}}%</text>
               <text class="stats-label">好评率</text>
+            </view>
+          </view>
+          <view class="review-list" wx:if="{{runnerVerified}}">
+            <view class="review-list-header">
+              <text class="review-list-title">最新评价</text>
+              <text class="review-list-count">{{reviewCount}} 条</text>
+            </view>
+            <view class="review-item" wx:for="{{recentReviews}}" wx:key="id">
+              <view class="review-item-head">
+                <text class="review-order">{{item.orderTitle}}</text>
+                <text class="review-rating">{{item.ratingText}}</text>
+              </view>
+              <text class="review-content">{{item.content || '暂无文字评价'}}</text>
+              <text class="review-tags" wx:if="{{item.tagsText}}">{{item.tagsText}}</text>
+            </view>
+            <view class="review-empty" wx:if="{{recentReviews.length === 0}}">
+              <text>暂无评价，完成订单后会在这里汇总。</text>
             </view>
           </view>
         </view>
@@ -48,27 +73,40 @@
           </view>
           <view class="menu-grid">
             <view class="menu-item" bindtap="navigateToWallet">
-              <text class="menu-icon">💰</text>
+              <view class="ios-icon icon-wallet menu-icon"></view>
               <text class="menu-text">我的钱包</text>
             </view>
             <view class="menu-item" bindtap="navigateToSettings">
-              <text class="menu-icon">⚙️</text>
+              <view class="ios-icon icon-settings menu-icon"></view>
               <text class="menu-text">系统设置</text>
             </view>
             <view class="menu-item" bindtap="navigateToHelp">
-              <text class="menu-icon">❓</text>
+              <view class="ios-icon icon-help menu-icon"></view>
               <text class="menu-text">帮助中心</text>
             </view>
             <view class="menu-item" bindtap="navigateToMyPosts">
-              <text class="menu-icon">📝</text>
+              <view class="ios-icon icon-exam menu-icon"></view>
               <text class="menu-text">我的发布</text>
             </view>
             <view class="menu-item" bindtap="navigateToMyOrders">
-              <text class="menu-icon">🛍️</text>
+              <view class="ios-icon icon-order menu-icon"></view>
+              <view wx:if="{{!isRunner}}" class="ios-icon icon-lock lock-badge"></view>
               <text class="menu-text">我的接单</text>
             </view>
+            <view wx:if="{{!isRunner && !runnerApplied}}" class="menu-item" bindtap="navigateToRunnerAuth">
+              <view class="ios-icon icon-run menu-icon"></view>
+              <text class="menu-text">申请认证</text>
+            </view>
+            <view wx:elif="{{runnerApplied && !isRunner}}" class="menu-item menu-item-disabled">
+              <view class="ios-icon icon-time menu-icon"></view>
+              <text class="menu-text">认证审核中</text>
+            </view>
+            <view wx:elif="{{isRunner}}" class="menu-item menu-item-runner" bindtap="navigateToRunnerAuth">
+              <view class="ios-icon icon-shield menu-icon"></view>
+              <text class="menu-text">接单员</text>
+            </view>
             <view class="menu-item" bindtap="navigateToAccountSecurity">
-              <text class="menu-icon">🔒</text>
+              <view class="ios-icon icon-lock menu-icon"></view>
               <text class="menu-text">账号安全</text>
             </view>
           </view>
@@ -81,12 +119,12 @@
           </view>
           <view class="identity-content">
             <view class="identity-item" bindtap="switchAccount">
-              <text class="identity-icon">🔄</text>
+              <view class="ios-icon icon-refresh identity-icon"></view>
               <text class="identity-text">切换账号</text>
               <text class="identity-arrow">＞</text>
             </view>
             <view class="identity-item" bindtap="logout">
-              <text class="identity-icon">🚪</text>
+              <view class="ios-icon icon-logout identity-icon"></view>
               <text class="identity-text">退出登录</text>
               <text class="identity-arrow">＞</text>
             </view>
@@ -98,7 +136,7 @@
       <view class="login-section" bindtap="navigateToLogin" wx:else>
         <view class="login-content">
           <view class="avatar-placeholder">
-            <text class="avatar-icon">👤</text>
+            <view class="ios-icon icon-profile avatar-icon"></view>
           </view>
           <view class="login-info">
             <text class="login-text">点击登录</text>

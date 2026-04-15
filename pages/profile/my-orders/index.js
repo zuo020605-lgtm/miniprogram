@@ -11,11 +11,17 @@ Page({
 
   onLoad(options) {
     console.log('页面加载:', options)
+    if (!this.ensureRunnerAccess()) {
+      return
+    }
     this.loadOrders()
   },
 
   onShow() {
     console.log('页面显示')
+    if (!this.ensureRunnerAccess()) {
+      return
+    }
     this.loadOrders()
   },
 
@@ -25,6 +31,24 @@ Page({
 
   onUnload() {
     console.log('页面卸载')
+  },
+
+  ensureRunnerAccess() {
+    const app = getApp()
+    const globalData = app.globalData || {}
+    const userInfo = globalData.userInfo || {}
+    const isRunner = !!((globalData.isRunner || userInfo.isRunner) && userInfo.runnerVerified)
+    if (isRunner) {
+      return true
+    }
+
+    wx.showToast({ title: '仅接单员可访问此页面', icon: 'none' })
+    wx.navigateBack({
+      fail: () => {
+        wx.switchTab({ url: '/pages/profile/index' })
+      }
+    })
+    return false
   },
 
   // 加载订单
@@ -41,6 +65,8 @@ Page({
     api.request('/api/order/all').then(res => {
       if (res.success && res.data && res.data.list) {
         const orders = res.data.list
+        const app = getApp()
+        const currentOpenid = app.globalData.userInfo && app.globalData.userInfo.openid
 
         // 状态映射：将服务器状态映射到页面状态
         const statusMap = {
@@ -61,13 +87,13 @@ Page({
         // 过滤并格式化订单
         const filtered = orders.filter(order => {
           const pageStatus = statusMap[order.status]
-          return pageStatus === this.data.activeTab
+          return order.runnerOpenid === currentOpenid && pageStatus === this.data.activeTab
         }).map(order => {
           return {
             id: order.id,
             _id: order.id,
             title: order.title,
-            price: order.price,
+            price: (Number(order.price || 0) / 100).toFixed(2),
             status: statusMap[order.status] || 'pending',
             statusText: statusTextMap[statusMap[order.status]] || '待处理',
             createdAtText: this._getTimeAgo(order.createTime || order.createdAt)

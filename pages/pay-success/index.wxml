@@ -1,7 +1,7 @@
 <view class="pay-success-page">
     <view class="success-content">
       <view class="success-icon">
-        <text class="icon">✅</text>
+        <view class="ios-icon icon-shield icon"></view>
       </view>
       <text class="success-title">支付成功</text>
       <text class="success-subtitle">您的任务已支付成功，等待服务完成</text>

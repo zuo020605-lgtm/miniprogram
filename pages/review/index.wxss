@@ -21,7 +21,8 @@
 .card-title { font-size: 28rpx; font-weight: 600; color: #2c2f32; display: block; margin-bottom: 24rpx; }
 
 .rating-stars { display: flex; justify-content: center; gap: 16rpx; margin-bottom: 16rpx; }
-.star-item { padding: 8rpx; }
+.star-item { padding: 8rpx; color: #b8c1c7; }
+.star-item.active { color: #4f6675; }
 .rating-text { text-align: center; font-size: 24rpx; color: #FFC107; font-weight: 600; }
 
 .tags-list { display: flex; flex-wrap: wrap; gap: 16rpx; }

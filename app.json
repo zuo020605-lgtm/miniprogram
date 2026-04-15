@@ -17,7 +17,6 @@
     "pages/profile/my-posts/index",
     "pages/profile/my-orders/index",
     "pages/profile/security/index",
-    "pages/popular-tasks/index",
     "pages/campus-errand/index",
     "pages/express/index",
     "pages/exam/index",
@@ -30,42 +29,34 @@
   ],
   "window": {
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#f5f7fa",
+    "navigationBarBackgroundColor": "#f6f6fb",
     "navigationBarTitleText": "校园服务",
     "navigationBarTextStyle": "black",
-    "backgroundColor": "#f5f7fa",
+    "backgroundColor": "#f6f6fb",
     "enablePullDownRefresh": false
   },
   "tabBar": {
     "custom": true,
     "color": "#74777a",
-    "selectedColor": "#005da4",
+    "selectedColor": "#0a84ff",
     "backgroundColor": "#ffffff",
     "borderStyle": "black",
     "list": [
       {
         "pagePath": "pages/index/index",
-        "text": "首页",
-        "iconPath": "static/tab_home.png",
-        "selectedIconPath": "static/tab_home_active.png"
+        "text": "首页"
       },
       {
         "pagePath": "pages/order/index",
-        "text": "订单",
-        "iconPath": "static/tab_order.png",
-        "selectedIconPath": "static/tab_order_active.png"
+        "text": "订单"
       },
       {
         "pagePath": "pages/message/index",
-        "text": "消息",
-        "iconPath": "static/tab_message.png",
-        "selectedIconPath": "static/tab_message_active.png"
+        "text": "消息"
       },
       {
         "pagePath": "pages/profile/index",
-        "text": "我的",
-        "iconPath": "static/tab_profile.png",
-        "selectedIconPath": "static/tab_profile_active.png"
+        "text": "我的"
       }
     ]
   },

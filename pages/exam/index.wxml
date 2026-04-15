@@ -4,7 +4,7 @@
     </view>
     <view class="search-section">
       <view class="search-input">
-        <image class="icon-search" src="/static/search-icon.png" style="width: 16rpx; height: 16rpx;" />
+        <view class="ios-icon icon-search icon-inline"></view>
         <input type="text" placeholder="搜索模拟考任务..." class="search-text" />
       </view>
     </view>
@@ -22,15 +22,15 @@
         </view>
         <view class="task-info">
           <view class="task-info-item">
-            <image class="icon-location" src="/static/location-icon.png" style="width: 14rpx; height: 14rpx;" />
+            <view class="ios-icon icon-location icon-inline"></view>
             <text class="task-info-text">{{ task.location }}</text>
           </view>
           <view class="task-info-item">
-            <image class="icon-time" src="/static/time-icon.png" style="width: 14rpx; height: 14rpx;" />
+            <view class="ios-icon icon-time icon-inline"></view>
             <text class="task-info-text">{{ task.time }}</text>
           </view>
           <view class="task-info-item">
-            <image class="icon-clock" src="/static/clock-icon.png" style="width: 14rpx; height: 14rpx;" />
+            <view class="ios-icon icon-time icon-inline"></view>
             <text class="task-info-text">{{ task.duration }}</text>
           </view>
         </view>

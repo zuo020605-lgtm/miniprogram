@@ -4,6 +4,7 @@ import api from '../../utils/api'
 Page({
   data: {
     conversations: [],
+    unreadTotal: 0,
     isLoading: false,
     hasMore: true,
     loadingMore: false
@@ -18,6 +19,10 @@ Page({
     console.log('页面显示')
     this.syncTabBar()
     this.loadConversations()
+    const app = getApp()
+    if (app.globalData && app.globalData.hasLogin) {
+      this.startUnreadRefresh()
+    }
   },
 
   syncTabBar() {
@@ -29,10 +34,12 @@ Page({
 
   onHide() {
     console.log('页面隐藏')
+    this.stopUnreadRefresh()
   },
 
   onUnload() {
     console.log('页面卸载')
+    this.stopUnreadRefresh()
   },
 
   // 加载会话列表
@@ -42,7 +49,8 @@ Page({
     try {
       const app = getApp()
       if (!app.globalData.hasLogin) {
-        this.setData({ isLoading: false })
+        this.setData({ isLoading: false, unreadTotal: 0, conversations: [] })
+        this.updateTabBarUnread(0)
         wx.showToast({ title: '请先登录', icon: 'none' })
         return
       }
@@ -54,23 +62,53 @@ Page({
           ...item,
           lastMessageTime: new Date(item.lastMessageTime || item.createTime || Date.now()).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
         }))
+        const unreadTotal = conversations.reduce((sum, item) => sum + Number(item.unreadCount || 0), 0)
 
         this.setData({
           conversations: conversations,
+          unreadTotal,
           isLoading: false
         })
+        this.updateTabBarUnread(unreadTotal)
       } else {
         this.setData({
           conversations: [],
+          unreadTotal: 0,
           isLoading: false,
           hasMore: false
         })
+        this.updateTabBarUnread(0)
       }
     } catch (error) {
       console.error('加载会话列表失败:', error)
       wx.showToast({ title: '加载失败', icon: 'none' })
       this.setData({ isLoading: false })
     }
+  },
+
+  startUnreadRefresh() {
+    this.stopUnreadRefresh()
+    this.unreadTimer = setInterval(() => {
+      this.loadConversations()
+    }, 15000)
+  },
+
+  stopUnreadRefresh() {
+    if (this.unreadTimer) {
+      clearInterval(this.unreadTimer)
+      this.unreadTimer = null
+    }
+  },
+
+  updateTabBarUnread(count) {
+    const tabBar = typeof this.getTabBar === 'function' ? this.getTabBar() : null
+    if (tabBar) {
+      tabBar.setData({ unreadCount: count })
+    }
+  },
+
+  refreshMessages() {
+    this.loadConversations()
   },
 
   // 导航到聊天页面

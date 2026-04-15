@@ -5,22 +5,22 @@
           <text class="section-title">账号安全</text>
         </view>
         <view class="security-item" bindtap="changePassword">
-          <text class="security-icon">🔒</text>
+          <view class="ios-icon icon-lock security-icon"></view>
           <text class="security-label">修改密码</text>
           <text class="security-arrow">＞</text>
         </view>
         <view class="security-item" bindtap="forgotPassword">
-          <text class="security-icon">🔑</text>
+          <view class="ios-icon icon-key security-icon"></view>
           <text class="security-label">找回密码</text>
           <text class="security-arrow">＞</text>
         </view>
         <view class="security-item" bindtap="bindPhone">
-          <text class="security-icon">📱</text>
+          <view class="ios-icon icon-phone security-icon"></view>
           <text class="security-label">绑定手机号</text>
           <text class="security-arrow">＞</text>
         </view>
         <view class="security-item" bindtap="bindWechat">
-          <text class="security-icon">💬</text>
+          <view class="ios-icon icon-message security-icon"></view>
           <text class="security-label">绑定微信</text>
           <text class="security-arrow">＞</text>
         </view>
@@ -31,7 +31,7 @@
           <text class="section-title">危险操作</text>
         </view>
         <view class="security-item danger-item" bindtap="deleteAccount">
-          <text class="security-icon danger-icon">🗑️</text>
+          <view class="ios-icon icon-trash security-icon danger-icon"></view>
           <text class="security-label danger-label">注销账号</text>
           <text class="security-arrow">＞</text>
         </view>

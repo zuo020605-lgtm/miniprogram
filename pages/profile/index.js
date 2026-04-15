@@ -1,4 +1,6 @@
 // 我的
+import api from '../../utils/api'
+
 Page({
   data: {
     isLoggedIn: false, // 默认未登录状态
@@ -6,9 +8,16 @@ Page({
     userId: '',
     regTime: '',
     isAuth: false,
+    avatarUrl: '/static/default-avatar.png',
+    isRunner: false,
+    runnerVerified: false,
+    runnerApplied: false,
     todayIncome: '¥0.00',
     completedOrders: 0,
-    rating: 0
+    rating: 0,
+    averageRating: '0.0',
+    reviewCount: 0,
+    recentReviews: []
   },
 
   onLoad(options) {
@@ -38,7 +47,7 @@ Page({
   },
 
   // 加载用户信息
-  loadUserInfo() {
+  async loadUserInfo() {
     try {
       const app = getApp()
       const userInfo = app.globalData.userInfo
@@ -50,15 +59,38 @@ Page({
           userName: userInfo.nickName || '用户',
           userId: userInfo.openid || '100000',
           isAuth: !!userInfo.phone,
-          avatarUrl: userInfo.avatarUrl || '/images/default-avatar.png'
+          avatarUrl: userInfo.avatarUrl || '/static/default-avatar.png',
+          isRunner: !!userInfo.isRunner,
+          runnerVerified: !!userInfo.runnerVerified,
+          runnerApplied: !!userInfo.runnerAppliedAt
         })
+        if (userInfo.runnerVerified) {
+          await this.loadRunnerReviewStats(userInfo.openid)
+        } else {
+          this.setData({
+            completedOrders: 0,
+            rating: 0,
+            averageRating: '0.0',
+            reviewCount: 0,
+            recentReviews: []
+          })
+        }
       } else {
         // 未登录
         this.setData({
           isLoggedIn: false,
           userName: '未登录',
           userId: '',
-          isAuth: false
+          isAuth: false,
+          avatarUrl: '/static/default-avatar.png',
+          isRunner: false,
+          runnerVerified: false,
+          runnerApplied: false,
+          completedOrders: 0,
+          rating: 0,
+          averageRating: '0.0',
+          reviewCount: 0,
+          recentReviews: []
         })
       }
     } catch (e) {
@@ -67,9 +99,43 @@ Page({
     }
   },
 
+  async loadRunnerReviewStats(openid) {
+    try {
+      const stats = await api.getReviewStats({ runnerOpenid: openid })
+      const recentReviews = (stats.latestReviews || []).map(review => ({
+        ...review,
+        ratingText: `${review.rating || 0}星`,
+        tagsText: (review.tags || []).join('、'),
+        createTimeText: new Date(review.createTime || Date.now()).toLocaleDateString()
+      }))
+
+      this.setData({
+        completedOrders: stats.completedOrders || 0,
+        rating: stats.goodRate || 0,
+        averageRating: stats.averageRatingText || '0.0',
+        reviewCount: stats.totalReviews || 0,
+        recentReviews
+      })
+    } catch (error) {
+      console.error('加载评价统计失败:', error)
+      this.setData({
+        completedOrders: 0,
+        rating: 0,
+        averageRating: '0.0',
+        reviewCount: 0,
+        recentReviews: []
+      })
+    }
+  },
+
   // 导航到认证页面
   navigateToAuth() {
     wx.navigateTo({ url: '/pages/profile/auth/index' })
+  },
+
+  // 导航到接单员认证页面
+  navigateToRunnerAuth() {
+    wx.navigateTo({ url: '/pages/profile/auth/index?type=runner' })
   },
 
   // 导航到钱包页面
@@ -94,6 +160,26 @@ Page({
 
   // 导航到我的接单
   navigateToMyOrders() {
+    const app = getApp()
+    const globalData = app.globalData || {}
+    const userInfo = globalData.userInfo || {}
+    const isRunner = !!((globalData.isRunner || userInfo.isRunner) && userInfo.runnerVerified)
+    if (!isRunner) {
+      wx.showModal({
+        title: '权限提示',
+        content: '仅通过认证的接单员才可接单',
+        showCancel: true,
+        cancelText: '我知道了',
+        confirmText: '申请认证',
+        success: (res) => {
+          if (res.confirm) {
+            wx.navigateTo({ url: '/pages/profile/auth/index?type=runner' })
+          }
+        }
+      })
+      return
+    }
+
     wx.navigateTo({ url: '/pages/profile/my-orders/index' })
   },
 

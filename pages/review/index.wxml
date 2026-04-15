@@ -2,7 +2,7 @@
     <!-- 导航栏-->
     <view class="review-navbar">
       <view class="navbar-left" bindtap="navigateBack">
-        <image class="icon-arrow-left" src="/static/arrow-left-icon.png" style="width: 24rpx; height: 24rpx;" />
+        <view class="ios-icon icon-back icon-nav"></view>
       </view>
       <text class="navbar-title">评价订单</text>
       <view class="navbar-right"></view>
@@ -12,7 +12,7 @@
     <view class="order-info-card">
       <view class="order-header">
         <view class="order-icon">
-          <image src="/static/school-icon.png" style="width: 24rpx; height: 24rpx;" />
+          <view class="ios-icon icon-school icon-nav"></view>
         </view>
         <view class="order-text">
           <text class="order-title">{{ order.title || '校园跑腿任务' }}</text>
@@ -26,16 +26,16 @@
       <text class="card-title">服务评分</text>
       <view class="rating-stars">
         <view 
-          class="star-item" 
+          class="star-item {{index < rating ? 'active' : ''}}"
           wx:for="{{5}}" 
           wx:key="index"
           data-rating="{{index + 1}}"
           bindtap="handleRating"
         >
-          <image src="/static/school-icon.png" style="width: 24rpx; height: 24rpx;" />
+          <view class="ios-icon icon-star icon-nav"></view>
         </view>
       </view>
-      <text class="rating-text">{{ staticText }}</text>
+      <text class="rating-text">{{ ratingText }}</text>
     </view>
 
     <!-- 评价标签 -->

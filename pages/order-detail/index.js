@@ -25,6 +25,17 @@ Page({
       weight: '5kg内',
       reviewed: false
     },
+    permissions: {
+      isPublisher: false,
+      isRunner: false,
+      isAdmin: false,
+      canAccept: false,
+      canPay: false,
+      canCancel: false,
+      canEdit: false,
+      canFinish: false,
+      canReview: false
+    },
     steps: ['待接单', '进行中', '已完成', '已评价']
   },
 
@@ -68,7 +79,7 @@ Page({
     const price = Number(order.price || 0) / 100
     const createdAt = order.createTime || order.createdAt || Date.now()
 
-    return {
+    const formattedOrder = {
       ...order,
       _id: order.id,
       status,
@@ -83,7 +94,43 @@ Page({
       serviceType: order.type || order.serviceType || 'campus-errand',
       pickupLocation: order.pickupLocation || order.location || '校园内',
       deliveryLocation: order.deliveryLocation || order.location || '校园内',
-      courierNickname: order.runner && order.runner.nickName ? order.runner.nickName : ''
+      courierNickname: order.runner && order.runner.nickName ? order.runner.nickName : '',
+      reviewRatingText: order.review && order.review.rating ? `${order.review.rating}星` : '',
+      reviewTagsText: order.review && order.review.tags ? order.review.tags.join('、') : '',
+      reviewTimeText: order.review && order.review.createTime ? new Date(order.review.createTime).toLocaleDateString() : ''
+    }
+
+    this.setData({
+      permissions: this.getOrderPermissions(formattedOrder)
+    })
+
+    return formattedOrder
+  },
+
+  getCurrentUserInfo() {
+    const app = getApp()
+    return (app.globalData && app.globalData.userInfo) || {}
+  },
+
+  getOrderPermissions(order) {
+    const userInfo = this.getCurrentUserInfo()
+    const openid = userInfo.openid || ''
+    const isPublisher = !!(openid && order.openid === openid)
+    const isRunner = !!(openid && order.runnerOpenid === openid)
+    const isAdmin = userInfo.role === 'admin'
+    const isVerifiedRunner = !!(userInfo.isRunner && userInfo.runnerVerified)
+    const isClosed = order.status === 'completed' || order.status === 'reviewed' || order.status === 'cancelled'
+
+    return {
+      isPublisher,
+      isRunner,
+      isAdmin,
+      canAccept: order.status === 'pending' && isVerifiedRunner && !isPublisher,
+      canPay: order.status === 'waitingPayment' && isPublisher,
+      canCancel: !isClosed && (isPublisher || isAdmin),
+      canEdit: (order.status === 'waitingPayment' || order.status === 'pending') && isPublisher,
+      canFinish: order.status === 'processing' && (isRunner || isPublisher || isAdmin),
+      canReview: order.status === 'completed' && isPublisher && !order.reviewed
     }
   },
 
@@ -130,6 +177,7 @@ Page({
     
     this.setData({
       order: mockOrder,
+      permissions: this.getOrderPermissions(mockOrder),
       loading: false
     })
   },
@@ -263,7 +311,11 @@ Page({
               'order.statusText': '已完成',
               'order.statusDesc': '任务已完成',
               'order.progressPercent': 66,
-              'order.currentStep': 2
+              'order.currentStep': 2,
+              permissions: this.getOrderPermissions({
+                ...this.data.order,
+                status: 'completed'
+              })
             })
           } catch (error) {
             wx.showToast({ title: error.message || '确认失败', icon: 'none' })
@@ -282,5 +334,25 @@ Page({
   goPay() {
     const orderId = this.data.order._id
     wx.navigateTo({ url: `/pages/payment/index?orderId=${orderId}` })
+  },
+
+  async acceptOrder() {
+    wx.showModal({
+      title: '确认接单',
+      content: '接单后须按时完成，请确认可以履约。',
+      confirmText: '确认接单',
+      success: async (res) => {
+        if (!res.confirm) return
+
+        try {
+          const userInfo = this.getCurrentUserInfo()
+          await api.acceptOrder(this.data.order._id, userInfo.openid)
+          wx.showToast({ title: '接单成功', icon: 'success' })
+          this.loadOrderDetail(this.data.order._id)
+        } catch (error) {
+          wx.showToast({ title: error.message || '接单失败', icon: 'none' })
+        }
+      }
+    })
   }
 })

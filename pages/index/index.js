@@ -1,6 +1,3 @@
-// 首页逻辑
-import api from '../../utils/api'
-
 Page({
   data: {
     userAvatar: '/static/default-avatar.png',
@@ -10,11 +7,10 @@ Page({
     showSearchHistory: false,
     searchHistory: [],
     unreadCount: 3,
-    popularOrders: [],
-    latestOrders: [],
-    loading: true,
     campusList: ['北京大学-校本部', '清华大学', '人民大学'],
-    selectedCampus: 0
+    selectedCampus: 0,
+    featureImageVisible: true,
+    featureImage: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=480&q=60'
   },
 
   onLoad() {
@@ -36,16 +32,12 @@ Page({
 
     this._loadUserInfo()
     this._loadUnreadCount()
-    this._loadPopularTasks()
-    this._loadLatestPosts()
     this.loadSearchHistory()
   },
 
   onShow() {
     this.syncTabBar()
     // onShow 时只刷新数据，不检查登录状态
-    this._loadPopularTasks()
-    this._loadLatestPosts()
     this._loadUnreadCount()
   },
 
@@ -57,12 +49,9 @@ Page({
   },
 
   onPullDownRefresh() {
-    Promise.all([
-      new Promise(resolve => this._loadPopularTasks(resolve)),
-      new Promise(resolve => this._loadLatestPosts(resolve))
-    ]).then(() => {
-      wx.stopPullDownRefresh()
-    })
+    this._loadUserInfo()
+    this._loadUnreadCount()
+    wx.stopPullDownRefresh()
   },
 
   // ── 私有方法 ─────────────────────────────────
@@ -75,137 +64,6 @@ Page({
         this.setData({ userAvatar: globalData.userInfo.avatar })
       }
     } catch (e) { /* 静默处理 */ }
-  },
-
-  _getTagClass(tagText) {
-    const tagMap = {
-      '紧急': 'urgent',
-      'Urgent': 'urgent',
-      '新任务': 'new',
-      'New': 'new',
-      '已完成': 'success',
-      '进行中': 'warning'
-    }
-    return tagMap[tagText] || 'new'
-  },
-
-  _getIconByServiceType(serviceType) {
-    const iconMap = {
-      'campus-errand': { iconName: '🏃', color: 'secondary', bg: 'secondary' },
-      'express': { iconName: '📦', color: 'tertiary', bg: 'tertiary' },
-      'exam': { iconName: '📝', color: 'primary', bg: 'primary' },
-      'campus-class': { iconName: '📚', color: 'secondary', bg: 'secondary' }
-    }
-    return iconMap[serviceType] || { iconName: '🏫', color: 'primary', bg: 'primary' }
-  },
-
-  _loadPopularTasks(callback) {
-    this.setData({ loading: true })
-
-    const done = (tasks) => {
-      const formattedTasks = tasks.map((task) => {
-        return {
-          _id: task.id,
-          serviceType: 'campus-errand', // 默认服务类型
-          status: task.status,
-          price: Number(task.price || 0) / 100,
-          title: task.title,
-          tagText: task.status === 'WAITING_PAYMENT' ? '待支付' : (task.status === 'PENDING' ? 'New' : (task.status === 'PROCESSING' ? '进行中' : '已完成')),
-          tagClass: this._getTagClass(task.status === 'WAITING_PAYMENT' ? '待支付' : (task.status === 'PENDING' ? 'New' : (task.status === 'PROCESSING' ? '进行中' : '已完成'))),
-          locationText: task.location || '校园内',
-          timeText: new Date(task.createTime || task.createdAt).toLocaleString('zh-CN')
-        }
-      })
-      this.setData({ popularOrders: formattedTasks, loading: false })
-      if (typeof callback === 'function') {
-        callback()
-      }
-    }
-
-    // 使用真实 API 获取订单数据
-    api.request('/api/order/all').then(res => {
-      if (res.success && res.data && res.data.list) {
-        // 仅展示已支付且待接单的订单，隐藏待支付、进行中、已完成、已取消订单
-        const tasks = res.data.list
-          .filter(order => this._isPublicVisibleOrder(order))
-          .slice(0, 10)
-        done(tasks)
-      } else {
-        done([])
-      }
-    }).catch(err => {
-      console.error('加载热门任务失败:', err)
-      done([])
-    })
-  },
-
-  _loadLatestPosts(callback) {
-    const done = (posts) => {
-      this.setData({ latestOrders: posts })
-      if (typeof callback === 'function') {
-        callback()
-      }
-    }
-
-    // 使用真实 API 获取订单数据
-    api.request('/api/order/all').then(res => {
-      if (res.success && res.data && res.data.list) {
-        // 最新发布同样只展示可接单订单
-        const sortedPosts = res.data.list.filter(order => this._isPublicVisibleOrder(order)).sort((a, b) => {
-          const timeA = new Date(a.createTime || a.createdAt).getTime()
-          const timeB = new Date(b.createTime || b.createdAt).getTime()
-          return timeB - timeA
-        })
-
-        const formattedPosts = sortedPosts.slice(0, 10).map(post => {
-          const iconInfo = this._getIconByServiceType('campus-errand') // 默认服务类型
-          return {
-            _id: post.id,
-            serviceType: 'campus-errand',
-            title: post.title,
-            price: Number(post.price || 0) / 100,
-            location: post.location || '校园内',
-            timeAgo: this._getTimeAgo(post.createTime || post.createdAt),
-            iconName: iconInfo.iconName,
-            color: iconInfo.color,
-            bg: iconInfo.bg
-          }
-        })
-        done(formattedPosts)
-      } else {
-        done([])
-      }
-    }).catch(err => {
-      console.error('加载最新发布失败:', err)
-      done([])
-    })
-  },
-
-  _isPublicVisibleOrder(order) {
-    return order &&
-      order.status === 'PENDING' &&
-      order.paymentStatus === 'PAID'
-  },
-
-  // 计算时间差
-  _getTimeAgo(timestamp) {
-    const now = new Date().getTime()
-    const postTime = new Date(timestamp).getTime()
-    const diff = now - postTime
-
-    const minutes = Math.floor(diff / 60000)
-    const hours = Math.floor(diff / 3600000)
-    const days = Math.floor(diff / 86400000)
-
-    if (minutes < 1) {
-      return '刚刚'
-    } else if (minutes < 60) {
-      return `${minutes}分钟前`
-    } else if (hours < 24) {
-      return `${hours}小时前`
-    } else {
-      return `${days}天前`
-    }
   },
 
   _loadUnreadCount() {
@@ -254,7 +112,7 @@ Page({
       searchKeyword: keyword,
       showSearchHistory: false
     })
-    wx.navigateTo({ url: '/pages/popular-tasks/index?keyword=' + encodeURIComponent(keyword) })
+    wx.showToast({ title: '已记录搜索关键词', icon: 'none' })
   },
 
   clearSearch() {
@@ -310,6 +168,10 @@ Page({
     wx.switchTab({ url: '/pages/message/index' })
   },
 
+  navigateToOrder() {
+    wx.switchTab({ url: '/pages/order/index' })
+  },
+
   navigateToProfile() {
     wx.switchTab({ url: '/pages/profile/index' })
   },
@@ -324,14 +186,7 @@ Page({
     wx.navigateTo({ url: url })
   },
 
-  navigateToPopularTasks() {
-    wx.navigateTo({ url: '/pages/popular-tasks/index' })
-  },
-
-  navigateToOrderDetail(e) {
-    const id = e.currentTarget.dataset.id
-    const status = e.currentTarget.dataset.status || 'pending'
-    const serviceType = e.currentTarget.dataset.serviceType || 'campus-errand'
-    wx.navigateTo({ url: '/pages/order-detail/index?id=' + id + '&status=' + status + '&serviceType=' + serviceType })
+  onFeatureImageError() {
+    this.setData({ featureImageVisible: false })
   }
 })

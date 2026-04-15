@@ -2,7 +2,7 @@
   <!-- 顶部导航 - Glass Header -->
   <view class="header glass-header">
     <view class="campus-selector" bindtap="showCampusPicker">
-      <text class="icon-school">🏫</text>
+      <view class="ios-icon icon-school"></view>
       <view class="campus-info">
         <text class="campus-label">当前校区</text>
         <view class="campus-name-wrapper">
@@ -13,7 +13,7 @@
     </view>
     <view class="header-actions">
       <view class="notification-btn" bindtap="navigateToMessage">
-        <text class="icon-bell">🔔</text>
+        <view class="ios-icon icon-bell"></view>
         <view class="notification-badge" wx:if="{{unreadCount > 0}}">{{ unreadCount }}</view>
       </view>
       <view class="user-avatar" bindtap="navigateToProfile">
@@ -30,7 +30,7 @@
     </view>
     <view class="search-wrapper">
       <view class="search-icon-wrapper">
-        <text class="search-icon">🔍</text>
+        <view class="ios-icon icon-search search-icon"></view>
       </view>
       <input 
         type="text" 
@@ -64,12 +64,24 @@
     </view>
   </view>
 
+  <!-- Campus Bulletin -->
+  <view class="bulletin-panel ios-glass">
+    <view class="bulletin-icon-wrap">
+      <view class="ios-icon icon-bell bulletin-icon"></view>
+    </view>
+    <view class="bulletin-copy">
+      <text class="bulletin-title">校园公告</text>
+      <text class="bulletin-desc">夜间跑腿请优先选择校内认证接单员，发布任务前确认地点和联系方式。</text>
+    </view>
+    <view class="bulletin-orbit"></view>
+  </view>
+
   <!-- Function Grid: Bento Style -->
   <view class="function-section">
     <view class="bento-grid">
       <!-- 校园代课 - 大卡片 -->
       <view class="bento-item bento-item-large gradient-primary" bindtap="navigateToCampusClass">
-        <text class="bento-icon-large">📚</text>
+        <view class="ios-icon icon-class bento-icon-large"></view>
         <view class="bento-info">
           <text class="bento-title">校园代课</text>
           <text class="bento-subtitle">知识共享</text>
@@ -81,7 +93,7 @@
         <!-- 校园跑腿 -->
         <view class="bento-item bento-item-small bg-secondary-container" bindtap="navigateToPublish" data-type="campus-errand">
           <view class="icon-wrapper-white">
-            <text class="bento-icon">🏃</text>
+            <view class="ios-icon icon-run bento-icon"></view>
           </view>
           <view class="bento-info-small">
             <text class="bento-title-small text-on-secondary-container">校园跑腿</text>
@@ -92,7 +104,7 @@
         <!-- 快递代取 -->
         <view class="bento-item bento-item-small bg-surface-container-highest" bindtap="navigateToPublish" data-type="express">
           <view class="icon-wrapper-white">
-            <text class="bento-icon">📦</text>
+            <view class="ios-icon icon-package bento-icon"></view>
           </view>
           <view class="bento-info-small">
             <text class="bento-title-small text-on-surface">快递代取</text>
@@ -105,7 +117,7 @@
       <view class="bento-item bento-item-full bg-tertiary-container" bindtap="navigateToPublish" data-type="exam">
         <view class="bento-full-left">
           <view class="icon-wrapper-tertiary">
-            <text class="bento-icon">📝</text>
+            <view class="ios-icon icon-exam bento-icon"></view>
           </view>
           <view class="bento-info">
             <text class="bento-title text-on-tertiary-container">考试代替</text>
@@ -117,95 +129,58 @@
     </view>
   </view>
 
-  <!-- Popular Tasks: Horizontal Scroller -->
-  <view class="popular-tasks-section">
-    <view class="section-header">
-      <text class="section-title">热门任务</text>
-      <text class="section-more" bindtap="navigateToPopularTasks">查看全部</text>
+  <!-- Quick Links -->
+  <view class="quick-section">
+    <view class="section-row">
+      <text class="section-heading">快捷入口</text>
+      <text class="section-action" bindtap="navigateToOrder">查看订单</text>
     </view>
-    
-    <!-- 骨架屏 -->
-    <view wx:if="{{loading}}" class="tasks-scroll no-scrollbar">
-      <block wx:for="{{2}}" wx:key="index">
-        <view class="task-card skeleton-card">
-          <view class="skeleton skeleton-header">
-            <view class="skeleton skeleton-tag"></view>
-            <view class="skeleton skeleton-price"></view>
-          </view>
-          <view class="skeleton skeleton-title"></view>
-          <view class="skeleton skeleton-info"></view>
+    <scroll-view scroll-x class="quick-scroll" enable-flex>
+      <view class="quick-list">
+        <view class="quick-chip" bindtap="navigateToOrder">
+          <view class="ios-icon icon-order quick-icon"></view>
+          <text>订单进度</text>
         </view>
-      </block>
-    </view>
-    
-    <!-- 任务列表 -->
-    <scroll-view wx:else class="tasks-scroll no-scrollbar" scroll-x>
-      <view wx:for="{{popularOrders}}" wx:key="_id" class="task-card" bindtap="navigateToOrderDetail" data-id="{{item._id}}" data-status="{{item.status}}" data-service-type="{{item.serviceType}}">
-        <view class="task-card-header">
-          <text class="task-tag tag-{{item.tagClass}}">{{item.tagText}}</text>
-          <text class="task-price text-primary">¥{{item.price}}</text>
+        <view class="quick-chip" bindtap="navigateToMessage">
+          <view class="ios-icon icon-message quick-icon"></view>
+          <text>消息</text>
         </view>
-        <text class="task-title">{{item.title}}</text>
-        <view class="task-meta">
-          <view class="task-meta-item">
-            <text class="meta-icon">📍</text>
-            <text class="meta-text">{{item.locationText}}</text>
-          </view>
-          <view class="task-meta-item">
-            <text class="meta-icon">🕒</text>
-            <text class="meta-text">{{item.timeText}}</text>
-          </view>
+        <view class="quick-chip" bindtap="navigateToCampusClass">
+          <view class="ios-icon icon-class quick-icon"></view>
+          <text>课程</text>
         </view>
-      </view>
-      <view wx:if="{{popularOrders.length === 0}}" class="empty-card">
-        <text class="empty-icon">📥</text>
-        <text class="empty-text">暂无热门任务</text>
+        <view class="quick-chip" bindtap="navigateToProfile">
+          <view class="ios-icon icon-profile quick-icon"></view>
+          <text>我的</text>
+        </view>
       </view>
     </scroll-view>
   </view>
 
-  <!-- Latest Posts: Vertical List -->
-  <view class="latest-posts-section">
-    <view class="section-header">
-      <text class="section-title">最新发布</text>
-    </view>
-    
-    <view class="posts-list">
-      <view 
-        wx:for="{{latestOrders}}" 
-        wx:key="_id"
-        class="post-item"
-        bindtap="navigateToOrderDetail"
-        data-id="{{item._id}}"
-      >
-        <view class="post-icon-wrapper bg-{{item.bg}}-container-30">
-          <text class="post-icon">{{item.iconName}}</text>
-        </view>
-        <view class="post-content">
-          <view class="post-header">
-            <text class="post-title">{{item.title}}</text>
-            <text class="post-price text-primary">¥{{item.price}}</text>
-          </view>
-          <view class="post-meta">
-            <text class="meta-item">
-              <image class="meta-icon-small" src="/static/arrow-icon.png" mode="aspectFit" />
-              {{item.location}}
-            </text>
-            <text class="meta-item">
-              <image class="meta-icon-small" src="/static/bell-icon.png" mode="aspectFit" />
-              {{item.timeAgo}}
-            </text>
-          </view>
-        </view>
+  <!-- Runner CTA -->
+  <view class="runner-panel">
+    <view class="runner-copy">
+      <view class="runner-kicker">
+        <view class="runner-dot"></view>
+        <text>校园接单</text>
       </view>
+      <text class="runner-title">加入校内跑腿队列</text>
+      <text class="runner-desc">课间取件、资料递送、考试周支持，按地点和时间快速发布。</text>
+      <button class="runner-action" bindtap="navigateToPublish">发布任务</button>
+    </view>
+    <view class="runner-visual" wx:if="{{featureImageVisible}}">
+      <image class="runner-image" src="{{featureImage}}" mode="aspectFill" binderror="onFeatureImageError"></image>
+    </view>
+    <view class="runner-visual runner-visual-fallback" wx:else>
+      <view class="ios-icon icon-run runner-fallback-icon"></view>
     </view>
   </view>
-  
+
   <!-- 底部安全区域 -->
-  <view class="safe-area-bottom" style="height: 120rpx;"></view>
+  <view class="safe-area-bottom" style="height: 180rpx;"></view>
 </scroll-view>
 
 <!-- Floating Action Button -->
 <view class="fab-button" bindtap="navigateToPublish">
-  <text class="fab-icon">➕</text>
+  <view class="ios-icon icon-plus fab-icon"></view>
 </view>

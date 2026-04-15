@@ -2,7 +2,7 @@
     <!-- 导航栏-->
     <view class="report-navbar">
       <view class="navbar-left" bindtap="navigateBack">
-        <image class="icon-arrow-left" src="/static/close-icon.png" style="width: 24rpx; height: 24rpx;" />
+        <view class="ios-icon icon-back icon-nav"></view>
       </view>
       <text class="navbar-title">举报投诉</text>
       <view class="navbar-right"></view>
@@ -18,7 +18,7 @@
           bindtap="selectType"
           data-index="{{index}}"
         >
-          <image src="/static/school-icon.png" style="width: 24rpx; height: 24rpx;" />
+          <view class="ios-icon icon-shield icon-nav"></view>
           <text>{{ type.name }}</text>
         </view>
       </view>
@@ -43,11 +43,11 @@
         <view class="image-item" wx:for="{{images}}" wx:for-item="img" wx:for-index="index" wx:key="{{img || index}}">
           <image src="{{img}}" mode="aspectFill" class="preview-image" />
           <view class="remove-btn" bindtap="removeImage" data-index="{{index}}">
-            <image class="icon-close" src="/static/close-icon.png" style="width: 16rpx; height: 16rpx;" />
+            <view class="ios-icon icon-close icon-nav"></view>
           </view>
         </view>
         <view class="add-image" wx:if="{{images.length < 3}}" bindtap="chooseImage">
-          <image class="icon-camera" src="/static/school-icon.png" style="width: 32rpx; height: 32rpx;" />
+          <view class="ios-icon icon-camera icon-nav"></view>
           <text class="add-text">添加图片</text>
         </view>
       </view>
@@ -66,7 +66,7 @@
 
     <!-- 提示 -->
     <view class="tip-card">
-      <image class="icon-shield" src="/static/school-icon.png" style="width: 18rpx; height: 18rpx;" />
+      <view class="ios-icon icon-shield icon-nav"></view>
       <text class="tip-text">我们将对您的举报信息严格保密，并在1-3个工作日内处理</text>
     </view>
 

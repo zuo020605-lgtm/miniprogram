@@ -218,13 +218,15 @@ Page({
 
   // 确认选点
   onConfirm() {
-    const { selectedLocation, type } = this.data
+    let { selectedLocation, type, longitude, latitude } = this.data
     if (!selectedLocation) {
-      wx.showToast({
-        title: '请先选择地点',
-        icon: 'none'
-      })
-      return
+      selectedLocation = {
+        name: '地图选点',
+        address: '当前地图中心点',
+        longitude,
+        latitude
+      }
+      this.setData({ selectedLocation })
     }
     
     // 返回选点结果
@@ -245,7 +247,9 @@ Page({
         })
       } else if (type === 'exam') {
         prevPage.setData({
-          examLocation: selectedLocation.address || selectedLocation.name
+          examLocation: selectedLocation.address || selectedLocation.name,
+          examLocationLatitude: selectedLocation.latitude,
+          examLocationLongitude: selectedLocation.longitude
         })
       }
       prevPage.checkCanPublish()

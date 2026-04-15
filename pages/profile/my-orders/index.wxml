@@ -38,7 +38,7 @@
         </view>
         
         <view class="empty-state" wx:if="{{!loading && filteredOrders.length === 0}}">
-          <text class="empty-icon">🎯</text>
+          <view class="ios-icon icon-order icon-order-empty empty-icon"></view>
           <text class="empty-text">暂无接取的任务</text>
           <button class="empty-btn" bindtap="navigateToHome">去接单</button>
         </view>

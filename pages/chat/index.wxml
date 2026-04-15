@@ -2,14 +2,14 @@
     <!-- 顶部导航 -->
     <view class="chat-navbar">
       <view class="navbar-left" bindtap="navigateBack">
-        <image class="icon-arrow-left" src="/static/arrow-icon.png" style="width: 24rpx; height: 24rpx; transform: rotate(180deg);" />
+        <view class="ios-icon icon-back icon-nav"></view>
       </view>
       <view class="navbar-center">
         <text class="navbar-title">{{ chatUserName }}</text>
         <text class="navbar-status">在线</text>
       </view>
       <view class="navbar-right">
-        <image class="icon-more" src="/static/close-icon.png" style="width: 24rpx; height: 24rpx;" />
+        <view class="ios-icon icon-more icon-nav"></view>
       </view>
     </view>
 
@@ -52,11 +52,11 @@
           bindconfirm="sendMessage"
         />
         <view class="input-actions">
-          <image class="icon-image" src="/static/close-icon.png" style="width: 24rpx; height: 24rpx;" />
+          <view class="ios-icon icon-camera icon-nav"></view>
         </view>
       </view>
       <button class="send-btn" bindtap="sendMessage" disabled="{{!inputText.trim()}}">
-        <image class="icon-arrow-right" src="/static/arrow-icon.png" style="width: 20rpx; height: 20rpx;" />
+        <view class="ios-icon icon-send icon-nav"></view>
       </button>
     </view>
   </view>

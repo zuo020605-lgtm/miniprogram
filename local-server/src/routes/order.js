@@ -11,7 +11,9 @@ const {
   mockCancelOrder,
   mockUpdateOrder,
   mockDeleteOrder,
-  mockReviewOrder
+  mockReviewOrder,
+  mockGetReviewList,
+  mockGetReviewStats
 } = require('../models/order')
 
 // 创建订单
@@ -68,12 +70,12 @@ router.get('/detail', async (req, res) => {
 // 接单
 router.post('/accept', async (req, res) => {
   try {
-    const { id, orderId, accepterOpenid } = req.body
+    const { id, orderId, accepterOpenid, operatorRole } = req.body
     if ((!id && !orderId) || !accepterOpenid) {
       return res.status(400).json({ success: false, message: '缺少接单参数' })
     }
 
-    const result = await mockAcceptOrder(id || orderId, accepterOpenid)
+    const result = await mockAcceptOrder(id || orderId, accepterOpenid, operatorRole)
     res.json(result)
   } catch (error) {
     console.error('Accept order error:', error)
@@ -84,12 +86,12 @@ router.post('/accept', async (req, res) => {
 // 完成订单
 router.post('/finish', async (req, res) => {
   try {
-    const { id, orderId, finisherOpenid } = req.body
+    const { id, orderId, finisherOpenid, operatorRole } = req.body
     if ((!id && !orderId) || !finisherOpenid) {
       return res.status(400).json({ success: false, message: '缺少完成订单参数' })
     }
 
-    const result = await mockFinishOrder(id || orderId, finisherOpenid)
+    const result = await mockFinishOrder(id || orderId, finisherOpenid, operatorRole)
     res.json(result)
   } catch (error) {
     console.error('Finish order error:', error)
@@ -100,12 +102,12 @@ router.post('/finish', async (req, res) => {
 // 取消订单
 router.post('/cancel', async (req, res) => {
   try {
-    const { id, orderId, openid } = req.body
+    const { id, orderId, openid, operatorRole } = req.body
     if ((!id && !orderId) || !openid) {
       return res.status(400).json({ success: false, message: '缺少取消订单参数' })
     }
 
-    const result = await mockCancelOrder(id || orderId, openid)
+    const result = await mockCancelOrder(id || orderId, openid, operatorRole)
     res.json(result)
   } catch (error) {
     console.error('Cancel order error:', error)
@@ -116,12 +118,12 @@ router.post('/cancel', async (req, res) => {
 // 更新订单（后台管理）
 router.post('/update', async (req, res) => {
   try {
-    const { id, ...orderData } = req.body
+    const { id, operatorOpenid, operatorRole, ...orderData } = req.body
     if (!id) {
       return res.status(400).json({ success: false, message: '缺少订单 ID 参数' })
     }
 
-    const result = await mockUpdateOrder(id, orderData)
+    const result = await mockUpdateOrder(id, orderData, { openid: operatorOpenid, operatorRole })
     res.json(result)
   } catch (error) {
     console.error('Update order error:', error)
@@ -132,12 +134,12 @@ router.post('/update', async (req, res) => {
 // 删除订单（后台管理）
 router.post('/delete', async (req, res) => {
   try {
-    const { id } = req.body
+    const { id, operatorOpenid, operatorRole } = req.body
     if (!id) {
       return res.status(400).json({ success: false, message: '缺少订单 ID 参数' })
     }
 
-    const result = await mockDeleteOrder(id)
+    const result = await mockDeleteOrder(id, { openid: operatorOpenid, operatorRole })
     res.json(result)
   } catch (error) {
     console.error('Delete order error:', error)
@@ -158,6 +160,39 @@ router.post('/review', async (req, res) => {
   } catch (error) {
     console.error('Review order error:', error)
     res.status(400).json({ success: false, message: error.message || '提交评价失败' })
+  }
+})
+
+// 获取评价列表
+router.get('/reviews', async (req, res) => {
+  try {
+    const {
+      orderId,
+      runnerOpenid,
+      publisherOpenid,
+      reviewerOpenid,
+      targetOpenid,
+      page = 1,
+      pageSize = 10
+    } = req.query
+    const filters = { orderId, runnerOpenid, publisherOpenid, reviewerOpenid, targetOpenid }
+    const result = await mockGetReviewList(filters, parseInt(page), parseInt(pageSize))
+    res.json(result)
+  } catch (error) {
+    console.error('Get reviews error:', error)
+    res.status(500).json({ success: false, message: '获取评价列表失败' })
+  }
+})
+
+// 获取评价统计
+router.get('/review-stats', async (req, res) => {
+  try {
+    const { openid, runnerOpenid, targetOpenid } = req.query
+    const result = await mockGetReviewStats({ openid, runnerOpenid, targetOpenid })
+    res.json(result)
+  } catch (error) {
+    console.error('Get review stats error:', error)
+    res.status(500).json({ success: false, message: '获取评价统计失败' })
   }
 })
 

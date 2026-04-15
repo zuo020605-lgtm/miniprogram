@@ -94,6 +94,19 @@
   margin-top: 8px;
 }
 
+.agreement-row {
+  display: flex;
+  align-items: center;
+  margin: 4px 0 20px;
+}
+
+.agreement-text {
+  margin-left: 8px;
+  font-size: 13px;
+  color: #595c5e;
+  line-height: 1.5;
+}
+
 .auth-tips {
   margin-top: 24px;
 }

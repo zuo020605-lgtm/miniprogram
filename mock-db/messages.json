@@ -1,1 +1,34 @@
-{}
+{
+  "1": {
+    "id": 1,
+    "userId": "unverified_perm_test",
+    "conversationId": "8",
+    "fromOpenid": "unverified_perm_test",
+    "toOpenid": "publisher_perm_test",
+    "title": "订单 8",
+    "content": "订单「??????」已被接单，可以开始沟通。",
+    "messageType": "system",
+    "type": "chat",
+    "status": "unread",
+    "priority": "normal",
+    "createTime": 1776231936373,
+    "readTime": null,
+    "updateTime": 1776231936373
+  },
+  "2": {
+    "id": 2,
+    "userId": "mini_unv",
+    "conversationId": "12",
+    "fromOpenid": "mini_unv",
+    "toOpenid": "mini_pub",
+    "title": "订单 12",
+    "content": "订单「t」已被接单，可以开始沟通。",
+    "messageType": "system",
+    "type": "chat",
+    "status": "unread",
+    "priority": "normal",
+    "createTime": 1776231997262,
+    "readTime": null,
+    "updateTime": 1776231997262
+  }
+}

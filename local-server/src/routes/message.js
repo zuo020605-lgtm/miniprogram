@@ -10,6 +10,7 @@ const {
   deleteMessages,
   getUnreadCount,
   markAllAsRead,
+  markConversationAsRead,
   getConversationList
 } = require('../models/message')
 
@@ -180,6 +181,22 @@ router.post('/mark-all-read', async (req, res) => {
   } catch (error) {
     console.error('Mark all read error:', error)
     res.status(500).json({ success: false, message: '标记全部已读失败' })
+  }
+})
+
+// 标记某个会话为已读
+router.post('/mark-conversation-read', async (req, res) => {
+  try {
+    const { openid, conversationId } = req.body
+    if (!openid || !conversationId) {
+      return res.status(400).json({ success: false, message: '缺少会话已读参数' })
+    }
+
+    const result = await markConversationAsRead(openid, conversationId)
+    res.json(result)
+  } catch (error) {
+    console.error('Mark conversation read error:', error)
+    res.status(500).json({ success: false, message: '标记会话已读失败' })
   }
 })
 

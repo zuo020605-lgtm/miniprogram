@@ -279,6 +279,28 @@ async function markAllAsRead(userId) {
   }
 }
 
+async function markConversationAsRead(openid, conversationId) {
+  let count = 0
+  Object.values(mockMessageDB.messages).forEach(msg => {
+    if (
+      msg.toOpenid === openid &&
+      msg.conversationId === String(conversationId) &&
+      msg.status === 'unread'
+    ) {
+      msg.status = 'read'
+      msg.readTime = Date.now()
+      msg.updateTime = Date.now()
+      count++
+    }
+  })
+  mockMessageDB.saveMessages()
+
+  return {
+    success: true,
+    data: { updated: count }
+  }
+}
+
 async function getConversationList(openid) {
   const messages = Object.values(mockMessageDB.messages)
     .filter(msg => msg.fromOpenid === openid || msg.toOpenid === openid || msg.userId === openid)
@@ -286,21 +308,32 @@ async function getConversationList(openid) {
   const conversationMap = {}
   messages.forEach(msg => {
     const conversationId = msg.conversationId || `message_${msg.id}`
-    const existing = conversationMap[conversationId]
-    if (!existing || msg.createTime > existing.createTime) {
+    if (!conversationMap[conversationId]) {
       conversationMap[conversationId] = {
         id: conversationId,
         name: msg.title || '会话',
         avatar: '/static/default-avatar.png',
-        lastMessage: msg.content,
-        lastMessageTime: msg.createTime,
-        unreadCount: msg.status === 'unread' && msg.toOpenid === openid ? 1 : 0,
+        lastMessage: '',
+        lastMessageTime: 0,
+        unreadCount: 0,
         messageType: msg.type || 'chat',
-        targetOpenid: msg.fromOpenid === openid ? msg.toOpenid : msg.fromOpenid,
-        createTime: msg.createTime
+        targetOpenid: '',
+        createTime: 0
       }
-    } else if (msg.status === 'unread' && msg.toOpenid === openid) {
+    }
+
+    const existing = conversationMap[conversationId]
+    if (msg.status === 'unread' && msg.toOpenid === openid) {
       existing.unreadCount += 1
+    }
+
+    if (!existing.createTime || msg.createTime > existing.createTime) {
+      existing.name = msg.title || existing.name || '会话'
+      existing.lastMessage = msg.content || ''
+      existing.lastMessageTime = msg.createTime
+      existing.messageType = msg.type || 'chat'
+      existing.targetOpenid = msg.fromOpenid === openid ? msg.toOpenid : msg.fromOpenid
+      existing.createTime = msg.createTime
     }
   })
 
@@ -325,5 +358,6 @@ module.exports = {
   deleteMessages,
   getUnreadCount,
   markAllAsRead,
+  markConversationAsRead,
   getConversationList
 }

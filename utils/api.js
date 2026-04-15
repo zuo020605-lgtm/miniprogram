@@ -57,6 +57,18 @@ class API {
     return this.unwrap(this.request('/api/user/update', 'POST', { id, ...userInfo }))
   }
 
+  applyRunner(userId) {
+    return this.unwrap(this.request('/api/user/apply-runner', 'POST', { id: userId }))
+  }
+
+  approveRunner(userId) {
+    return this.unwrap(this.request('/api/user/approve-runner', 'POST', { id: userId }))
+  }
+
+  revokeRunner(userId) {
+    return this.unwrap(this.request('/api/user/revoke-runner', 'POST', { id: userId }))
+  }
+
   // 订单相关 API
   createOrder(openidOrOrderData, title, description, price, address, contact) {
     const orderData = typeof openidOrOrderData === 'object'
@@ -110,16 +122,19 @@ class API {
     }))
   }
 
-  cancelOrder(orderId, openid) {
+  cancelOrder(orderId, openid, operatorRole) {
     return this.unwrap(this.request('/api/order/cancel', 'POST', {
       id: orderId,
-      openid
+      openid,
+      operatorRole
     }))
   }
 
-  deleteOrder(orderId) {
+  deleteOrder(orderId, operatorOpenid, operatorRole) {
     return this.unwrap(this.request('/api/order/delete', 'POST', {
-      id: orderId
+      id: orderId,
+      operatorOpenid,
+      operatorRole
     }))
   }
 
@@ -128,6 +143,14 @@ class API {
       id: orderId,
       ...reviewData
     }))
+  }
+
+  getReviews(params = {}) {
+    return this.unwrap(this.request(`/api/order/reviews?${this.buildQuery(params)}`))
+  }
+
+  getReviewStats(params = {}) {
+    return this.unwrap(this.request(`/api/order/review-stats?${this.buildQuery(params)}`))
   }
 
   // 消息相关 API
@@ -169,6 +192,13 @@ class API {
 
   getUnreadCount(openid) {
     return this.unwrap(this.request(`/api/message/unread-count?${this.buildQuery({ userId: openid })}`))
+  }
+
+  markConversationAsRead(openid, conversationId) {
+    return this.unwrap(this.request('/api/message/mark-conversation-read', 'POST', {
+      openid,
+      conversationId
+    }))
   }
 
   mockPay(orderId, openid, totalFee, paymentMethod = 'wechat') {

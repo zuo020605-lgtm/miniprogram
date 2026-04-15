@@ -21,15 +21,15 @@
     <view class="menu-panel" catchtap="noop">
       <view class="menu-title">课表操作</view>
       <view class="menu-item" catchtap="handleImportCourse">
-        <text class="menu-icon">📅</text>
+        <view class="ios-icon icon-time menu-icon"></view>
         <text>导入课表</text>
       </view>
       <view class="menu-item" catchtap="handleRefreshCourse">
-        <text class="menu-icon">↻</text>
+        <view class="ios-icon icon-refresh menu-icon"></view>
         <text>刷新课表</text>
       </view>
       <view class="menu-item danger" catchtap="handleClearCourse">
-        <text class="menu-icon">×</text>
+        <view class="ios-icon icon-close menu-icon"></view>
         <text>清空课表</text>
       </view>
     </view>

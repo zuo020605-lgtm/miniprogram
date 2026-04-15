@@ -10,10 +10,15 @@ Page({
     pickupLocation: '',
     pickupLocationLatitude: null,
     pickupLocationLongitude: null,
+    pickupDetail: '',
     deliveryLocation: '',
     deliveryLocationLatitude: null,
     deliveryLocationLongitude: null,
+    deliveryDetail: '',
     examLocation: '',
+    examLocationLatitude: null,
+    examLocationLongitude: null,
+    examLocationDetail: '',
     examSubject: '',
     weightOptions: [
       { label: '1kg内', value: '1kg', index: 0 },
@@ -160,10 +165,25 @@ Page({
     this.checkCanPublish()
   },
 
+  // 取货详细信息变更
+  onPickupDetailChange(e) {
+    this.setData({ pickupDetail: e.detail.value })
+  },
+
+  // 送达详细信息变更
+  onDeliveryDetailChange(e) {
+    this.setData({ deliveryDetail: e.detail.value })
+  },
+
   // 考试地点变更
   onExamLocationChange(e) {
     this.setData({ examLocation: e.detail.value })
     this.checkCanPublish()
+  },
+
+  // 考试地点详细信息变更
+  onExamLocationDetailChange(e) {
+    this.setData({ examLocationDetail: e.detail.value })
   },
 
   // 考试科目变更
@@ -306,7 +326,7 @@ Page({
     if (!this.data.canPublish || this.data.isPublishing) return
 
     // 发布前预览弹窗
-    const { selectedType, selectedDate, startTime, endTime, price, taskDetail, contactInfo, pickupLocation, deliveryLocation, examLocation, examSubject, selectedWeight, pickupLocationLatitude, pickupLocationLongitude, deliveryLocationLatitude, deliveryLocationLongitude } = this.data
+    const { selectedType, selectedDate, startTime, endTime, price, taskDetail, contactInfo, pickupLocation, deliveryLocation, examLocation, examSubject, selectedWeight, pickupLocationLatitude, pickupLocationLongitude, pickupDetail, deliveryLocationLatitude, deliveryLocationLongitude, deliveryDetail, examLocationLatitude, examLocationLongitude, examLocationDetail } = this.data
 
     // 校验时间范围
     if (startTime && endTime && startTime > endTime) {
@@ -330,10 +350,13 @@ Page({
 
     if (selectedType === 'campus-errand' || selectedType === 'express') {
       previewContent += `取货地点：${pickupLocation}\n`
+      if (pickupDetail) previewContent += `取货详情：${pickupDetail}\n`
       previewContent += `送达地点：${deliveryLocation}\n`
+      if (deliveryDetail) previewContent += `送达详情：${deliveryDetail}\n`
       previewContent += `重量：${selectedWeight}\n`
     } else if (selectedType === 'exam') {
       previewContent += `考试地点：${examLocation}\n`
+      if (examLocationDetail) previewContent += `地点详情：${examLocationDetail}\n`
       previewContent += `考试科目：${examSubject}\n`
     }
 
@@ -378,10 +401,15 @@ Page({
               pickupLocation: pickupLocation,
               pickupLocationLatitude: pickupLocationLatitude,
               pickupLocationLongitude: pickupLocationLongitude,
+              pickupDetail: pickupDetail,
               deliveryLocation: deliveryLocation,
               deliveryLocationLatitude: deliveryLocationLatitude,
               deliveryLocationLongitude: deliveryLocationLongitude,
+              deliveryDetail: deliveryDetail,
               examLocation: examLocation,
+              examLocationLatitude: examLocationLatitude,
+              examLocationLongitude: examLocationLongitude,
+              examLocationDetail: examLocationDetail,
               examSubject: examSubject,
               date: selectedDate,
               time: startTime
@@ -480,8 +508,8 @@ Page({
       url: `/pages/map-location/index?type=exam&location=${encodeURIComponent(JSON.stringify({
         name: this.data.examLocation,
         address: this.data.examLocation,
-        longitude: 113.3249, // 默认经度（广州）
-        latitude: 23.1065   // 默认纬度（广州）
+        longitude: this.data.examLocationLongitude || 113.3249,
+        latitude: this.data.examLocationLatitude || 23.1065
       }))}`
     })
   }

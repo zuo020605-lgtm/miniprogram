@@ -13,7 +13,7 @@
           data-type="campus-class"
         >
           <view class="type-icon-wrapper">
-            <image class="type-icon-img" src="/static/class-icon.png" mode="aspectFit" />
+            <view class="ios-icon icon-class type-icon-img"></view>
           </view>
           <text class="type-name">校园代课</text>
           <text class="type-desc">查看课表代课</text>
@@ -24,7 +24,7 @@
           data-type="campus-errand"
         >
           <view class="type-icon-wrapper">
-            <image class="type-icon-img" src="/static/run-icon.png" mode="aspectFit" />
+            <view class="ios-icon icon-run type-icon-img"></view>
           </view>
           <text class="type-name">校园跑腿</text>
           <text class="type-desc">帮忙跑腿办事</text>
@@ -35,7 +35,7 @@
           data-type="express"
         >
           <view class="type-icon-wrapper">
-            <image class="type-icon-img" src="/static/package-icon.png" mode="aspectFit" />
+            <view class="ios-icon icon-package type-icon-img"></view>
           </view>
           <text class="type-name">快递代取</text>
           <text class="type-desc">代取快递包裹</text>
@@ -46,7 +46,7 @@
           data-type="exam"
         >
           <view class="type-icon-wrapper">
-            <image class="type-icon-img" src="/static/exam-icon.png" mode="aspectFit" />
+            <view class="ios-icon icon-exam type-icon-img"></view>
           </view>
           <text class="type-name">考试代替</text>
           <text class="type-desc">替考服务</text>
@@ -104,56 +104,48 @@
         <view class="section-card">
           <view class="section-title">地点信息</view>
           
-          <view class="form-row">
+          <view class="form-row location-select-row">
             <text class="row-label">取货地点</text>
-            <view class="location-input-wrapper">
-              <input
-                type="text"
-                value="{{pickupLocation}}" bindinput="onPickupLocationChange"
-                placeholder="请输入取货地点"
-                class="form-input"
-              />
+            <view class="location-select-content">
+              <view class="location-display {{pickupLocation ? 'has-location' : ''}}">
+                <text class="location-display-text">{{pickupLocation ? pickupLocation : '请通过地图选择取货地点'}}</text>
+              </view>
+              <button class="location-btn-inline" bindtap="choosePickupLocation">
+                <view class="ios-icon icon-location location-icon"></view>
+                <text>地图选点</text>
+              </button>
             </view>
-          </view>
-          <view class="form-row">
-            <text class="row-label">地图选点</text>
-            <button class="location-btn-full" bindtap="choosePickupLocation">
-              <text class="location-icon">📍</text>
-              <text>选择取货地点</text>
-            </button>
           </view>
           <view class="form-row">
             <text class="row-label">详细信息</text>
             <input
               type="text"
-              placeholder="补充详细地点信息（如楼栋、楼层、门牌号等）"
+              value="{{pickupDetail}}"
+              bindinput="onPickupDetailChange"
+              placeholder="补充楼栋、楼层、门牌号等"
               class="form-input"
             />
           </view>
 
-          <view class="form-row">
+          <view class="form-row location-select-row">
             <text class="row-label">送达地点</text>
-            <view class="location-input-wrapper">
-              <input
-                type="text"
-                value="{{deliveryLocation}}" bindinput="onDeliveryLocationChange"
-                placeholder="请输入送达地点"
-                class="form-input"
-              />
+            <view class="location-select-content">
+              <view class="location-display {{deliveryLocation ? 'has-location' : ''}}">
+                <text class="location-display-text">{{deliveryLocation ? deliveryLocation : '请通过地图选择送达地点'}}</text>
+              </view>
+              <button class="location-btn-inline" bindtap="chooseDeliveryLocation">
+                <view class="ios-icon icon-location location-icon"></view>
+                <text>地图选点</text>
+              </button>
             </view>
-          </view>
-          <view class="form-row">
-            <text class="row-label">地图选点</text>
-            <button class="location-btn-full" bindtap="chooseDeliveryLocation">
-              <text class="location-icon">📍</text>
-              <text>选择送达地点</text>
-            </button>
           </view>
           <view class="form-row">
             <text class="row-label">详细信息</text>
             <input
               type="text"
-              placeholder="补充详细地点信息（如楼栋、楼层、门牌号等）"
+              value="{{deliveryDetail}}"
+              bindinput="onDeliveryDetailChange"
+              placeholder="补充楼栋、楼层、门牌号等"
               class="form-input"
             />
           </view>
@@ -252,29 +244,25 @@
           </view>
           
           <!-- 考试地点 -->
-          <view class="form-row">
+          <view class="form-row location-select-row">
             <text class="row-label">考试地点</text>
-            <view class="location-input-wrapper">
-              <input 
-                type="text" 
-                value="{{examLocation}}" bindinput="onExamLocationChange" 
-                placeholder="请输入考试地点"
-                class="form-input"
-              />
+            <view class="location-select-content">
+              <view class="location-display {{examLocation ? 'has-location' : ''}}">
+                <text class="location-display-text">{{examLocation ? examLocation : '请选择考试地点'}}</text>
+              </view>
+              <button class="location-btn-inline" bindtap="chooseExamLocation">
+                <view class="ios-icon icon-location location-icon"></view>
+                <text>地图选点</text>
+              </button>
             </view>
-          </view>
-          <view class="form-row">
-            <text class="row-label">地图选点</text>
-            <button class="location-btn-full" bindtap="chooseExamLocation">
-              <text class="location-icon">📍</text>
-              <text>选择考试地点</text>
-            </button>
           </view>
           <view class="form-row">
             <text class="row-label">详细信息</text>
             <input
               type="text"
-              placeholder="补充详细地点信息（如楼栋、楼层、教室号等）"
+              value="{{examLocationDetail}}"
+              bindinput="onExamLocationDetailChange"
+              placeholder="补充楼栋、教室号等"
               class="form-input"
             />
           </view>

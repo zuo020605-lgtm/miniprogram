@@ -592,3 +592,232 @@ page {
 .tips-item:last-child {
   margin-bottom: 0;
 }
+
+/* iOS26 visual QA pass: make map-pick buttons readable on glass surfaces. */
+.publish-page {
+  background:
+    radial-gradient(circle at 88% 8%, rgba(255, 195, 80, 0.16), rgba(255, 195, 80, 0) 30%),
+    radial-gradient(circle at 10% 30%, rgba(46, 196, 182, 0.12), rgba(46, 196, 182, 0) 34%),
+    linear-gradient(180deg, #f7f9fd 0%, #eef4f8 100%) !important;
+}
+
+.publish-page .section-card {
+  background: rgba(255, 255, 255, 0.94) !important;
+  border: 1rpx solid rgba(0, 88, 187, 0.12) !important;
+  box-shadow: inset 0 1rpx 0 rgba(255, 255, 255, 0.96), 0 18rpx 44rpx rgba(22, 38, 58, 0.1) !important;
+}
+
+.publish-page .task-type-note,
+.publish-page .location-input-row,
+.publish-page .form-textarea {
+  background: rgba(241, 247, 252, 0.96) !important;
+  border: 1rpx solid rgba(0, 88, 187, 0.1) !important;
+}
+
+.publish-page .type-item:nth-child(1) {
+  background: linear-gradient(145deg, rgba(232, 246, 255, 0.96), rgba(219, 239, 255, 0.78)) !important;
+}
+
+.publish-page .type-item:nth-child(2) {
+  background: linear-gradient(145deg, rgba(229, 255, 248, 0.96), rgba(199, 244, 236, 0.78)) !important;
+}
+
+.publish-page .type-item:nth-child(3) {
+  background: linear-gradient(145deg, rgba(255, 247, 225, 0.96), rgba(255, 232, 181, 0.78)) !important;
+}
+
+.publish-page .type-item:nth-child(4) {
+  background: linear-gradient(145deg, rgba(255, 237, 234, 0.96), rgba(255, 216, 208, 0.78)) !important;
+}
+
+.publish-page .type-item.active {
+  border-color: rgba(0, 88, 187, 0.34) !important;
+  box-shadow: inset 0 1rpx 0 rgba(255, 255, 255, 0.96), 0 14rpx 36rpx rgba(10, 132, 255, 0.16) !important;
+}
+
+.publish-page .location-btn-full {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(219, 239, 255, 0.86)) !important;
+  border: 1rpx solid rgba(0, 88, 187, 0.2) !important;
+  color: #0058bb !important;
+  box-shadow: inset 0 1rpx 0 rgba(255, 255, 255, 0.96), 0 12rpx 28rpx rgba(0, 88, 187, 0.12) !important;
+}
+
+.publish-page .location-btn-full text,
+.publish-page .location-btn-full .ios-icon,
+.publish-page .location-btn-full .location-icon {
+  color: #0058bb !important;
+}
+
+.publish-page .publish-btn {
+  background: linear-gradient(135deg, #0058bb 0%, #0a84ff 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 14rpx 32rpx rgba(0, 88, 187, 0.24) !important;
+}
+
+/* Morandi publish pass. */
+.publish-page,
+page {
+  background:
+    radial-gradient(circle at 88% 8%, rgba(129, 148, 135, 0.1), rgba(129, 148, 135, 0) 30%),
+    linear-gradient(180deg, #f3f5f6 0%, #e8edf0 100%) !important;
+}
+
+.publish-page .section-card {
+  background: rgba(253, 254, 253, 0.96) !important;
+  border-color: rgba(105, 124, 134, 0.18) !important;
+  box-shadow: 0 16rpx 42rpx rgba(58, 70, 76, 0.1) !important;
+}
+
+.publish-page .section-title::before,
+.publish-page .weight-slider-progress,
+.publish-page .weight-slider-thumb {
+  background: #607889 !important;
+  box-shadow: none !important;
+}
+
+.publish-page .type-item,
+.publish-page .type-item:nth-child(1),
+.publish-page .type-item:nth-child(2),
+.publish-page .type-item:nth-child(3),
+.publish-page .type-item:nth-child(4) {
+  background: rgba(253, 254, 253, 0.96) !important;
+  border-color: rgba(105, 124, 134, 0.18) !important;
+}
+
+.publish-page .type-item.active {
+  background: rgba(96, 120, 137, 0.14) !important;
+  border-color: rgba(96, 120, 137, 0.28) !important;
+}
+
+.publish-page .type-item.active .type-name,
+.publish-page .weight-value,
+.publish-page .weight-node.active .node-label {
+  color: #4f6675 !important;
+}
+
+.publish-page .type-icon-wrapper {
+  background: rgba(96, 120, 137, 0.12) !important;
+  color: #607889 !important;
+}
+
+.publish-page .task-type-note,
+.publish-page .location-input-row,
+.publish-page .form-textarea {
+  background: rgba(238, 243, 244, 0.96) !important;
+  border-color: rgba(105, 124, 134, 0.12) !important;
+}
+
+.publish-page .location-btn,
+.publish-page .location-btn-full,
+.publish-page .location-btn-inline {
+  background: rgba(238, 243, 244, 0.96) !important;
+  color: #4f6675 !important;
+  border-color: rgba(105, 124, 134, 0.24) !important;
+}
+
+.publish-page .location-select-row {
+  align-items: center;
+}
+
+.publish-page .location-select-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+}
+
+.publish-page .location-display {
+  flex: 1;
+  min-width: 0;
+  min-height: 56rpx;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  box-sizing: border-box;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+.publish-page .location-display.has-location {
+  background: transparent;
+  border-color: transparent;
+}
+
+.publish-page .location-display-icon {
+  flex: 0 0 auto;
+  color: #607889 !important;
+  font-size: 28rpx;
+}
+
+.publish-page .location-display-text {
+  flex: 1;
+  min-width: 0;
+  color: #4f6675;
+  font-size: 28rpx;
+  line-height: 1.45;
+  word-break: break-all;
+}
+
+.publish-page .location-display.has-location .location-display-text {
+  color: #2d3336;
+  font-weight: 500;
+}
+
+.publish-page .location-btn-inline {
+  flex: 0 0 204rpx;
+  width: 204rpx;
+  min-width: 204rpx;
+  height: 64rpx;
+  min-height: 64rpx;
+  padding: 0 18rpx !important;
+  margin: 0 !important;
+  border-radius: 16rpx !important;
+  font-size: 24rpx !important;
+  line-height: 64rpx !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 6rpx;
+  box-sizing: border-box;
+  overflow: visible;
+}
+
+.publish-page .location-btn-inline::after {
+  border: 0;
+}
+
+.publish-page .location-btn-inline text {
+  display: block;
+  flex: 0 0 auto;
+  white-space: nowrap;
+  line-height: 1.1 !important;
+  font-size: 24rpx !important;
+}
+
+.publish-page .location-btn-inline .ios-icon,
+.publish-page .location-btn-inline .location-icon {
+  flex: 0 0 24rpx;
+  width: 24rpx;
+  height: 24rpx;
+  min-width: 24rpx;
+  font-size: 24rpx !important;
+  transform: scale(0.82);
+}
+
+.publish-page .location-btn text,
+.publish-page .location-btn .ios-icon,
+.publish-page .location-btn-full text,
+.publish-page .location-btn-full .ios-icon,
+.publish-page .location-btn-full .location-icon,
+.publish-page .location-btn-inline text,
+.publish-page .location-btn-inline .ios-icon,
+.publish-page .location-btn-inline .location-icon {
+  color: #4f6675 !important;
+}
+
+.publish-page .publish-btn {
+  background: linear-gradient(135deg, #607889 0%, #4f6675 100%) !important;
+  box-shadow: 0 12rpx 28rpx rgba(79, 102, 117, 0.2) !important;
+}

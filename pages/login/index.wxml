@@ -26,7 +26,7 @@
       
       <view class="other-login">
         <button class="wechat-login-btn" bindtap="loginByWechat">
-          <text class="wechat-icon">💬</text>
+          <view class="ios-icon icon-message wechat-icon"></view>
           <text class="wechat-text">微信登录</text>
         </button>
       </view>

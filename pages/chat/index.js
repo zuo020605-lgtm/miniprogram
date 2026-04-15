@@ -43,6 +43,11 @@ Page({
     try {
       const app = getApp()
       const openid = app.globalData.userInfo && app.globalData.userInfo.openid
+      if (!openid) {
+        wx.showToast({ title: '请先登录', icon: 'none' })
+        this.setData({ messages: [] })
+        return
+      }
       const result = await api.getMessages(openid, conversationId)
       const messageList = result.list || []
       const processedMessages = messageList.map(msg => ({
@@ -53,6 +58,8 @@ Page({
       })).reverse()
 
       this.setData({ messages: processedMessages })
+      await api.markConversationAsRead(openid, conversationId)
+      this.refreshTabBarUnread()
       setTimeout(() => {
         this.scrollToBottom()
       }, 100)
@@ -75,6 +82,13 @@ Page({
     
     // 后续可在 3000 Mock 服务稳定后升级为 WebSocket 或轮询
     console.log('开始监听新消息:', conversationId)
+  },
+
+  refreshTabBarUnread() {
+    const tabBar = typeof this.getTabBar === 'function' ? this.getTabBar() : null
+    if (tabBar && typeof tabBar.refreshUnreadCount === 'function') {
+      tabBar.refreshUnreadCount()
+    }
   },
 
   // 输入框内容变化

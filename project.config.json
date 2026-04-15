@@ -23,7 +23,7 @@
     "useCompilerPlugins": false,
     "minifyWXML": true,
     "ignoreDevUnusedFiles": false,
-    "ignoreUploadUnusedFiles": false,
+    "ignoreUploadUnusedFiles": true,
     "urlCheck": false,
     "lazyCodeLoading": "requiredComponents",
     "compileWorklet": false,
@@ -73,7 +73,144 @@
   },
   "libVersion": "3.15.1",
   "packOptions": {
-    "ignore": [],
+    "ignore": [
+      {
+        "type": "folder",
+        "value": "backend-admin"
+      },
+      {
+        "type": "folder",
+        "value": "local-server"
+      },
+      {
+        "type": "folder",
+        "value": "node_modules"
+      },
+      {
+        "type": "folder",
+        "value": "mock-db"
+      },
+      {
+        "type": "folder",
+        "value": ".trae"
+      },
+      {
+        "type": "file",
+        "value": "backend-server.js"
+      },
+      {
+        "type": "file",
+        "value": "start-backend.bat"
+      },
+      {
+        "type": "file",
+        "value": "start-server.bat"
+      },
+      {
+        "type": "file",
+        "value": "package-lock.json"
+      },
+      {
+        "type": "file",
+        "value": "README.md"
+      },
+      {
+        "type": "file",
+        "value": "FUNCTION_STATUS.md"
+      },
+      {
+        "type": "file",
+        "value": "校园跑腿项目分析与优化报告.md"
+      },
+      {
+        "type": "file",
+        "value": "order-debug.log"
+      },
+      {
+        "type": "file",
+        "value": "campus_errand_files.csv"
+      },
+      {
+        "type": "file",
+        "value": "static/tab_home.png"
+      },
+      {
+        "type": "file",
+        "value": "static/tab_home_active.png"
+      },
+      {
+        "type": "file",
+        "value": "static/tab_order.png"
+      },
+      {
+        "type": "file",
+        "value": "static/tab_order_active.png"
+      },
+      {
+        "type": "file",
+        "value": "static/tab_message.png"
+      },
+      {
+        "type": "file",
+        "value": "static/tab_message_active.png"
+      },
+      {
+        "type": "file",
+        "value": "static/tab_profile.png"
+      },
+      {
+        "type": "file",
+        "value": "static/tab_profile_active.png"
+      },
+      {
+        "type": "file",
+        "value": "static/bell-icon.png"
+      },
+      {
+        "type": "file",
+        "value": "static/chevron-icon.png"
+      },
+      {
+        "type": "file",
+        "value": "static/school-icon.png"
+      },
+      {
+        "type": "file",
+        "value": "static/empty-task-icon.png"
+      },
+      {
+        "type": "file",
+        "value": "static/exam-icon.png"
+      },
+      {
+        "type": "file",
+        "value": "static/arrow-icon.png"
+      },
+      {
+        "type": "file",
+        "value": "static/package-icon.png"
+      },
+      {
+        "type": "file",
+        "value": "static/run-icon.png"
+      },
+      {
+        "type": "file",
+        "value": "static/class-icon.png"
+      },
+      {
+        "type": "file",
+        "value": "static/close-icon.png"
+      },
+      {
+        "type": "file",
+        "value": "static/search-icon.png"
+      },
+      {
+        "type": "file",
+        "value": "static/empty-image.png"
+      }
+    ],
     "include": []
   }
 }

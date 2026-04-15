@@ -9,7 +9,9 @@ Page({
     content: '',
     canSubmit: false,
     orderId: '',
-    priceText: '¥0.00'
+    order: {},
+    priceText: '¥0.00',
+    ratingText: '请选择评分'
   },
 
   onLoad(options) {
@@ -18,6 +20,9 @@ Page({
       orderId: options.orderId || '',
       priceText: '¥' + (options.price || '0.00')
     })
+    if (options.orderId) {
+      this.loadOrder(options.orderId)
+    }
   },
 
   onShow() {
@@ -33,9 +38,31 @@ Page({
   },
 
   handleRating(e) {
-    const rating = e.currentTarget.dataset.rating
-    this.setData({ rating: rating })
+    const rating = Number(e.currentTarget.dataset.rating || 0)
+    const ratingTextMap = {
+      1: '很不满意',
+      2: '不太满意',
+      3: '基本满意',
+      4: '满意',
+      5: '非常满意'
+    }
+    this.setData({
+      rating,
+      ratingText: ratingTextMap[rating] || '请选择评分'
+    })
     this.checkCanSubmit()
+  },
+
+  async loadOrder(orderId) {
+    try {
+      const order = await api.getOrderDetail(orderId)
+      this.setData({
+        order,
+        priceText: '¥' + (Number(order.price || 0) / 100).toFixed(2)
+      })
+    } catch (error) {
+      console.error('评价页加载订单失败:', error)
+    }
   },
 
   toggleTag(e) {

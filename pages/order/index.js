@@ -3,6 +3,7 @@ import api from '../../utils/api.js'
 // 订单
 Page({
   data: {
+    mainTab: 'recent',
     activeTab: 'all',
     tabs: [
       { key: 'all', label: '全部', count: 0 },
@@ -12,6 +13,10 @@ Page({
       { key: 'completed', label: '已完成', count: 0 },
       { key: 'cancelled', label: '已取消', count: 0 }
     ],
+    recentOrders: [],
+    recentLoading: false,
+    isRunner: false,
+    recentTab: 'pending',
     orders: [],
     filteredOrders: [],
     loading: false,
@@ -23,13 +28,27 @@ Page({
 
   onLoad(options) {
     console.log('页面加载:', options)
-    this.loadOrders()
+    this.syncRunnerState()
+    if (this.data.isRunner) {
+      this.loadRecentOrders()
+    } else {
+      this.setData({ recentOrders: [], recentLoading: false })
+    }
   },
 
   onShow() {
     console.log('页面显示')
     this.syncTabBar()
-    this.loadOrders()
+    this.syncRunnerState()
+    if (this.data.mainTab === 'recent') {
+      if (this.data.isRunner) {
+        this.loadRecentOrders()
+      } else {
+        this.setData({ recentOrders: [], recentLoading: false })
+      }
+    } else {
+      this.loadMyOrders()
+    }
   },
 
   syncTabBar() {
@@ -47,15 +66,15 @@ Page({
     console.log('页面卸载')
   },
 
-  // 服务类型图标映射
+  // 服务类型图标类名映射
   getServiceIcon(serviceType) {
     const iconMap = {
-      'campus-errand': '/static/run-icon.png',
-      'express': '/static/package-icon.png',
-      'exam': '/static/exam-icon.png',
-      'campus-class': '/static/class-icon.png'
+      'campus-errand': 'icon-run',
+      'express': 'icon-package',
+      'exam': 'icon-exam',
+      'campus-class': 'icon-class'
     }
-    return iconMap[serviceType] || '/static/school-icon.png'
+    return iconMap[serviceType] || 'icon-school'
   },
 
   // 状态颜色映射
@@ -93,59 +112,168 @@ Page({
     return textMap[serviceType] || '其他服务'
   },
 
-  // 加载订单列表
-  async loadOrders() {
+  getCurrentUserInfo() {
+    const app = getApp()
+    console.log('=== 订单页面调试信息 ===')
+    console.log('app.globalData:', app.globalData)
+    console.log('hasLogin:', app.globalData.hasLogin)
+    console.log('userInfo:', app.globalData.userInfo)
+
+    if (!app.checkAndHandleLogin()) {
+      console.log('检查登录失败，返回')
+      return null
+    }
+
+    const userInfo = app.globalData.userInfo
+    if (!userInfo || !userInfo.openid) {
+      console.log('用户信息不完整')
+      wx.showToast({ title: '用户信息不完整', icon: 'none' })
+      return null
+    }
+
+    return userInfo
+  },
+
+  syncRunnerState() {
+    const app = getApp()
+    const globalData = app.globalData || {}
+    const userInfo = globalData.userInfo || {}
+    const isRunner = !!((globalData.isRunner || userInfo.isRunner) && userInfo.runnerVerified)
+    this.setData({ isRunner })
+    return isRunner
+  },
+
+  formatOrder(order) {
+    const serviceType = order.type || order.serviceType || 'campus-errand'
+    const createTime = order.createTime || order.createdAt || Date.now()
+    const pickupText = order.pickupLocation || order.examLocation || order.teachingBuilding || order.location || '校园内'
+    const deliveryText = order.deliveryLocation || order.classroom || ''
+    const publisherName = order.publisher?.nickName ||
+      order.creator?.nickName ||
+      order.user?.nickName ||
+      order.nickName ||
+      (order.openid ? `同学${String(order.openid).slice(-4)}` : '匿名同学')
+
+    return {
+      ...order,
+      _id: order.id,
+      status: order.status,
+      statusText: this.getStatusText(order.status),
+      statusColor: this.getStatusColor(order.status),
+      serviceType,
+      serviceTypeText: this.getServiceTypeText(serviceType),
+      serviceIcon: this.getServiceIcon(serviceType),
+      price: (Number(order.price || 0) / 100).toFixed(2), // 转换为元并避免被原始分金额覆盖
+      createdAt: createTime,
+      createdAtText: new Date(createTime).toLocaleString(),
+      orderNo: 'ORD' + order.id,
+      displayTitle: order.title || this.getServiceTypeText(serviceType),
+      pickupText,
+      deliveryText,
+      publisherName
+    }
+  },
+
+  sortRecentOrders(orders) {
+    return orders.sort((a, b) => {
+      const statusRankA = a.status === 'PENDING' ? 0 : 1
+      const statusRankB = b.status === 'PENDING' ? 0 : 1
+      if (statusRankA !== statusRankB) {
+        return statusRankA - statusRankB
+      }
+      const timeA = new Date(a.createTime || a.createdAt || 0).getTime()
+      const timeB = new Date(b.createTime || b.createdAt || 0).getTime()
+      return timeB - timeA
+    })
+  },
+
+  // 切换顶部主视图
+  switchMainTab(e) {
+    const key = e.currentTarget.dataset.key
+    if (!key || key === this.data.mainTab) {
+      return
+    }
+
+    this.setData({ mainTab: key })
+    if (key === 'recent') {
+      if (this.syncRunnerState()) {
+        this.loadRecentOrders()
+      } else {
+        this.setData({ recentOrders: [], recentLoading: false })
+      }
+    } else {
+      this.loadMyOrders()
+    }
+  },
+
+  // 加载最近发布列表
+  async loadRecentOrders() {
+    if (!this.syncRunnerState()) {
+      this.setData({ recentOrders: [], recentLoading: false })
+      return
+    }
+
+    if (this.data.recentLoading) {
+      console.log('最近发布正在加载中，跳过重复调用')
+      return
+    }
+
+    this.setData({ recentLoading: true })
+
+    try {
+      const userInfo = this.getCurrentUserInfo()
+      if (!userInfo) {
+        this.setData({ recentLoading: false })
+        return
+      }
+
+      const result = await api.getAllOrders()
+      const list = result.list || []
+      const recentOrders = this.sortRecentOrders(list.filter(order => {
+        return order &&
+          (order.status === 'PENDING' || order.status === 'PROCESSING') &&
+          order.paymentStatus === 'PAID' &&
+          order.openid !== userInfo.openid
+      })).map(order => this.formatOrder(order))
+
+      this.setData({
+        recentOrders,
+        recentLoading: false
+      })
+    } catch (error) {
+      console.error('加载最近发布失败:', error)
+      wx.showToast({ title: error.message || '加载失败', icon: 'none' })
+      this.setData({ recentLoading: false })
+    }
+  },
+
+  // 加载我的发布订单列表
+  async loadMyOrders() {
     // 防止重复加载，避免无限循环
     if (this.data.isLoadingData) {
       console.log('正在加载中，跳过重复调用')
       return
     }
-    
+
     this.setData({ loading: true, isLoadingData: true })
 
     try {
-      const app = getApp()
-      console.log('=== 订单页面调试信息 ===')
-      console.log('app.globalData:', app.globalData)
-      console.log('hasLogin:', app.globalData.hasLogin)
-      console.log('userInfo:', app.globalData.userInfo)
-
-      if (!app.checkAndHandleLogin()) {
-        console.log('检查登录失败，返回')
+      const userInfo = this.getCurrentUserInfo()
+      if (!userInfo) {
         this.setData({ loading: false, isLoadingData: false })
         return
       }
 
-      const userInfo = app.globalData.userInfo
       console.log('获取的 userInfo:', userInfo)
       console.log('userInfo.openid:', userInfo?.openid)
 
-      if (!userInfo || !userInfo.openid) {
-        console.log('用户信息不完整')
-        wx.showToast({ title: '用户信息不完整', icon: 'none' })
-        this.setData({ loading: false, isLoadingData: false })
-        return
-      }
-
       // 调用API获取订单列表
-      const result = await api.getOrders(userInfo.openid, '', '')
+      const result = await api.getOrders(userInfo.openid, '', '', 1, 100)
 
       if (result && result.list) {
-        const orders = result.list
-        const formattedOrders = orders.map(order => ({
-          ...order,
-          _id: order.id,
-          status: order.status,
-          statusText: this.getStatusText(order.status),
-          statusColor: this.getStatusColor(order.status),
-          serviceType: order.type,
-          serviceTypeText: this.getServiceTypeText(order.type),
-          serviceIcon: this.getServiceIcon(order.type),
-          price: (Number(order.price || 0) / 100).toFixed(2), // 转换为元并避免被原始分金额覆盖
-          createdAt: order.createdAt || order.createTime,
-          createdAtText: new Date(order.createTime || order.createdAt || Date.now()).toLocaleString(),
-          orderNo: 'ORD' + order.id
-        }))
+        const formattedOrders = result.list
+          .map(order => this.formatOrder(order))
+          .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
 
         this.setData({
           orders: formattedOrders,
@@ -185,13 +313,13 @@ Page({
       completed: 'COMPLETED',
       cancelled: 'CANCELLED'
     }
-    
+
     if (activeTab !== 'all') {
       filtered = orders.filter(function(order) {
         return order.status === statusMap[activeTab]
       })
     }
-    
+
     this.setData({ filteredOrders: filtered })
   },
 
@@ -215,8 +343,8 @@ Page({
 
   // 加载更多
   loadMore() {
-    if (this.data.loading || !this.data.hasMore) return
-    
+    if (this.data.mainTab !== 'mine' || this.data.loading || !this.data.hasMore) return
+
     // 模拟加载更多
     this.setData({ loading: true })
     setTimeout(function() {
@@ -225,12 +353,16 @@ Page({
   },
 
   // 下拉刷新
-  onRefresh() {
+  async onRefresh() {
     this.setData({ isRefreshing: true })
-    this.loadOrders()
-    setTimeout(function() {
-      this.setData({ isRefreshing: false })
-    }.bind(this), 1000)
+    if (this.data.mainTab === 'recent') {
+      if (this.syncRunnerState()) {
+        await this.loadRecentOrders()
+      }
+    } else {
+      await this.loadMyOrders()
+    }
+    this.setData({ isRefreshing: false })
   },
 
   // 导航到订单详情
@@ -239,6 +371,55 @@ Page({
     const status = e.currentTarget.dataset.status
     const serviceType = e.currentTarget.dataset.serviceType
     wx.navigateTo({ url: '/pages/order-detail/index?id=' + id + '&status=' + status + '&serviceType=' + serviceType })
+  },
+
+  // 接取最近发布订单
+  async acceptOrder(e) {
+    const id = e.currentTarget.dataset.id
+    const userInfo = this.getCurrentUserInfo()
+    if (!id || !userInfo || !this.syncRunnerState()) {
+      return
+    }
+
+    wx.showModal({
+      title: '确认接取该任务？',
+      content: '接单后须按时完成，请确保自己有时间。',
+      confirmText: '确认接单',
+      cancelText: '再看看',
+      success: async (res) => {
+        if (!res.confirm) {
+          return
+        }
+
+        const recentOrders = this.data.recentOrders.map(order => {
+          if (String(order._id) !== String(id)) {
+            return order
+          }
+
+          return {
+            ...order,
+            status: 'PROCESSING',
+            statusText: this.getStatusText('PROCESSING'),
+            statusColor: this.getStatusColor('PROCESSING')
+          }
+        })
+        this.setData({ recentOrders })
+
+        try {
+          await api.acceptOrder(id, userInfo.openid)
+          wx.showToast({ title: '接单成功！请前往我的接单查看', icon: 'none' })
+          this.loadRecentOrders()
+        } catch (error) {
+          console.error('接单失败:', error)
+          wx.showToast({ title: error.message || '接单失败', icon: 'none' })
+          this.loadRecentOrders()
+        }
+      }
+    })
+  },
+
+  navigateToRunnerAuth() {
+    wx.navigateTo({ url: '/pages/profile/auth/index?type=runner' })
   },
 
   // 导航到发布页面
@@ -258,7 +439,7 @@ Page({
             await api.cancelOrder(id, getApp().globalData.userInfo.openid)
 
             wx.showToast({ title: '订单已取消', icon: 'success' })
-            this.loadOrders()
+            this.loadMyOrders()
           } catch (error) {
             wx.showToast({ title: error.message || '取消失败', icon: 'none' })
           }

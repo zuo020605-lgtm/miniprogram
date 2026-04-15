@@ -22,6 +22,7 @@ App({
       useMock: config.local.useMock,
       baseUrl: config.local.baseUrl,
       serverChecked: false,
+      isRunner: false,
       loginRedirect: false // 标记是否需要跳转登录
     }
     console.log('配置初始化完成，使用Mock:', this.globalData.useMock)
@@ -53,6 +54,7 @@ App({
     if (isValidLogin) {
       this.globalData.userInfo = storedUserInfo
       this.globalData.hasLogin = true
+      this.globalData.isRunner = !!storedUserInfo.isRunner
       console.log('从本地存储恢复登录状态成功')
     } else {
       // 如果数据无效，清理本地存储
@@ -63,6 +65,7 @@ App({
         wx.removeStorageSync('token')
         this.globalData.userInfo = null
         this.globalData.hasLogin = false
+        this.globalData.isRunner = false
       }
     }
   },
@@ -71,6 +74,7 @@ App({
   setLoginState(userInfo) {
     this.globalData.userInfo = userInfo
     this.globalData.hasLogin = !!userInfo
+    this.globalData.isRunner = !!(userInfo && userInfo.isRunner)
     this.globalData.loginRedirect = false
     // 保存到本地存储，防止页面刷新丢失
     if (userInfo) {
@@ -84,6 +88,7 @@ App({
       wx.removeStorageSync('userInfo')
       wx.removeStorageSync('hasLogin')
       wx.removeStorageSync('token')
+      this.globalData.isRunner = false
       console.log('从本地存储清除登录状态')
     }
     console.log('登录状态已更新:', {
@@ -119,6 +124,7 @@ App({
     if (isValidLogin) {
       this.globalData.userInfo = storedUserInfo
       this.globalData.hasLogin = true
+      this.globalData.isRunner = !!storedUserInfo.isRunner
       console.log('从本地存储恢复登录状态')
       return true
     }
@@ -148,6 +154,7 @@ App({
       // 如果本地存储有有效数据，恢复到内存
       this.globalData.userInfo = storedUserInfo
       this.globalData.hasLogin = true
+      this.globalData.isRunner = !!storedUserInfo.isRunner
       console.log('从本地存储恢复登录状态')
     }
 

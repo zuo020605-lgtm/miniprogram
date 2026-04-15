@@ -321,6 +321,44 @@ page {
   font-weight: 500;
 }
 
+.review-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+  margin-bottom: 18rpx;
+}
+
+.review-rating {
+  font-size: 30rpx;
+  font-weight: 800;
+  color: #4f6675;
+}
+
+.review-time {
+  font-size: 22rpx;
+  color: #8a949a;
+}
+
+.review-content {
+  display: block;
+  font-size: 26rpx;
+  line-height: 1.55;
+  color: #485156;
+  margin-bottom: 16rpx;
+}
+
+.review-tags {
+  display: inline-flex;
+  max-width: 100%;
+  padding: 10rpx 18rpx;
+  border-radius: 999rpx;
+  background: rgba(96, 120, 137, 0.12);
+  color: #4f6675;
+  font-size: 22rpx;
+  line-height: 1.4;
+}
+
 /* 底部操作区 */
 .bottom-actions {
   display: flex;
@@ -383,4 +421,156 @@ page {
   .status-desc {
     font-size: 22rpx;
   }
+}
+
+/* Morandi order detail pass. */
+page,
+.order-detail-page {
+  background:
+    radial-gradient(circle at 90% -4%, rgba(129, 148, 135, 0.12), rgba(129, 148, 135, 0) 30%),
+    linear-gradient(180deg, #f3f5f6 0%, #e8edf0 100%) !important;
+}
+
+.order-detail-page .content-scroll {
+  padding: 24rpx !important;
+  padding-bottom: calc(220rpx + env(safe-area-inset-bottom)) !important;
+}
+
+.order-detail-page .status-card {
+  background: linear-gradient(145deg, rgba(238, 243, 244, 0.98), rgba(222, 230, 233, 0.96)) !important;
+  color: #2f3538 !important;
+  border: 1rpx solid rgba(105, 124, 134, 0.2) !important;
+  box-shadow: 0 16rpx 42rpx rgba(58, 70, 76, 0.12) !important;
+}
+
+.order-detail-page .status-card.status-pending,
+.order-detail-page .status-card.status-waitingPayment {
+  background: linear-gradient(145deg, rgba(242, 238, 226, 0.98), rgba(231, 225, 207, 0.96)) !important;
+}
+
+.order-detail-page .status-card.status-processing,
+.order-detail-page .status-card.status-unaccepted {
+  background: linear-gradient(145deg, rgba(232, 239, 242, 0.98), rgba(218, 228, 233, 0.96)) !important;
+}
+
+.order-detail-page .status-card.status-completed,
+.order-detail-page .status-card.status-reviewed {
+  background: linear-gradient(145deg, rgba(234, 241, 236, 0.98), rgba(219, 230, 222, 0.96)) !important;
+}
+
+.order-detail-page .status-card.status-cancelled {
+  background: linear-gradient(145deg, rgba(242, 232, 230, 0.98), rgba(230, 216, 213, 0.96)) !important;
+}
+
+.order-detail-page .status-header {
+  align-items: flex-start !important;
+  gap: 20rpx !important;
+  margin-bottom: 28rpx !important;
+}
+
+.order-detail-page .status-icon-wrapper {
+  background: rgba(96, 120, 137, 0.14) !important;
+  border: 1rpx solid rgba(96, 120, 137, 0.18) !important;
+  color: #607889 !important;
+}
+
+.order-detail-page .status-title {
+  color: #2f3538 !important;
+  font-size: 34rpx !important;
+  font-weight: 800 !important;
+}
+
+.order-detail-page .status-desc {
+  color: #5f696e !important;
+  opacity: 1 !important;
+}
+
+.order-detail-page .progress-track {
+  background: rgba(96, 120, 137, 0.16) !important;
+}
+
+.order-detail-page .progress-fill {
+  background: #607889 !important;
+}
+
+.order-detail-page .step-dot {
+  background: rgba(250, 252, 251, 0.8) !important;
+  border-color: rgba(96, 120, 137, 0.3) !important;
+}
+
+.order-detail-page .progress-step.active .step-dot {
+  background: #607889 !important;
+}
+
+.order-detail-page .step-label {
+  color: #5f696e !important;
+  opacity: 1 !important;
+}
+
+.order-detail-page .info-card {
+  background: rgba(253, 254, 253, 0.96) !important;
+  border: 1rpx solid rgba(105, 124, 134, 0.18) !important;
+  box-shadow: 0 16rpx 42rpx rgba(58, 70, 76, 0.1) !important;
+}
+
+.order-detail-page .info-item {
+  align-items: flex-start !important;
+  gap: 18rpx !important;
+}
+
+.order-detail-page .info-label {
+  width: 148rpx !important;
+  color: #737e83 !important;
+}
+
+.order-detail-page .info-value {
+  min-width: 0 !important;
+  color: #485156 !important;
+}
+
+.order-detail-page .copyable {
+  max-width: 100% !important;
+  min-width: 0 !important;
+  padding: 10rpx 12rpx !important;
+  border-radius: 16rpx !important;
+  background: rgba(238, 243, 244, 0.96) !important;
+  border: 1rpx solid rgba(105, 124, 134, 0.16) !important;
+}
+
+.order-detail-page .order-no {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  color: #485156 !important;
+}
+
+.order-detail-page .copy-icon {
+  flex: 0 0 28rpx !important;
+  width: 28rpx !important;
+  height: 28rpx !important;
+  color: #607889 !important;
+  opacity: 1 !important;
+}
+
+.order-detail-page .bottom-actions {
+  gap: 16rpx !important;
+}
+
+.order-detail-page .action-btn {
+  min-height: 80rpx !important;
+  border-radius: 22rpx !important;
+  font-size: 26rpx !important;
+}
+
+.order-detail-page .action-btn.primary {
+  background: linear-gradient(135deg, #607889 0%, #4f6675 100%) !important;
+  color: #ffffff !important;
+}
+
+.order-detail-page .action-btn.secondary {
+  background: rgba(238, 243, 244, 0.96) !important;
+  color: #4f6675 !important;
+  border: 1rpx solid rgba(105, 124, 134, 0.24) !important;
 }

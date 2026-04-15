@@ -43,12 +43,12 @@
     <!-- 空状态 -->
     <view wx:elif="{{displayOrders.length === 0}}" class="empty-container">
       <view class="empty-visual">
-        <image class="icon-order" src="/static/school-icon.png" style="width: 56rpx; height: 56rpx;" />
+        <view class="ios-icon icon-order icon-order-empty"></view>
       </view>
       <text class="empty-title">{{ emptyTitle }}</text>
       <text class="empty-desc">{{ emptyDesc }}</text>
       <button class="empty-action" bindtap="goPublish">
-        <image class="icon-add" src="/static/school-icon.png" style="width: 16rpx; height: 16rpx;" />
+        <view class="ios-icon icon-plus icon-add"></view>
         <text>发布任务</text>
       </button>
     </view>
@@ -85,12 +85,12 @@
             <!-- 卡片头部 -->
             <view class="card-header">
               <view class="service-badge" >
-                <image src="/static/school-icon.png" style="width: 24rpx; height: 24rpx;" />
+                <view class="ios-icon icon-school icon-nav"></view>
               </view>
               <view class="card-title-wrap">
                 <text class="card-title">{{ item.title || '未命名任务' }}</text>
                 <view class="card-meta">
-                  <image class="icon-time" src="/static/school-icon.png" style="width: 11rpx; height: 11rpx;" />
+                  <view class="ios-icon icon-time icon-inline"></view>
                   <text class="meta-text">{{ item.createdAtText }}</text>
                 </view>
               </view>
@@ -103,7 +103,7 @@
             <!-- 卡片内容 -->
             <view class="card-body">
               <view class="location-row">
-                <image class="icon-location" src="/static/school-icon.png" style="width: 12rpx; height: 12rpx;" />
+                <view class="ios-icon icon-location icon-inline"></view>
                 <text class="location-text">{{ item.locationInfo || '暂无位置信息' }}</text>
               </view>
             </view>
@@ -111,7 +111,7 @@
             <!-- 卡片操作 -->
             <view class="card-footer">
               <button class="card-btn secondary" catchtap="openDetail" data-id="{{item._id}}">
-                <image class="icon-order" src="/static/school-icon.png" style="width: 14rpx; height: 14rpx;" />
+                <view class="ios-icon icon-order icon-inline"></view>
                 <text>查看详情</text>
               </button>
               <button
@@ -120,7 +120,7 @@
                 catchtap="handleCancel"
                 data-id="{{item._id}}"
               >
-                <image class="icon-close" src="/static/close-icon.png" style="width: 14rpx; height: 14rpx;" />
+                <view class="ios-icon icon-close icon-inline"></view>
                 <text>取消</text>
               </button>
               <button
@@ -129,7 +129,7 @@
                 catchtap="handleRepost"
                 data-id="{{item._id}}"
               >
-                <image class="icon-refresh" src="/static/school-icon.png" style="width: 14rpx; height: 14rpx;" />
+                <view class="ios-icon icon-refresh icon-inline"></view>
                 <text>再来一单</text>
               </button>
             </view>

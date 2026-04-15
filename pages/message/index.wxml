@@ -1,4 +1,12 @@
-<view class="page-container">
+<view class="page-container message-page">
+    <view class="message-toolbar">
+      <view>
+        <text class="toolbar-title">消息</text>
+        <text class="toolbar-subtitle">未读 {{unreadTotal}} 条</text>
+      </view>
+      <button class="refresh-btn" bindtap="refreshMessages">刷新</button>
+    </view>
+
     <!-- 消息列表 -->
     <scroll-view 
       scroll-y 
@@ -38,7 +46,7 @@
       <!-- 空状态 -->
       <view wx:if="{{conversations.length === 0 && !isLoading}}" class="empty-container">
         <view class="empty-visual">
-          <image class="icon-order" src="/static/bell-icon.png" style="width: 56rpx; height: 56rpx;" />
+          <view class="ios-icon icon-bell icon-order-empty"></view>
         </view>
         <text class="empty-title">暂无消息</text>
         <text class="empty-desc">您还没有任何消息</text>

@@ -1,5 +1,3 @@
-const { mockMarkOrderPaid } = require('./order')
-
 // Mock支付数据库
 const mockPaymentDB = {
   // 订单记录
@@ -50,14 +48,6 @@ async function mockUnifiedOrder(orderBody) {
   mockPaymentDB.prepayIds[prepay_id] = out_trade_no
 
   mockPaymentDB.nextTradeNo++
-
-  if (orderId) {
-    await mockMarkOrderPaid(orderId, {
-      total_fee: payFee,
-      paymentMethod,
-      out_trade_no
-    })
-  }
 
   return {
     return_code: 'SUCCESS',

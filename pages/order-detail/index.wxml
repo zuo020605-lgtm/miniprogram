@@ -5,7 +5,7 @@
     <view class="status-card {{'status-' + order.status}}">
       <view class="status-header">
         <view class="status-icon-wrapper">
-          <image class="status-icon" src="/static/school-icon.png" mode="aspectFit" />
+          <view class="ios-icon icon-school status-icon"></view>
         </view>
         <view class="status-info">
           <text class="status-title">{{ order.statusText }}</text>
@@ -60,7 +60,7 @@
           <text class="info-label">订单编号</text>
           <view class="info-value copyable" bindtap="copyOrderNo">
             <text class="order-no">{{order.orderNo || order._id}}</text>
-            <image class="copy-icon" src="/static/close-icon.png" mode="aspectFit" />
+            <view class="ios-icon icon-copy copy-icon"></view>
           </view>
         </view>
       </view>
@@ -133,9 +133,24 @@
           <text class="courier-badge">接单员</text>
         </view>
         <button class="contact-btn" bindtap="contactCourier">
-          <image class="contact-icon" src="/static/close-icon.png" mode="aspectFit" />
+          <view class="ios-icon icon-message contact-icon"></view>
           <text class="contact-text">联系</text>
         </button>
+      </view>
+    </view>
+
+    <!-- 评价信息 -->
+    <view class="info-card review-card" wx:if="{{order.reviewed && order.review}}">
+      <view class="card-header">
+        <text class="card-title">评价信息</text>
+      </view>
+      <view class="review-summary">
+        <text class="review-rating">{{order.reviewRatingText}}</text>
+        <text class="review-time">{{order.reviewTimeText}}</text>
+      </view>
+      <text class="review-content">{{order.review.content || '暂无文字评价'}}</text>
+      <view class="review-tags" wx:if="{{order.reviewTagsText}}">
+        <text>{{order.reviewTagsText}}</text>
       </view>
     </view>
 
@@ -143,35 +158,42 @@
     <view class="bottom-actions">
       <button
         class="action-btn secondary"
-        wx:if="{{order.status === 'unaccepted' || order.status === 'pending' || order.status === 'waitingPayment'}}"
+        wx:if="{{permissions.canCancel}}"
         bindtap="cancelOrder"
       >
         取消订单
       </button>
       <button
         class="action-btn primary"
-        wx:if="{{order.status === 'waitingPayment'}}"
+        wx:if="{{permissions.canAccept}}"
+        bindtap="acceptOrder"
+      >
+        接取任务
+      </button>
+      <button
+        class="action-btn primary"
+        wx:if="{{permissions.canPay}}"
         bindtap="goPay"
       >
         去支付
       </button>
       <button
         class="action-btn primary"
-        wx:if="{{order.status === 'unaccepted'}}"
+        wx:if="{{permissions.canEdit}}"
         bindtap="editOrder"
       >
         修改订单
       </button>
       <button
         class="action-btn primary"
-        wx:if="{{order.status === 'processing'}}"
+        wx:if="{{permissions.canFinish}}"
         bindtap="confirmComplete"
       >
         确认完成
       </button>
       <button
         class="action-btn primary"
-        wx:if="{{order.status === 'completed' && !order.reviewed}}"
+        wx:if="{{permissions.canReview}}"
         bindtap="goReview"
       >
         去评价

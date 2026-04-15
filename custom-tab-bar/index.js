@@ -1,32 +1,31 @@
+import api from '../utils/api'
+
 Component({
   data: {
     selected: -1,
-    color: '#74777a',
-    selectedColor: '#005da4',
+    unreadCount: 0,
+    color: '#7b8794',
+    selectedColor: '#0a84ff',
     list: [
       {
         pagePath: '/pages/index/index',
         text: '首页',
-        iconPath: '/static/tab_home.png',
-        selectedIconPath: '/static/tab_home_active.png'
+        iconClass: 'icon-home'
       },
       {
         pagePath: '/pages/order/index',
         text: '订单',
-        iconPath: '/static/tab_order.png',
-        selectedIconPath: '/static/tab_order_active.png'
+        iconClass: 'icon-order'
       },
       {
         pagePath: '/pages/message/index',
         text: '消息',
-        iconPath: '/static/tab_message.png',
-        selectedIconPath: '/static/tab_message_active.png'
+        iconClass: 'icon-message'
       },
       {
         pagePath: '/pages/profile/index',
         text: '我的',
-        iconPath: '/static/tab_profile.png',
-        selectedIconPath: '/static/tab_profile_active.png'
+        iconClass: 'icon-profile'
       }
     ]
   },
@@ -53,6 +52,24 @@ Component({
       const selected = this.data.list.findIndex(item => item.pagePath === route)
       if (selected >= 0 && selected !== this.data.selected) {
         this.setData({ selected })
+      }
+      this.refreshUnreadCount()
+    },
+
+    async refreshUnreadCount() {
+      try {
+        const app = getApp()
+        const globalData = app.globalData || {}
+        const userInfo = globalData.userInfo || {}
+        if (!globalData.hasLogin || !userInfo.openid) {
+          this.setData({ unreadCount: 0 })
+          return
+        }
+
+        const result = await api.getUnreadCount(userInfo.openid)
+        this.setData({ unreadCount: result.count || 0 })
+      } catch (error) {
+        console.warn('刷新未读数失败:', error.message)
       }
     },
 

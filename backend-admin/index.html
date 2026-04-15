@@ -566,6 +566,7 @@
       <li><a href="#" class="menu-item" data-page="orders"><i>📦</i> 订单管理</a></li>
       <li><a href="#" class="menu-item" data-page="messages"><i>💬</i> 消息管理</a></li>
       <li><a href="#" class="menu-item" data-page="users"><i>👥</i> 用户管理</a></li>
+      <li><a href="#" class="menu-item" data-page="runners"><i>🏃</i> 接单员审核</a></li>
       <li><a href="#" class="menu-item" data-page="wallet"><i>💰</i> 钱包管理</a></li>
     </ul>
   </aside>
@@ -788,6 +789,7 @@
       orders: 'pages/order/list.html',
       messages: 'pages/messages/list.html',
       users: 'pages/users/list.html',
+      runners: 'pages/runners/list.html',
       wallet: 'pages/wallet/list.html'
     };
 
@@ -850,6 +852,7 @@
         orders: '订单管理',
         messages: '消息管理',
         users: '用户管理',
+        runners: '接单员审核',
         wallet: '钱包管理'
       };
       pageTitle.textContent = titles[pageName] || pageName;
